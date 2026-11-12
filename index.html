@@ -96,6 +96,7 @@ h1,h2,h3{margin:0}
 .sec{display:flex;align-items:baseline;justify-content:space-between;margin:20px 2px 10px}
 .sec h3{font-size:16px;font-weight:700}
 .sec span{font-size:13px;color:var(--muted)}
+.pgf>summary{display:flex;align-items:baseline;justify-content:space-between;margin:14px 2px 8px;cursor:pointer;list-style:none}.pgf>summary::-webkit-details-marker{display:none}.pgf>summary h3{font-size:16px;font-weight:700}.pgf>summary h3::before{content:'▸ ';color:var(--muted)}.pgf[open]>summary h3::before{content:'▾ '}.pgf>summary span{font-size:13px;color:var(--muted)}
 .dayprog{height:10px;background:var(--line);border-radius:99px;overflow:hidden}
 .dayprog i{display:block;height:100%;background:linear-gradient(90deg,var(--mint),#7EDCB9);border-radius:99px;transition:width .5s}
 
@@ -2818,6 +2819,46 @@ function sleepBlock(){
     ${(() => { const k = sleepGoalCheck(); if (!k) return ''; const p = x => x == null ? '' : x <= 30 ? 'đúng giờ' : 'lệch ' + x + ' phút';
       return `<div class="slok ${k.ok ? 'ok' : ''}">${k.ok ? '✅' : '⏰'} ${[k.bed != null ? 'Ngủ ' + p(k.bed) : '', k.wake != null ? 'dậy ' + p(k.wake) : ''].filter(Boolean).join(', ')}${k.ok ? '. Đã tích phần giấc ngủ của thói quen Sinh hoạt điều độ.' : '. Cho phép lệch tối đa 30 phút.'}</div>`; })()}</div>`;
 }
+/* ---- Sơ đồ giấc ngủ: mỗi cột 1 ngày, thanh nổi từ giờ ngủ (trên) đến giờ thức (dưới), 14 ngày ---- */
+function sleepChart(bare){
+  const slp = D.meta.sleep || {}, g = D.meta.sleepGoal || [], td = D.today, N = 14;
+  const days = Array.from({length: N}, (_, k) => addDays(td, k - N + 1));
+  const rb = m => (m < 720 ? m + 1440 : m) - 1080, rw = m => m + 1440 - 1080;        // phút tính từ 18:00 hôm trước
+  const pts = days.map(d => { const s = slp[d] || [], b = hm2m(s[0]), w = hm2m(s[1]); return b == null || w == null ? null : {d, yb: rb(b), yw: rw(w)}; });
+  const ok = pts.filter(Boolean);
+  const head = bare ? '' : `<div class="sec"><h3>🌙 Sơ đồ giờ ngủ · giờ thức</h3><span>${N} ngày gần nhất</span></div>`;
+  if (!ok.length) return head + `<div class="card"><div class="muted" style="font-size:13px">Điền giờ ngủ và giờ thức vài hôm, sơ đồ sẽ hiện ở đây.</div></div>`;
+  const gb = hm2m(g[0]), gw = hm2m(g[1]), gyb = gb == null ? null : rb(gb), gyw = gw == null ? null : rw(gw);
+  const vs = ok.flatMap(p => [p.yb, p.yw]).concat([gyb, gyw].filter(v => v != null));
+  const lo = Math.floor(Math.min(...vs) / 60) * 60, hi = Math.max(lo + 360, Math.ceil(Math.max(...vs) / 60) * 60);
+  const W = 340, H = 230, L = 38, R = 8, T = 10, B = 34, cw = (W - L - R) / N;
+  const Y = v => T + (v - lo) / (hi - lo) * (H - T - B), tm = v => { const m = ((v + 1080) % 1440 + 1440) % 1440; return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); };
+  const step = (hi - lo) > 600 ? 120 : 60;
+  let grid = ''; for (let v = lo; v <= hi; v += step) grid += `<line x1="${L}" x2="${W - R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" class="gc-g"/><text x="${L - 5}" y="${(Y(v) + 3.5).toFixed(1)}" text-anchor="end" class="gc-t">${tm(v)}</text>`;
+  const goal = [[gyb, '🌙'], [gyw, '☀️']].map(x => x[0] == null ? '' : `<line x1="${L}" x2="${W - R}" y1="${Y(x[0]).toFixed(1)}" y2="${Y(x[0]).toFixed(1)}" class="sc-goal"/>`).join('');
+  const wd = d => ['CN','T2','T3','T4','T5','T6','T7'][new Date(d + 'T00:00:00').getDay()];
+  const bars = days.map((d, i) => { const p = pts[i], cx = L + cw * (i + .5), isT = d === td;
+    const lab = `<text x="${cx.toFixed(1)}" y="${H - 18}" text-anchor="middle" class="gc-t ${isT ? 'sc-td' : ''}">${wd(d)}</text><text x="${cx.toFixed(1)}" y="${H - 6}" text-anchor="middle" class="gc-t ${isT ? 'sc-td' : ''}">${+d.slice(8)}</text>`;
+    if (!p) return lab + `<circle cx="${cx.toFixed(1)}" cy="${(H - B - 4).toFixed(1)}" r="2" class="sc-miss"><title>${dm(d)}: chưa điền</title></circle>`;
+    const good = (gyb == null || Math.abs(p.yb - gyb) <= 30) && (gyw == null || Math.abs(p.yw - gyw) <= 30) && (gyb != null || gyw != null);
+    const y1 = Y(p.yb), y2 = Math.max(Y(p.yw), y1 + 3), dur = (p.yw - p.yb) / 60;
+    return lab + `<rect x="${(cx - 6).toFixed(1)}" y="${y1.toFixed(1)}" width="12" height="${(y2 - y1).toFixed(1)}" rx="6" class="sc-bar ${good ? 'good' : ''}"><title>${dm(d)}: ngủ ${tm(p.yb)} · dậy ${tm(p.yw)} · ${dur.toFixed(1).replace('.', ',')} tiếng</title></rect>`; }).join('');
+  const avg = a => a.reduce((x, y) => x + y, 0) / a.length, ab = avg(ok.map(p => p.yb)), aw = avg(ok.map(p => p.yw)), ad = (aw - ab) / 60;
+  const sd = Math.round(Math.sqrt(avg(ok.map(p => (p.yb - ab) ** 2)))), ab24 = ab + 1080;      // ab24: phút kể từ 0h (có thể > 1440)
+  let an = null;
+  if (ok.length < 3) an = ['😴', 'Cần thêm vài đêm', 'Điền đủ ít nhất 3 đêm để biết bạn ngủ giống con gì.'];
+  else if (sd > 90) an = ['🦇', 'Dơi', `Giờ đi ngủ mỗi đêm lệch nhau khoảng ${sd} phút. Thử chốt trước một giờ dậy cố định.`];
+  else if (ad >= 9.5) an = ['🐨', 'Koala', 'Ngủ rất dài, hơn 9,5 tiếng mỗi đêm. Nếu vẫn mệt, thử dậy đúng một giờ mỗi ngày.'];
+  else if (ad < 5.5) an = ['🐬', 'Cá heo', 'Ngủ ngắn, dưới 5,5 tiếng mỗi đêm. Thử đi ngủ sớm hơn 30 phút.'];
+  else if (ab24 < 22.5 * 60) an = ['🐓', 'Gà trống', 'Ngủ sớm, dậy sớm. Buổi sáng là giờ vàng, dành cho việc khó nhất.'];
+  else if (ab24 < 23.5 * 60) an = ['🐻', 'Gấu', 'Nhịp ngủ theo mặt trời, đúng nhịp phổ biến nhất. Giữ đều là đẹp.'];
+  else if (ab24 < 24.75 * 60) an = ['🐺', 'Sói', 'Tối mới tỉnh táo, sáng hơi chậm. Thử nhích giờ ngủ sớm dần 15 phút.'];
+  else an = ['🦉', 'Cú mèo', 'Thức khuya là chính. Giữ giờ dậy cố định và kéo giờ ngủ sớm dần 15 phút.'];
+  const animal = `<div class="sc-animal"><span class="sa-e">${an[0]}</span><div><b>${ok.length < 3 ? an[1] : 'Bạn ngủ giống: ' + an[1]}</b><small>${an[2]}</small></div></div>`;
+  const stats = `<div class="gym-st"><div><b>${tm(ab)}</b><small>giờ ngủ trung bình</small></div><div><b>${tm(aw)}</b><small>giờ thức trung bình</small></div><div><b>${ad.toFixed(1).replace('.', ',')} giờ</b><small>ngủ mỗi đêm (${ok.length} đêm)</small></div></div>`;
+  return head + `<div class="card"><svg viewBox="0 0 ${W} ${H}" class="gym-svg" role="img" aria-label="Sơ đồ giờ ngủ và giờ thức">${grid}${goal}${bars}</svg>${animal}${stats}
+    <div class="rule">Đầu thanh = giờ ngủ, cuối thanh = giờ thức.${gyb != null || gyw != null ? ' Vạch đứt = giờ mục tiêu; thanh xanh lá = cả hai đúng giờ (lệch ≤30 phút).' : ' Đặt giờ mục tiêu để thấy vạch đối chiếu.'}</div></div>`;
+}
 document.addEventListener('change', e => {
   const t = e.target.closest('[data-sleep]'); if (!t || !D) return;
   D.meta.sleep = D.meta.sleep || {}; const cur = (D.meta.sleep[D.today] || ['','']).slice(); cur[+t.dataset.sleep] = t.value;
@@ -3015,7 +3056,7 @@ function itemStats(){
       const p = d ? n/d : null, col = p == null ? '#55655B' : p >= .7 ? 'var(--mint)' : p >= .5 ? 'var(--gold)' : 'var(--peach)';
       return `<div class="hrow"><div style="font-size:13px;color:var(--muted)">${j+1}.</div><div><div class="n">${esc(v)}</div><div class="tr"><i style="width:${Math.round((p||0)*100)}%;background:${col}"></i></div></div><div class="p">${pctTxt(p)}</div></div>`;
     }).join('');
-    return `<div class="sec"><h3>${esc(SPEC[c].list.pin)}: từng mục</h3><span>tỷ lệ ngày làm được</span></div><div class="card">${rows}</div>`;
+    return fold('it' + c, esc(SPEC[c].list.pin) + ': từng mục', c === '25' ? 'tỷ lệ ngày tránh được' : 'tỷ lệ ngày làm được', `<div class="card">${rows}</div>`);
   }).join('');
 }
 function progTabs(){ return `<div class="seg ptabs"><button class="${tab==='prog'?'on':''}" data-tab="prog">📊 Thống kê</button><button class="${tab==='badge'?'on':''}" data-tab="badge">🏅 Huy hiệu</button></div>`; }
@@ -3031,6 +3072,9 @@ function heatGrid(d0, n, cell){
   }
   return h + `</div>`;
 }
+let PGOPEN = {};
+const fold = (key, title, sub, body) => `<details class="pgf" data-pg="${key}" ${PGOPEN[key] ? 'open' : ''}><summary><h3>${title}</h3><span>${sub}</span></summary>${body}</details>`;
+document.addEventListener('toggle', e => { const t = e.target; if (t.classList && t.classList.contains('pgf')) PGOPEN[t.dataset.pg] = t.open; }, true);
 function progress(s){
   const W = weekOf(Math.max(T,0)), nW = D.weeks.length, wp = rangePct(wkA(W), wkB(W));
   const heat = heatGrid(D.days[0], D.days.length, (i) => {
@@ -3051,11 +3095,12 @@ function progress(s){
       <div class="stat"><div class="v">🔥 ${s.best}</div><div class="l">Chuỗi dài nhất (ngày)</div></div>
       <div class="stat"><div class="v">${pctTxt(wp)}</div><div class="l">Tuần ${W+1} đến nay</div></div>
       <div class="stat"><div class="v">${Math.max(0, D.days.length - 1 - Math.max(T,0))}</div><div class="l">Ngày còn lại</div></div></div>
-    <div class="sec"><h3>Lịch 90 ngày</h3><span>Chạm một ô để xem ngày đó</span></div>
-    <div class="card">${heat}<div class="legend">Ít <i style="background:var(--cellc)"></i><i style="background:var(--h1)"></i><i style="background:var(--h2)"></i><i style="background:var(--h3)"></i><i style="background:var(--h4)"></i> 100% · 🧊 = dùng thẻ giữ lửa</div></div>
-    <div class="sec"><h3>Tỷ lệ hoàn thành theo tuần</h3><span>thói quen hằng ngày</span></div><div class="card">${bars}</div>
-    <div class="sec"><h3>Độ đều đặn từng thói quen</h3><span>từ ngày bắt đầu đến nay</span></div>
-    <div class="card">${rows || '<div class="muted">Chưa có dữ liệu.</div>'}</div>` + itemStats();
+    ${fold('cal', 'Lịch 90 ngày', 'Chạm một ô để xem ngày đó', `<div class="card">${heat}<div class="legend">Ít <i style="background:var(--cellc)"></i><i style="background:var(--h1)"></i><i style="background:var(--h2)"></i><i style="background:var(--h3)"></i><i style="background:var(--h4)"></i> 100% · 🧊 = dùng thẻ giữ lửa</div></div>`)}
+    ${fold('wk', 'Tỷ lệ hoàn thành theo tuần', 'thói quen hằng ngày', `<div class="card">${bars}</div>`)}
+    ${fold('sl', '🌙 Giấc ngủ', 'giờ ngủ · giờ thức · bạn ngủ giống con gì', sleepChart(true))}
+    ${(() => { const x = runMeProg(); return x ? fold('run', '🏃 Chạy bộ của bạn', 'km, lịch chạy, kỷ lục', x) : ''; })()}
+    ${gymProg()}
+    ${fold('hab', 'Độ đều đặn từng thói quen', 'từ ngày bắt đầu đến nay', `<div class="card">${rows || '<div class="muted">Chưa có dữ liệu.</div>'}</div>`)}` + itemStats();
 }
 
 /* ---- Xếp hạng ---- */
@@ -4280,7 +4325,7 @@ async function runNewsAck(rid){
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-newsok],[data-newsap]'); if (!b) return;
   if (b.dataset.newsok){ runNewsAck(b.dataset.newsok); return; }
-  const rid = b.dataset.newsap; runNewsAck(rid); RUNF.open = true; RUNAP = rid; RUNS = null; tab = 'health'; render();
+  const rid = b.dataset.newsap; runNewsAck(rid); RUNF.open = true; RUNAP = rid; RUNS = null; HSUB = 'run'; tab = 'health'; render();
   setTimeout(() => { const i = document.querySelector('[data-apreason]'); if (i){ i.scrollIntoView({block:'center'}); i.focus(); } }, 900);
 });
 /** App không đọc ra được số nào: nộp ảnh để đọc lại sau bằng AI */
@@ -4329,7 +4374,7 @@ async function runLoadBoard(ym){
   RUNBBUSY[ym] = true;
   try { const b = await call('runBoard', TOKEN, ym); b.at = Date.now(); RUNB[ym] = b; } catch(e){ RUNB[ym] = {error: e.message, at: Date.now()}; }
   RUNBBUSY[ym] = false;
-  if (tab === 'rank' && rankMode === 'run') render();
+  if ((tab === 'rank' && rankMode === 'run') || (tab === 'health' && HSUB === 'run') || tab === 'prog') render();
 }
 function runAva(r){
   const b = BOARD && BOARD.rows && r.id ? BOARD.rows.find(x => x.id === r.id) : null;
@@ -4347,12 +4392,12 @@ function runRankView(){
   if (B.error) return h + `<div class="empty">${esc(B.error)}</div>`;
   const me = B.me, all = B.rows.filter(r => r.km > 0).sort((a,b) => b.km - a.km || b.n - a.n || String(a.name).localeCompare(b.name));
   const rows = rankGroup === 'person' && RUNGEN ? all.filter(r => r.gender === RUNGEN) : all;
-  if (rankGroup === 'person') h += `<div class="seg small run-gen">${['','Nam','Nữ'].map(g => `<button class="${RUNGEN === g ? 'on' : ''}" data-rungen="${g}">${g || 'Tất cả'}</button>`).join('')}</div>` + runMeCard(B, rows, y, m);
+  if (rankGroup === 'person') h += `<div class="seg small run-gen">${['','Nam','Nữ'].map(g => `<button class="${RUNGEN === g ? 'on' : ''}" data-rungen="${g}">${g || 'Tất cả'}</button>`).join('')}</div>`;
   const sub = r => [r.dept || r.grp, r.n + ' buổi', 'dài nhất ' + runKmTxt(r.best) + ' km', r.pace ? 'pace TB ' + r.pace : ''].filter(Boolean).map(esc).join(' · ');
   let body = '';
   if (rankGroup === 'person'){
     const top = rows.slice(0, 3), rest = rows.slice(3);
-    if (top.length) body += `<div class="run-podium">${top.map((r,k) => `<div class="run-pod p${k+1} ${r.id && r.id === me ? 'me' : ''}" ${r.id ? `data-prof="${esc(r.id)}"` : ''}>${runAva(r)}<b>${['🥇','🥈','🥉'][k]} ${esc(r.name)}</b><span>${runKmTxt(r.km)} km · ${r.n} buổi</span>${r.grp ? `<small>${esc(r.grp)}</small>` : ''}</div>`).join('')}</div>`;
+    if (top.length) body += `<div class="run-podium">${top.map((r,k) => `<div class="run-pod p${k+1} ${r.id && r.id === me ? 'me' : ''}" ${r.id ? `data-prof="${esc(r.id)}"` : ''}>${runAva(r)}<b>${['🥇','🥈','🥉'][k]} ${esc(r.name)}${r.id && r.id === me ? ' (bạn)' : ''}</b><span>${runKmTxt(r.km)} km · ${r.n} buổi</span>${r.grp ? `<small>${esc(r.grp)}</small>` : ''}</div>`).join('')}</div>`;
     body += rest.length ? `<div class="card" style="padding:8px 10px">${rest.map((r,k) => `<div class="rk run-rk ${r.id ? 'click' : ''} ${r.id && r.id === me ? 'me' : ''}" style="--p:${(r.km/(rows[0].km||1)).toFixed(3)}" ${r.id ? `data-prof="${esc(r.id)}"` : ''}><div class="pos">${k+4}</div>${runAva(r)}
       <div class="rn"><b>${esc(r.name)}${r.id && r.id === me ? ' (bạn)' : ''}</b><small>${sub(r)}</small></div><div class="rv">${runKmTxt(r.km)}<small>km</small></div></div>`).join('')}</div>` : '';
     if (!rows.length) body = `<div class="card"><div class="muted" style="padding:12px">Tháng này chưa có ai chạy. Nộp bài đầu tiên ở tab Sức khỏe nhé!</div></div>`;
@@ -4367,21 +4412,30 @@ function runRankView(){
 }
 
 let RUNGEN = '', RUNREC = null, RUNRECBUSY = false;
-async function runLoadRec(){ if (RUNRECBUSY) return; RUNRECBUSY = true; try { RUNREC = await call('runRecords', TOKEN); } catch(e){ RUNREC = {err: e.message}; } RUNRECBUSY = false; if (tab === 'rank' && rankMode === 'run') render(); }
+async function runLoadRec(){ if (RUNRECBUSY) return; RUNRECBUSY = true; try { RUNREC = await call('runRecords', TOKEN); } catch(e){ RUNREC = {err: e.message}; } RUNRECBUSY = false; if ((tab === 'rank' && rankMode === 'run') || (tab === 'health' && HSUB === 'run') || tab === 'prog') render(); }
 /** Thẻ "Thành tích của bạn": hạng, km, buổi, giờ, kỷ lục + lịch chạy của tháng đang xem. */
 function runMeCard(B, rows, y, m){
   const me = B.me, r = B.rows.find(x => x.id === me) || {km: 0, n: 0, best: 0, days: {}}, k = rows.findIndex(x => x.id === me);
   if (!RUNREC && !RUNRECBUSY) setTimeout(runLoadRec, 0);
   const R = RUNREC && !RUNREC.err ? RUNREC : null;
-  const nd = new Date(y, m, 0).getDate(), first = (new Date(y, m-1, 1).getDay() + 6) % 7, mx = Math.max(1, ...Object.values(r.days || {}));
+  const nd = new Date(y, m, 0).getDate(), mx = Math.max(1, ...Object.values(r.days || {}));
   const today = D.today, cells = [];
-  for (let i = 0; i < first; i++) cells.push('<i class="e"></i>');
-  for (let d = 1; d <= nd; d++){ const v = (r.days || {})[d] || 0, ds = y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+  for (let d = 1; d <= nd; d++){
+    if (d <= 28 ? (d - 1) % 7 === 0 : d === 29) cells.push(`<span>${d <= 28 ? 'T' + ((d - 1) / 7 + 1) : '💤'}</span>`);
+    const v = (r.days || {})[d] || 0, ds = y + '-' + String(m).padStart(2,'0') + '-' + String(d).padStart(2,'0');
     cells.push(`<i class="${v ? 'on' : ''} ${ds === today ? 'td' : ''}" style="${v ? `--a:${(0.35 + 0.65*v/mx).toFixed(2)}` : ''}" title="${d}/${m}${v ? ': ' + runKmTxt(v) + ' km' : ''}"><b>${d}</b>${v ? `<small>${runKmTxt(v)}</small>` : ''}</i>`); }
   return `<div class="card run-me"><div class="rmh"><b>🏅 Thành tích của bạn</b><span>${k >= 0 ? 'Hạng ' + (k+1) + '/' + rows.length : 'Chưa có km tháng này'}</span></div>
     <div class="rms"><div><b>${runKmTxt(r.km)}</b><small>km tháng</small></div><div><b>${r.n}</b><small>ngày đủ 2 km</small></div><div><b>${runKmTxt(r.best)}</b><small>km xa nhất/ngày</small></div><div><b>${r.hours ? String(r.hours).replace('.', ',') : '–'}</b><small>giờ chạy (app)</small></div></div>
-    <div class="rcal"><span>T2</span><span>T3</span><span>T4</span><span>T5</span><span>T6</span><span>T7</span><span>CN</span>${cells.join('')}</div>
+    <div class="rcal">${cells.join('')}</div>
     ${R ? `<div class="rrec">🏆 Kỷ lục: tổng <b>${runKmTxt(R.total)} km</b> qua ${R.months} tháng${R.bestDay ? ` · ngày xa nhất <b>${runKmTxt(R.bestDay)} km</b> (${dm(R.bestDayDate)})` : ''}${R.bestMonth ? ` · tháng nhiều nhất <b>${runKmTxt(R.bestMonth)} km</b> (T${+R.bestMonthYm.slice(5)}/${R.bestMonthYm.slice(0,4)})` : ''}</div>` : '<div class="rrec muted">Đang tải kỷ lục…</div>'}</div>`;
+}
+function runMeProg(){
+  const ym = D.today.slice(0, 7), B = RUNB[ym];
+  if ((!B || Date.now() - B.at > 60000) && !RUNBBUSY[ym]) setTimeout(() => runLoadBoard(ym), 0);
+  if (!B || B.error) return '';
+  const rows = B.rows.filter(r => r.km > 0).sort((a,b) => b.km - a.km || b.n - a.n || String(a.name).localeCompare(b.name));
+  const [y, m] = ym.split('-').map(Number);
+  return runMeCard(B, rows, y, m);
 }
 /* ---- Quản lý: bảng tích 30 ngày + tạo tin nhắc nhóm ---- */
 let TEAM = null, TEAMBUSY = false, TEAMDAY = 'today', TEAMDEPT = '';
@@ -4519,8 +4573,8 @@ function gymExOf(k){ return gymExList().find(x => x.k === k) || {k, n: k, bw: fa
 function gymScoreTxt(ex, v){ return ex.bw ? v + ' lần' : gymTxt(v) + ' kg'; }
 async function gymLoad(){ if (GYMBUSY) return; GYMBUSY = true;
   try { GYM = await call('gymMine', TOKEN); } catch(e){ GYM = {err: e.message, ex: [], items: [], rec: {}}; }
-  GYMBUSY = false; if (tab === 'health') gymRefresh(); }
-function gymRefresh(){ const el = document.querySelector('.gym-card'); if (el) el.outerHTML = gymCard(); else if (tab === 'health') render(); }
+  GYMBUSY = false; if (tab === 'health' || tab === 'prog') gymRefresh(); }
+function gymRefresh(){ if (tab === 'prog') { render(); return; } const el = document.querySelector('.gym-card'); if (el) el.outerHTML = gymCard(); else if (tab === 'health') render(); }
 function healthNudge(){
   const sl = (D.meta.sleep || {})[D.today] || [], hasS = sl[0] && sl[1];
   const ran = RUNS && (RUNS.items || []).some(x => x.date === RUNS.today && x.st === 'Hợp lệ');
@@ -4541,11 +4595,12 @@ function healthView(){
   const strip = `<div class="hstrip"><div><b>${nights}/7</b><small>đêm ${(g[0] || g[1]) ? 'ngủ đúng giờ' : 'có điền giấc ngủ'}</small></div>
     <div><b>${km == null ? '…' : runKmTxt(km)}</b><small>km chạy hôm nay</small></div>
     <div><b>${gs == null ? '…' : gs}</b><small>buổi gym 7 ngày</small></div></div>`;
-  return `<div class="sec"><h3>💚 Sức khỏe</h3><span>Ngủ đủ · vận động đều</span></div>${strip}
-    <div class="card hcard">${sleepBlock()}</div>
-    ${typeof runCard === 'function' ? runCard() : ''}
-    ${gymCard()}`;
+  const sub = `<div class="seg">${[['sleep','😴 Ngủ'],['run','🏃 Chạy bộ'],['gym','🏋️ Gym']].map(x => `<button class="${HSUB === x[0] ? 'on' : ''}" data-hsub="${x[0]}">${x[1]}</button>`).join('')}</div>`;
+  const body = HSUB === 'run' ? (typeof runCard === 'function' ? runCard() : '') + runMeProg() : HSUB === 'gym' ? gymCard() : `<div class="card hcard">${sleepBlock()}</div>` + sleepChart();
+  return `<div class="sec"><h3>💚 Sức khỏe</h3><span>Ngủ đủ · vận động đều</span></div>${strip}${sub}${body}`;
 }
+let HSUB = 'sleep';
+document.addEventListener('click', e => { const t = e.target.closest('[data-hsub]'); if (!t || !D) return; HSUB = t.dataset.hsub; render(); });
 /* ---- Thẻ tập gym ---- */
 function gymCard(){
   const head = `<div class="gym-head"><b>🏋️ Tập gym</b><span>${GYM && GYM.items ? 'Ghi kg × số lần từng set' : ''}</span></div>`;
@@ -4573,17 +4628,13 @@ function gymCard(){
   }
   const list = done.length ? `<div class="gym-done">${done.map(x => { const ex = gymExOf(x.ex);
     return `<div class="gym-row" data-gymex="${x.ex}"><b>${gymShort(ex)}</b><span>${x.sets.map(s => (ex.bw && !s[0] ? '' : gymTxt(s[0]) + '×') + s[1]).join(' · ')}</span><small>${ex.bw ? x.reps + ' lần' : 'e1RM ≈ ' + gymTxt(x.rm) + ' kg'}</small></div>`; }).join('')}</div>` : '';
-  const recs = Object.keys(GYM.rec || {}).filter(k => gymExList().some(x => x.k === k)).map(k => { const ex = gymExOf(k), r = GYM.rec[k];
-    const its = (GYM.items || []).filter(x => x.ex === k), old = its.find(x => x.date >= addDays(td, -35));
-    const ov = old ? (ex.bw ? old.reps : old.rm) : 0, up = ov > 0 && r.v > ov ? Math.round((r.v - ov) / ov * 100) : 0;
-    return `<div class="gym-rec"><b>${gymShort(ex)}</b><span>${gymScoreTxt(ex, r.v)}</span>${up ? `<em>▲ ${up}%</em>` : ''}</div>`; }).join('');
   return `<div class="card gym-card">${head}
     <div class="run-dates"><button class="run-date ${f.date === td ? 'on' : ''}" data-gymdate="${td}">Hôm nay ${dm(td)}</button><button class="run-date ${f.date === yd ? 'on' : ''}" data-gymdate="${yd}">Hôm qua ${dm(yd)}</button></div>
     ${gymWeek()}
     <div class="gym-pins">${chips}<button class="gym-chip add" data-gympick="1">${pins.length ? '✎ Sửa bài của tôi' : '＋ Chọn các bài bạn hay tập'}</button></div>
     ${lib}${form}
     ${f.msg ? `<div class="run-msg">${esc(f.msg)}</div>` : ''}${list}
-    ${recs ? `<details class="gym-recs"><summary>🏆 Kỷ lục của tôi</summary>${recs}<div class="rule">▲ = tăng so với 5 tuần trước.</div></details>` : ''}
+    ${gymRecsHtml()}
     ${gymChart()}
     <div class="rule">Sức mạnh ước tính (e1RM): trung bình công thức Epley và Brzycki.</div></div>`;
 }
@@ -4634,6 +4685,19 @@ document.addEventListener('change', e => { const t = e.target; if (!t || !t.data
   if (t.dataset.gymexsel){ GYMEX = t.value; render(); } });
 /* ---- Lịch tuần theo nhóm cơ ---- */
 const GYM_GROUPS = ['Chân – mông','Ngực','Lưng','Vai','Tay','Bụng'];
+function gymRecsHtml(){
+  const td = GYM.today || D.today;
+  const recs = Object.keys(GYM.rec || {}).filter(k => gymExList().some(x => x.k === k)).map(k => { const ex = gymExOf(k), r = GYM.rec[k];
+    const its = (GYM.items || []).filter(x => x.ex === k), old = its.find(x => x.date >= addDays(td, -35));
+    const ov = old ? (ex.bw ? old.reps : old.rm) : 0, up = ov > 0 && r.v > ov ? Math.round((r.v - ov) / ov * 100) : 0;
+    return `<div class="gym-rec"><b>${gymShort(ex)}</b><span>${gymScoreTxt(ex, r.v)}</span>${up ? `<em>▲ ${up}%</em>` : ''}</div>`; }).join('');
+  return recs ? `<details class="gym-recs" open><summary>🏆 Kỷ lục của tôi</summary>${recs}<div class="rule">▲ = tăng so với 5 tuần trước.</div></details>` : '';
+}
+function gymProg(){
+  if (!GYM && !GYMBUSY) setTimeout(gymLoad, 0);
+  if (!GYM || GYM.err || !(GYM.items || []).length) return '';
+  return fold('gym', '🏋️ Thành tích gym', 'kỷ lục và đường tiến bộ', `<div class="card">${gymRecsHtml()}${gymChart()}<div class="rule">Sức mạnh ước tính (e1RM): trung bình công thức Epley và Brzycki.</div></div>`);
+}
 function gymWeek(){
   const its = (GYM && GYM.items) || []; if (!its.length) return '';
   const td = GYM.today || D.today, days = Array.from({length: 7}, (_, k) => addDays(td, k - 6));
@@ -5141,7 +5205,7 @@ function trackView(){
 .rk.run-rk>div:not(.pos):not(.ava){flex:1;min-width:0;font-size:14.5px;font-weight:700;line-height:1.3;overflow-wrap:normal;word-break:normal}
 .rk.run-rk>div:not(.pos):not(.ava) small{display:block;font-size:12px;font-weight:500;color:var(--muted);overflow-wrap:normal}
 .rk.run-rk>b{flex:none;font-size:16px;font-weight:800;white-space:nowrap;text-align:right}
-.rk.run-rk.me{background:transparent;box-shadow:inset 0 0 0 1.5px var(--run-dash);border-radius:12px}
+.rk.run-rk.me{background:var(--primary-soft);box-shadow:inset 0 0 0 2px var(--primary);border-radius:12px}.run-pod.me{box-shadow:0 0 0 2px var(--primary);background:var(--primary-soft)}
 
 /* ---------- Giảm chuyển động ---------- */
 @media (prefers-reduced-motion:reduce){
@@ -5165,7 +5229,7 @@ function trackView(){
 .run-gen{margin-top:-2px}
 .run-me{margin:10px 0}.run-me .rmh{display:flex;justify-content:space-between;align-items:center;font-size:14px}.run-me .rmh span{font-size:12.5px;color:var(--muted);font-weight:700}
 .run-me .rms{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}.run-me .rms div{background:var(--bg);border-radius:10px;padding:8px 4px;text-align:center}.run-me .rms b{display:block;font-size:16px}.run-me .rms small{font-size:10.5px;color:var(--muted)}
-.rcal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;font-size:10px;max-width:320px;margin:0 auto}.rcal>span{text-align:center;color:var(--muted);font-weight:700;padding-bottom:2px}
+.rcal{display:grid;grid-template-columns:auto repeat(7,1fr);gap:3px;font-size:10px;max-width:320px;margin:0 auto}.rcal>span{align-self:center;padding:0 4px;text-align:center;color:var(--muted);font-weight:700;padding-bottom:2px}
 .rcal i{font-style:normal;aspect-ratio:1;border-radius:7px;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;color:var(--muted)}.rcal i.e{background:transparent}
 .rcal i.on{background:color-mix(in srgb,#B8F061 calc(var(--a,1)*100%),transparent);color:#0D1612}.rcal i b{font-size:10.5px;font-weight:700}.rcal i small{font-size:9px;font-weight:800}.rcal i.td{box-shadow:inset 0 0 0 1.5px var(--primary)}
 .rrec{margin-top:10px;font-size:12.5px;line-height:1.5}
@@ -5214,6 +5278,8 @@ function trackView(){
 .gym-done{display:flex;flex-direction:column;gap:6px;margin:8px 0}.gym-row{display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:9px 12px;border-radius:12px;background:var(--cellc);cursor:pointer}.gym-row span{grid-column:1/-1;font-size:13px;color:var(--muted)}.gym-row small{grid-row:1;grid-column:2;color:var(--primary);font-weight:700}
 .gym-recs{margin:8px 0}.gym-recs summary{cursor:pointer;font-weight:700;padding:8px 0}.gym-rec{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)}.gym-rec b{flex:1;font-weight:600}.gym-rec em{font-style:normal;color:var(--primary);font-size:12.5px;font-weight:700}
 .gym-exsel{width:100%;margin-bottom:10px;padding-right:30px;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px;background-repeat:no-repeat}
+.sc-animal{display:flex;align-items:center;gap:12px;background:var(--bg);border-radius:14px;padding:10px 12px;margin:6px 0 10px}.sc-animal .sa-e{font-size:34px;line-height:1}.sc-animal b{display:block;font-size:15px}.sc-animal small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+.sc-bar{fill:#4f8cff;opacity:.9}.sc-bar.good{fill:var(--mint,#7be495)}.sc-goal{stroke:var(--gold,#e9c46a);stroke-width:1;stroke-dasharray:4 3;opacity:.8}.sc-miss{fill:var(--line)}.gc-t.sc-td{fill:var(--primary);font-weight:800}
 .gym-svg{width:100%;height:auto;display:block;margin:4px 0 8px}.gc-g{stroke:var(--line);stroke-width:1}.gc-t{fill:var(--muted);font-size:10px;font-family:inherit}.gc-l{fill:none;stroke:var(--primary);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}.gc-d{fill:var(--card);stroke:var(--primary);stroke-width:2}.gc-pr{fill:var(--gold);stroke:var(--card);stroke-width:1.5}
 .gym-st{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:6px}.gym-st>div{background:var(--cellc);border-radius:12px;padding:8px 10px}.gym-st b{display:block;font-size:16px}.gym-st small{color:var(--muted);font-size:11.5px}
 .run-cands .gym-chip{font-size:15px}
