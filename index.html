@@ -2,7 +2,6 @@
 <html lang="vi">
 <head>
 <base target="_top">
-<title>90 Days Rich Habits</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -747,14 +746,14 @@ html[data-theme=light] .banner{color:#5A4300}
 .busyrow .brbtn{display:flex;gap:12px;margin-left:auto}
 .hlpc{padding:0!important;margin-bottom:10px;overflow:hidden}.hch{display:flex;align-items:center;gap:10px;padding:13px 14px;cursor:pointer}.hch span{font-size:20px}.hch b{font-size:15px}.hch em{margin-left:auto;font-style:normal;color:var(--muted)}
 .hcb{padding:0 14px 14px}.hcb img{display:block;width:100%;max-width:380px;margin:0 auto 12px;border-radius:14px;border:1px solid var(--line)}.hcb ol{margin:0;padding-left:20px;display:grid;gap:7px;font-size:14px;line-height:1.5}
-.qbox{margin:14px 0 6px;padding:14px 16px;border-radius:16px;background:linear-gradient(135deg,rgba(184,240,97,.20),rgba(184,240,97,.06) 60%,rgba(79,201,138,.10));border:2px solid var(--primary);box-shadow:0 0 0 4px rgba(184,240,97,.10),0 8px 22px rgba(0,0,0,.30)}
-.qh{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.qh b{font-size:16px;color:var(--primary);letter-spacing:.2px}.qh span{font-size:12.5px;font-weight:700;background:var(--primary);color:#0B1A12;border-radius:99px;padding:2px 10px}
-.qrow{display:grid;grid-template-columns:100px 1fr 42px;gap:10px;align-items:center;font-size:14.5px;font-weight:600;margin:8px 0}.qrow b{text-align:right;font-size:15.5px}
+.qbox{margin:12px 0 6px;padding:11px 13px;border-radius:16px;background:linear-gradient(135deg,rgba(184,240,97,.20),rgba(184,240,97,.06) 60%,rgba(79,201,138,.10));border:2px solid var(--primary);box-shadow:0 0 0 4px rgba(184,240,97,.10),0 8px 22px rgba(0,0,0,.30)}
+.qh{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}.qh b{font-size:14px;color:var(--primary);letter-spacing:0;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}.qh span{flex:none;font-size:11px;font-weight:700;white-space:nowrap;background:var(--primary);color:#0B1A12;border-radius:99px;padding:2px 9px}
+.qrow{display:grid;grid-template-columns:88px 1fr 36px;gap:8px;align-items:center;font-size:13px;font-weight:600;margin:6px 0}.qrow>span{white-space:nowrap}.qrow b{text-align:right;font-size:13.5px;white-space:nowrap}
 .qbar{height:11px;border-radius:9px;background:rgba(0,0,0,.35);overflow:hidden;border:1px solid rgba(184,240,97,.25)}.qbar i{display:block;height:100%;background:var(--primary);border-radius:9px}
 .qrow.ok b{color:var(--mint)}.qrow.ok .qbar i{background:var(--mint)}.qrow.warn b{color:var(--gold)}.qrow.warn .qbar i{background:var(--gold)}.qrow.bad b{color:var(--peach)}.qrow.bad .qbar i{background:var(--peach)}
-.qwarn{margin-top:10px;font-size:13.5px;font-weight:700;color:#0B1A12;background:var(--gold);border-radius:10px;padding:7px 10px}.qmiss{margin-top:8px;font-size:13px;font-weight:600;color:var(--peach)}
+.qwarn{margin-top:8px;font-size:12.5px;font-weight:700;color:#0B1A12;background:var(--gold);border-radius:10px;padding:7px 10px}.qmiss{margin-top:6px;font-size:12px;font-weight:600;color:var(--peach)}
 :root[data-theme=light] .qbox{background:linear-gradient(135deg,#EAF9D2,#F6FCEB);border-color:#7BC23A}:root[data-theme=light] .qh b{color:#2F6B12}:root[data-theme=light] .qh span{background:#7BC23A;color:#fff}:root[data-theme=light] .qbar{background:#DCE8DC}
-.qrest{font-size:13.5px;color:var(--muted)}
+.qrest{font-size:12.5px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -2241,11 +2240,11 @@ const blkEnd = s => { const b = blkStart(s), n = +b.slice(8); if (n < 22) return
 const restDay = s => +s.slice(8) >= 29;
 
 /* ================== Gọi máy chủ ================== */
-const API_URL = 'https://script.google.com/macros/s/AKfycbxbxFDzYyGOJgo0GUbq0AKDb9k_cEjY5GtwLjRwLFX_sC3UxonTs9X_ooBrG5R1FMLZ6A/exec';
 function call(fn, ...args){
-  return fetch(API_URL, {method: 'POST', headers: {'Content-Type': 'text/plain;charset=utf-8'}, body: JSON.stringify({fn: fn, args: args})})
-    .then(r => r.json())
-    .then(j => { if (!j || !j.ok) throw new Error(j && j.error || 'Lỗi máy chủ'); return j.v; }, () => { throw new Error('Không kết nối được máy chủ, kiểm tra mạng rồi thử lại.'); });
+  return new Promise((ok, bad) => {
+    if (typeof google === 'undefined' || !google.script) return bad(new Error('App cần mở từ link Google Apps Script.'));
+    google.script.run.withSuccessHandler(ok).withFailureHandler(e => bad(e instanceof Error ? e : new Error(e && e.message || String(e))))[fn](...args);
+  });
 }
 function dropToken(){ LS.del('rh_token'); LS.del('rh_dc'); LS.del('rh_bc'); }
 const isAuthErr = e => /AUTH/.test(e && e.message || '');
@@ -4299,19 +4298,19 @@ async function runSend(report){
   f.sending = true; runRefresh();
   try {
     const min = runNum(f.min);
-    setTimeout(() => loadQuota(true), 4000); const r = await call('submitRun', TOKEN, {date: f.date, type: f.type, km: raw, min: min > 0 ? min : '', img: f.img.split(',')[1], shot: f.type === 'tread' ? f.shot || 0 : 0, live: f.type === 'tread' && f.live ? 1 : 0, pick: f.pick || 0});
+    const r = await call('submitRun', TOKEN, {date: f.date, type: f.type, km: raw, min: min > 0 ? min : '', img: f.img.split(',')[1], shot: f.type === 'tread' ? f.shot || 0 : 0, live: f.type === 'tread' && f.live ? 1 : 0, pick: f.pick || 0});
     if (r.rejected){ f.err = r.msg; toast('⛔ ' + r.msg); }
     else { f.msg = r.msg; toast(r.flagged ? '⚠️ Đã nhận, quản lý sẽ xem lại' : '✅ Đã nộp ' + runKmTxt(r.item.km) + ' km');
       if (r.dayOk !== false && toolTick('04', f.date, RE_EXER)) setTimeout(() => toast('💪 Đã tự tích thói quen Thể dục 30 phút'), 1600); }
     f.img = ''; f.ocr = null; f.km = ''; f.min = '';
-    RUNS = null; RUNB = {};
+    RUNS = null; RUNB = {}; loadQuota(true);
   } catch(e){ f.err = e.message; toast('⚠️ ' + e.message); }
   finally { f.sending = false; runRefresh(); }
 }
 async function runCancel(rid){
   if (RUNDEL !== rid){ RUNDEL = rid; runRefresh(); clearTimeout(RUNDELT); RUNDELT = setTimeout(() => { if (RUNDEL === rid){ RUNDEL = ''; runRefresh(); } }, 3000); return; }
   RUNDEL = '';
-  try { const r = await call('cancelRun', TOKEN, rid); RUNF.msg = r.msg; RUNF.err = ''; toast('Đã hủy bài'); RUNS = null; RUNB = {}; }
+  try { const r = await call('cancelRun', TOKEN, rid); RUNF.msg = r.msg; RUNF.err = ''; toast('Đã hủy bài'); RUNS = null; RUNB = {}; loadQuota(true); }
   catch(e){ RUNF.err = e.message; toast('⚠️ ' + e.message); }
   runRefresh();
 }
@@ -4441,7 +4440,7 @@ function runAdminSection(){
     return `<tr><td><b>${esc(m.name)}</b><br><small>${esc(m.id)} · ${esc(m.dept)}</small></td>
       <td><select data-runmap="${esc(m.id)}"><option value="">— chưa ghép —</option>${names.map(n => `<option ${n === sel ? 'selected' : ''} value="${esc(n)}">${esc(n)}</option>`).join('')}</select>${!m.sheetName && m.sugg ? ' <small>✨ gợi ý</small>' : ''}</td>
       <td><select data-rungender="${esc(m.id)}"><option value="">—</option>${['Nam','Nữ'].map(g => `<option ${g === m.gender ? 'selected' : ''}>${g}</option>`).join('')}</select></td></tr>`; }).join('');
-  const fl = (A.flagged || []).map(x => `<div class="run-item flag"><div><b>${esc(x.name)} · ${dm(x.date)} · ${runKmTxt(x.km)} km${x.pace ? ' · pace ' + esc(x.pace) : ''}</b><small>${esc(x.st)} · ${esc(x.why)}</small></div>${x.link ? `<a class="lnk" href="${esc(x.link)}" target="_blank" rel="noopener">Ảnh</a>` : ''}</div>`).join('');
+  const fl = (A.flagged || []).map(x => `<div class="run-item flag"><div><b>${esc(x.name)} · ${dm(x.date)} · ${runKmTxt(x.km)} km${x.pace ? ' · pace ' + esc(x.pace) : ''}</b><small>${esc(x.st)} · ${esc(x.why)}</small></div><div class="run-apb">${x.link ? `<a class="lnk" href="${esc(x.link)}" target="_blank" rel="noopener">Ảnh</a>` : ''}${x.rid ? `<button class="btn" data-flagrev="${esc(x.rid)}" data-ok="1">✅ Duyệt</button><button class="btn ghost" data-flagrev="${esc(x.rid)}" data-ok="0">↩️ Thu hồi</button>` : ''}</div></div>`).join('');
   return h + `<div class="card run-admin">
     <div class="fld"><label>Thư mục Drive lưu ảnh: ${A.folderErr ? '⚠️ ' + esc(A.folderErr) : '✅ ' + esc(A.folderName)} · <a class="lnk" href="${esc(A.folderUrl)}" target="_blank" rel="noopener">mở</a></label><input id="runfolder" placeholder="Dán link thư mục Drive để đổi"></div>
     <div class="fld"><label>Sheet chạy bộ: ${A.sheetErr ? '⚠️ ' + esc(A.sheetErr) : '✅ tab mới nhất "' + esc(A.tab) + '" (' + A.names.length + ' tên)'} · <a class="lnk" href="${esc(A.sheetUrl)}" target="_blank" rel="noopener">mở</a></label><input id="runsheet" placeholder="Dán link Google Sheet để đổi (không bắt buộc)"></div>
@@ -4471,6 +4470,9 @@ document.addEventListener('click', async e => {
   if (ds.runapsend){ const why = (document.querySelector('[data-apreason]') || {}).value || '';
     try { const r = await call('appealRun', TOKEN, ds.runapsend, why); RUNAP = ''; RUNS = null; toast('⚖️ ' + r.msg); } catch(err){ toast('⚠️ ' + err.message); }
     runRefresh(); return; }
+  if (ds.flagrev){ if (ds.ok !== '1' && !confirm('Thu hồi (hủy) bài này? Km sẽ bị trừ khỏi Sheet.')) return; t.disabled = true;
+    try { const r = await call('reviewFlag', TOKEN, ds.flagrev, ds.ok === '1'); toast(r.msg); RUNA = null; RUNB = {}; } catch(err){ toast('⚠️ ' + err.message); }
+    render(); return; }
   if (ds.runrev){ t.disabled = true;
     try { const ki = document.querySelector(`[data-apkm="${CSS.escape(ds.runrev)}"]`);
       const r = await call('reviewAppeal', TOKEN, ds.runrev, ds.ok === '1', '', ki ? runNum(ki.value) : ''); toast(r.msg); RUNA = null; RUNB = {}; } catch(err){ toast('⚠️ ' + err.message); }
@@ -4789,8 +4791,8 @@ function mindStop(){
     const blob = new Blob(r.chunks, {type: r.mime});
     const b64 = await new Promise(res => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(',')[1] || ''); fr.readAsDataURL(blob); });
     try {
-      setTimeout(() => loadQuota(true), 6000); const x = await call('mindSubmit', TOKEN, {kind: r.kind, b64, mime: r.mime, secs: r.secs, book: MBOOK, mode: MMODE});
-      MIND = x.data; mindAutoTick(); toast(x.st === 'Đạt' ? '✅ Đạt! ' + (r.kind === 'camket' ? 'Đã đọc đủ 7 điều cam kết' : 'Đã ghi nhận 10 phút đọc sách') : x.st === 'Chưa đạt' ? '❌ Chưa đạt: ' + x.note : '⏳ Đã nhận bản ghi, đang chờ chấm');
+      const x = await call('mindSubmit', TOKEN, {kind: r.kind, b64, mime: r.mime, secs: r.secs, book: MBOOK, mode: MMODE});
+      MIND = x.data; mindAutoTick(); loadQuota(true); toast(x.st === 'Đạt' ? '✅ Đạt! ' + (r.kind === 'camket' ? 'Đã đọc đủ 7 điều cam kết' : 'Đã ghi nhận 10 phút đọc sách') : x.st === 'Chưa đạt' ? '❌ Chưa đạt: ' + x.note : '⏳ Đã nhận bản ghi, đang chờ chấm');
     } catch(e){ toast('⚠️ ' + e.message); }
     MREC = null; render();
   };
@@ -4810,7 +4812,7 @@ document.addEventListener('change', async e => {
   const b64 = await new Promise(res => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(',')[1] || ''); fr.readAsDataURL(f); });
   try {
     const x = await call('mindSubmit', TOKEN, {kind, b64, mime: f.type || 'audio/mp4', secs: isFinite(dur) ? Math.round(dur) : 0, upload: 1, fmod: f.lastModified || 0, book: MBOOK, mode: MMODE});
-    MIND = x.data; toast(x.st === 'Đạt' ? '✅ Đạt!' : x.st === 'Chưa đạt' ? '❌ Chưa đạt: ' + x.note : '⏳ Đã nhận bản ghi, đang chờ chấm');
+    MIND = x.data; loadQuota(true); toast(x.st === 'Đạt' ? '✅ Đạt!' : x.st === 'Chưa đạt' ? '❌ Chưa đạt: ' + x.note : '⏳ Đã nhận bản ghi, đang chờ chấm');
   } catch(err){ toast('⚠️ ' + err.message); }
   MREC = null; render();
 });
@@ -4892,13 +4894,13 @@ function helpView(){
 document.addEventListener('click', e => { const b = e.target.closest('[data-helpk]'); if (!b) return; const k = +b.dataset.helpk; HELPOPEN = HELPOPEN === k ? -1 : k; render(); const el = document.querySelector(`[data-helpk="${k}"]`); if (el && HELPOPEN === k) el.scrollIntoView({block:'nearest'}); });
 
 /* =================== CHỈ TIÊU TUẦN (đếm từ Sheet tính phạt) =================== */
-let QUOTA = null, QBUSY = false, QAT = 0;
+let QUOTA = null, QBUSY = false, QAT = 0, QAGAIN = false;
 async function loadQuota(force){
-  if (QBUSY || PRACTICE || !TOKEN) return; if (!force && QUOTA && Date.now() - QAT < 600000) return;
+  if (PRACTICE || !TOKEN) return; if (QBUSY){ if (force) QAGAIN = true; return; } if (!force && QUOTA && Date.now() - QAT < 600000) return;
   if (!QUOTA){ try { const c = JSON.parse(LS.get('rh_q_' + ME.id) || 'null'); if (c && c.ym) QUOTA = c; } catch(e){} }
   QBUSY = true;
   try { QUOTA = await call('quotaMine', TOKEN); QAT = Date.now(); LS.set('rh_q_' + ME.id, JSON.stringify(QUOTA)); if (tab === 'today') render(); }
-  catch(e){ QAT = Date.now(); } finally { QBUSY = false; }
+  catch(e){ QAT = Date.now(); } finally { QBUSY = false; if (QAGAIN){ QAGAIN = false; loadQuota(true); } }
 }
 function quotaHtml(){
   if (PRACTICE || T < 0) return '';
