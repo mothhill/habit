@@ -2219,7 +2219,7 @@ const WDL = ['Chủ nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Th�
 /* ================== Trạng thái ================== */
 let D = null, T = 0, tab = 'today', vi = 0, DAILY = [], WEEKLY = [], pending = 0, byCode = {};
 let TOKEN = '', ME = null, SETTINGS = {unlockAll:false}, BOARD = null, ADMIN = null, NEWPIN = null;
-let rankMode = 'week', rankGroup = 'person';
+let rankMode = 'total', rankGroup = 'person';
 const OPEN = new Set(), LE = new Set(), LD = {}, dirty = {}, timers = {};
 const LS = { get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch(e){} }, del(k){ try { localStorage.removeItem(k); } catch(e){} } };
 let PREVIEW = false, SHOWFUT = false, PRACTICE = false, PCODES = new Set();
@@ -3069,18 +3069,21 @@ async function loadBoard(){
 function rankView(){
   if (rankMode === 'run' && typeof runRankView === 'function') return runRankView();
   if (rankMode === 'gym') return gymRankView();
+  if (rankMode === 'track') return trackView();
   if (!BOARD) return `<div class="loading" style="min-height:40vh"><div class="spin"></div>Đang tải bảng xếp hạng…</div>`;
   if (BOARD.error) return `<div class="empty">${esc(BOARD.error)}</div>`;
   const wk = blkStart(BOARD.today);
-  const metric = r => rankMode === 'week' ? (r.week === wk ? r.xpWeek : 0) : rankMode === 'total' ? r.xp : r.cur;
+  const metric = r => rankMode === 'week' ? (r.week && blkStart(String(r.week).slice(0,10)) === wk ? r.xpWeek : 0) : rankMode === 'total' ? r.xp : r.cur;
   const unit = rankMode === 'streak' ? 'ngày' : 'XP';
+  const wxp = r => r.week && blkStart(String(r.week).slice(0,10)) === wk ? r.xpWeek : 0;
+  const crownId = (BOARD.rows.slice().sort((a,b) => wxp(b) - wxp(a) || b.xp - a.xp)[0] || {}).id;
   const seg = (v, cur, label, key) => `<button class="${cur===v?'on':''}" data-${key}="${v}">${label}</button>`;
   let list = '';
   if (rankGroup === 'person'){
     const rows = BOARD.rows.slice().sort((a,b) => metric(b) - metric(a) || b.xp - a.xp);
     list = rows.map((r,k) => `<div class="rk click ${r.id===BOARD.me?'me':''} ${k<3 && metric(r) > 0 ? 't'+(k+1) : ''}" data-prof="${esc(r.id)}"><div class="pos">${k<3 ? ['🥇','🥈','🥉'][k] : k+1}</div>
-      <div class="ava evava">${(() => { const ln = r.lk && LINES[r.lk[0]] ? r.lk[0] : 'tree', kk = Math.max(0, Math.min(LEVELS.length-1, r.level-1)); return evfx(ln, kk, evo(ln, 'base', kk)); })()}${k === 0 && rankMode === 'week' && metric(r) > 0 ? '<span class="wcrown">👑</span>' : ''}</div>
-      <div class="rn"><b>${esc(r.name)}${r.id===BOARD.me?' (bạn)':''}</b><small>${esc(r.dept)} · Cấp ${r.level} · 🔥 ${r.cur} ngày</small></div><div class="rv">${metric(r)}<small>${unit}</small></div><div class="chev">›</div></div>`).join('');
+      <div class="ava evava">${(() => { const ln = r.lk && LINES[r.lk[0]] ? r.lk[0] : 'tree', kk = Math.max(0, Math.min(LEVELS.length-1, r.level-1)); return evfx(ln, kk, evo(ln, 'base', kk)); })()}${r.id === crownId && wxp(r) > 0 ? '<span class="wcrown">👑</span>' : ''}</div>
+      <div class="rn"><b>${esc(r.name)}${r.id===BOARD.me?' (bạn)':''}</b><small>${esc(r.dept)} · Cấp ${r.level} · 🔥 ${r.cur} ngày${rankMode === 'total' ? ' · +' + wxp(r) + ' XP tuần' : ''}</small></div><div class="rv">${metric(r)}<small>${unit}</small></div><div class="chev">›</div></div>`).join('');
   } else {
     const g = {}; BOARD.rows.forEach(r => { (g[r.dept] = g[r.dept] || []).push(r); });
     const rows = Object.keys(g).map(d => ({d, n: g[d].length, v: Math.round(g[d].reduce((a,r) => a + metric(r), 0) / g[d].length), mine: g[d].some(r => r.id === BOARD.me)}))
@@ -3088,10 +3091,9 @@ function rankView(){
     list = rows.map((r,k) => `<div class="rk ${r.mine?'me':''}"><div class="pos">${k<3 ? ['🥇','🥈','🥉'][k] : k+1}</div>
       <div class="rn"><b>${esc(r.d)}</b><small>${r.n} người · điểm trung bình mỗi người</small></div><div class="rv">${r.v}<small>${unit}</small></div></div>`).join('');
   }
-  return `<div class="seg">${seg('week',rankMode,'Tuần này','rmode')}${seg('total',rankMode,'Tổng XP','rmode')}${seg('streak',rankMode,'Chuỗi ngày','rmode')}${seg('run',rankMode,'🏃 Chạy','rmode')}${seg('gym',rankMode,'🏋️ Gym','rmode')}</div>
-    <div class="seg small">${seg('person',rankGroup,'👤 Cá nhân','rgroup')}${seg('dept',rankGroup,'🏢 Phòng ban','rgroup')}</div>
+  return `<div class="seg">${seg('total',rankMode,'XP','rmode')}${seg('streak',rankMode,'Chuỗi ngày','rmode')}<button class="${rankMode==='run'||rankMode==='gym'?'on':''}" data-rmode="${rankMode==='gym'?'gym':'run'}">🏅 Thể thao</button>${seg('track',rankMode,'📋 Theo dõi','rmode')}</div>
     <div class="card" style="padding:8px 10px">${list || '<div class="muted" style="padding:12px">Chưa có ai trên bảng xếp hạng. Tick thói quen đầu tiên để lên bảng!</div>'}</div>
-    <div class="rule" style="margin-top:10px">${rankMode === 'week' ? `Tuần này tính từ ${dm(wk)}. ` : ''}Chạm tên để xem tiến độ.</div>`;
+    <div class="rule" style="margin-top:10px">${rankMode === 'total' ? `XP tuần tính từ ${dm(wk)}, 👑 là người nhiều XP tuần nhất. ` : ''}Chạm tên để xem tiến độ.</div>`;
 }
 
 /* ---- Tiến độ người khác ---- */
@@ -4339,8 +4341,7 @@ function runRankView(){
   const B = RUNB[RUNM]; if ((!B || Date.now() - B.at > 60000) && !RUNBBUSY[RUNM]) runLoadBoard(RUNM);
   const seg = (v, c, label, key) => `<button class="${c===v?'on':''}" data-${key}="${v}">${label}</button>`;
   const [y, m] = RUNM.split('-').map(Number);
-  let h = `<div class="seg">${seg('week',rankMode,'Tuần này','rmode')}${seg('total',rankMode,'Tổng XP','rmode')}${seg('streak',rankMode,'Chuỗi ngày','rmode')}${seg('run',rankMode,'🏃 Chạy','rmode')}${seg('gym',rankMode,'🏋️ Gym','rmode')}</div>
-    <div class="seg small">${seg('person',rankGroup,'👤 Cá nhân','rgroup')}${seg('dept',rankGroup,'🏢 Phòng ban','rgroup')}</div>
+  let h = `<div class="seg">${seg('total',rankMode,'XP','rmode')}${seg('streak',rankMode,'Chuỗi ngày','rmode')}<button class="${rankMode==='run'||rankMode==='gym'?'on':''}" data-rmode="${rankMode==='gym'?'gym':'run'}">🏅 Thể thao</button>${seg('track',rankMode,'📋 Theo dõi','rmode')}</div><div class="seg small">${seg('run',rankMode,'🏃 Chạy','rmode')}${seg('gym',rankMode,'🏋️ Gym','rmode')}</div>
     <div class="run-month"><button class="btn ghost" data-runmon="-1" aria-label="Tháng trước" title="Tháng trước">‹</button><b>Tháng ${m}/${y}</b><button class="btn ghost" data-runmon="1" aria-label="Tháng sau" title="Tháng sau" ${RUNM >= cur ? 'disabled' : ''}>›</button></div>`;
   if (!B) return h + `<div class="loading" style="min-height:30vh"><div class="spin"></div>Đang tải bảng chạy bộ…</div>`;
   if (B.error) return h + `<div class="empty">${esc(B.error)}</div>`;
@@ -4694,7 +4695,7 @@ function gymRankView(){
   const B = GYMB[GYMM]; if ((!B || Date.now() - B.at > 60000) && !GYMBBUSY[GYMM]) gymLoadBoard(GYMM);
   const seg = (v, c, label, key) => `<button class="${c===v?'on':''}" data-${key}="${v}">${label}</button>`;
   const [y, m] = GYMM.split('-').map(Number);
-  let h = `<div class="seg">${seg('week',rankMode,'Tuần này','rmode')}${seg('total',rankMode,'Tổng XP','rmode')}${seg('streak',rankMode,'Chuỗi ngày','rmode')}${seg('run',rankMode,'🏃 Chạy','rmode')}${seg('gym',rankMode,'🏋️ Gym','rmode')}</div>
+  let h = `<div class="seg">${seg('total',rankMode,'XP','rmode')}${seg('streak',rankMode,'Chuỗi ngày','rmode')}<button class="${rankMode==='run'||rankMode==='gym'?'on':''}" data-rmode="${rankMode==='gym'?'gym':'run'}">🏅 Thể thao</button>${seg('track',rankMode,'📋 Theo dõi','rmode')}</div><div class="seg small">${seg('run',rankMode,'🏃 Chạy','rmode')}${seg('gym',rankMode,'🏋️ Gym','rmode')}</div>
     <div class="seg small">${seg('top',GYMRK,'💪 Mạnh nhất','gymrk')}${seg('prog',GYMRK,'📈 Tiến bộ','gymrk')}${seg('active',GYMRK,'🔥 Chăm nhất','gymrk')}</div>
     <div class="run-month"><button class="btn ghost" data-gymmon="-1" aria-label="Tháng trước">‹</button><b>Tháng ${m}/${y}</b><button class="btn ghost" data-gymmon="1" aria-label="Tháng sau" ${GYMM >= cur ? 'disabled' : ''}>›</button></div>
     <div class="seg small run-gen">${['','Nam','Nữ'].map(g => `<button class="${RUNGEN === g ? 'on' : ''}" data-rungen="${g}">${g || 'Tất cả'}</button>`).join('')}</div>`;
@@ -4931,8 +4932,40 @@ function quotaHtml(){
   return `<div class="qbox"><div class="qh"><b>📋 Chỉ tiêu tuần${w ? ` ${w.from}–${w.to}/${mm}` : ''}</b>${w ? `<span>còn ${q.left} ngày</span>` : ''}</div>${body}${warn}
     ${miss.length ? `<div class="qmiss">Tháng ${mm} đã thiếu: ${miss.join(' · ')}</div>` : ''}</div>`;
 }
+let TRACK = null, TBUSY = false, TAT = 0;
+async function loadTrack(force){
+  if (!TOKEN || TBUSY) return; if (!force && TRACK && Date.now() - TAT < 300000) return;
+  TBUSY = true;
+  try { TRACK = await call('quotaBoard', TOKEN); TAT = Date.now(); }
+  catch(e){ TRACK = TRACK || {error: e.message}; TAT = Date.now(); }
+  finally { TBUSY = false; if (tab === 'rank' && rankMode === 'track') render(); }
+}
+function trackView(){
+  if (!TRACK || Date.now() - TAT > 300000) setTimeout(() => loadTrack(), 50);
+  const seg = (v, c, label, key) => `<button class="${c===v?'on':''}" data-${key}="${v}">${label}</button>`;
+  const top = `<div class="seg">${seg('total',rankMode,'XP','rmode')}${seg('streak',rankMode,'Chuỗi ngày','rmode')}${seg('run',rankMode,'🏅 Thể thao','rmode')}${seg('track',rankMode,'📋 Theo dõi','rmode')}</div>`;
+  const q = TRACK;
+  if (!q) return top + `<div class="loading" style="min-height:30vh"><div class="spin"></div>Đang tải bảng theo dõi…</div>`;
+  if (q.error) return top + `<div class="empty">${esc(q.error)}</div>`;
+  const K = [['run','🏃'],['read','📚'],['ck','🤝']];
+  const chip = (v, need, w) => v == null ? `<i class="tkc na">–</i>` : `<i class="tkc ${v >= need ? 'ok' : w.past ? 'bad' : w.cur ? 'cur' : 'fut'}">${v}/${need}</i>`;
+  const rows = q.rows.slice().sort((a,b) => b.total - a.total || String(a.name).localeCompare(String(b.name), 'vi'));
+  const list = rows.map((r,k) => `<div class="tkp ${r.id === q.me ? 'me' : ''}"><div class="tkh"><div class="tkpos">${k < 3 && r.total > 0 ? ['🥇','🥈','🥉'][k] : k + 1}</div><div class="rn"><b>${esc(r.name)}${r.id === q.me ? ' (bạn)' : ''}</b><small>${esc(r.dept)}</small></div><div class="rv">${r.total}<small>lượt</small></div></div>`
+    + K.map(([c,ic]) => `<div class="tkr"><span>${ic}</span>${q.weeks.map(w => chip(r[c][w.b-1], q.need[c], w)).join('')}</div>`).join('') + `</div>`).join('');
+  const head = `<div class="tkr th"><span></span>${q.weeks.map(w => `<i>T${w.b} · ${w.from}–${w.to}</i>`).join('')}</div>`;
+  return top + `<div class="card" style="padding:8px 10px"><div class="muted" style="padding:2px 4px 6px">Tháng ${+q.ym.slice(5)}: 🏃 chạy bộ ${q.need.run}/tuần · 📚 đọc sách ${q.need.read}/tuần · 🤝 cam kết ${q.need.ck}/tuần. Xếp theo tổng số lượt, làm vượt chỉ tiêu vẫn tính (6/5, 7/5…).</div>${head}${list || '<div class="muted" style="padding:12px">Chưa có dữ liệu.</div>'}</div>
+    <div class="rule" style="margin-top:10px">Xanh: đủ · Vàng: tuần đang chạy · Đỏ: tuần đã qua còn thiếu · –: miễn hoặc chưa có dữ liệu.</div>`;
+}
 </script>
 <style>
+/* ===== Theo dõi chỉ tiêu cả trung tâm ===== */
+.tkp{padding:8px 4px;border-bottom:1px solid rgba(255,255,255,.06)}.tkp.me{background:rgba(190,242,100,.08);border-radius:10px}
+.tkh{display:flex;align-items:center;gap:8px;margin-bottom:4px}.tkh .rn{flex:1;min-width:0}.tkh .rn small{display:block;opacity:.7;font-size:11px}
+.tkh .rv{text-align:right;font-weight:800}.tkh .rv small{display:block;font-size:10px;font-weight:600;opacity:.7}.tkpos{width:28px;text-align:center;font-weight:800;color:var(--muted)}
+.tkr{display:grid;grid-template-columns:28px repeat(4,1fr);gap:4px;align-items:center;margin-top:3px;font-size:12px;text-align:center}
+.tkr.th{font-size:10px;color:var(--muted);font-weight:700;margin-bottom:2px}.tkr.th i{font-style:normal}
+.tkc{font-style:normal;border-radius:7px;padding:3px 0;background:var(--bg);color:var(--muted);font-weight:700}
+.tkc.ok{background:rgba(52,199,89,.22);color:#4ade80}.tkc.bad{background:rgba(239,68,68,.2);color:#f87171}.tkc.cur{background:rgba(251,191,36,.2);color:#fbbf24}.tkc.na{opacity:.5}
 /* ===== Chạy bộ: giao diện (nhóm Hình ảnh) ===== */
 /* =========================================================
    90 Days Rich Habits – CHẠY BỘ (nộp bài + BXH tháng)
@@ -5132,7 +5165,7 @@ function quotaHtml(){
 .run-gen{margin-top:-2px}
 .run-me{margin:10px 0}.run-me .rmh{display:flex;justify-content:space-between;align-items:center;font-size:14px}.run-me .rmh span{font-size:12.5px;color:var(--muted);font-weight:700}
 .run-me .rms{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:10px 0}.run-me .rms div{background:var(--bg);border-radius:10px;padding:8px 4px;text-align:center}.run-me .rms b{display:block;font-size:16px}.run-me .rms small{font-size:10.5px;color:var(--muted)}
-.rcal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;font-size:10px}.rcal>span{text-align:center;color:var(--muted);font-weight:700;padding-bottom:2px}
+.rcal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;font-size:10px;max-width:320px;margin:0 auto}.rcal>span{text-align:center;color:var(--muted);font-weight:700;padding-bottom:2px}
 .rcal i{font-style:normal;aspect-ratio:1;border-radius:7px;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;color:var(--muted)}.rcal i.e{background:transparent}
 .rcal i.on{background:color-mix(in srgb,#B8F061 calc(var(--a,1)*100%),transparent);color:#0D1612}.rcal i b{font-size:10.5px;font-weight:700}.rcal i small{font-size:9px;font-weight:800}.rcal i.td{box-shadow:inset 0 0 0 1.5px var(--primary)}
 .rrec{margin-top:10px;font-size:12.5px;line-height:1.5}
