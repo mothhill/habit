@@ -4881,7 +4881,9 @@ function runAdminSection(){
   return h + `<div class="card run-admin">
     <div class="fld"><label>Thư mục Drive lưu ảnh: ${A.folderErr ? '⚠️ ' + esc(A.folderErr) : '✅ ' + esc(A.folderName)} · <a class="lnk" href="${esc(A.folderUrl)}" target="_blank" rel="noopener">mở</a></label><input id="runfolder" placeholder="Dán link thư mục Drive để đổi"></div>
     <div class="fld"><label>Sheet chạy bộ: ${A.sheetErr ? '⚠️ ' + esc(A.sheetErr) : '✅ tab mới nhất "' + esc(A.tab) + '" (' + A.names.length + ' tên)'} · <a class="lnk" href="${esc(A.sheetUrl)}" target="_blank" rel="noopener">mở</a></label><input id="runsheet" placeholder="Dán link Google Sheet để đổi (không bắt buộc)"></div>
-    <div class="fld"><label>🤖 AI đọc ảnh (Gemini): ${aiLbl(A)}</label><input id="runaikey" autocomplete="off" placeholder="${A.ai ? 'Dán khóa mới để đổi, gõ - để tắt' : 'Dán khóa Gemini'}"></div>
+    <div class="fld"><label>🤖 Khóa Gemini 1 (chấm đọc sách + đọc ảnh chạy bộ): ${aiLbl(A)}</label><input id="runaikey" autocomplete="off" placeholder="${A.ai ? 'Dán khóa mới để đổi, gõ - để tắt' : 'Dán khóa Gemini'}"></div>
+    <div class="fld"><label>🤖 Khóa Gemini 2 ${A.dsKeys >= 1 ? '✅' : '(trống)'}</label><input id="runds1" autocomplete="off" placeholder="Dán khóa (tài khoản Google riêng), gõ - để xóa"></div>
+    <div class="fld"><label>🤖 Khóa Gemini 3 ${A.dsKeys >= 2 ? '✅' : '(trống)'}</label><input id="runds2" autocomplete="off" placeholder="Dán khóa (tài khoản Google riêng), gõ - để xóa"></div>
     <button class="btn" data-runsettings="1">💾 Lưu</button>
     <div class="rule">${A.ocr ? '✅ Đã bật đọc số km từ ảnh (Drive API).' : '⚠️ Chưa bật Drive API trong Apps Script (app chưa tự đọc ảnh).'}
       ${A.aiWait ? `<br>📷 ${A.aiWait} ảnh chờ đọc lại.` : ''}<br>${A.bookErr ? '⚠️ Sổ đọc sách: ' + esc(A.bookErr) : '📚 Bài Đạt tự ghi vào Sheet ĐỌC SÁCH VLSN.'}${A.bookMiss && A.bookMiss.length ? '<br>ℹ️ Không có tên trong sổ đọc sách nên không ghi: ' + A.bookMiss.map(esc).join(', ') + '.' : ''}${A.aiApplied ? `<br>🤖 Vừa ghi ${A.aiApplied} bài đã được đọc lại.` : ''}
@@ -4925,7 +4927,7 @@ document.addEventListener('click', async e => {
   if (ds.runcancel){ runCancel(ds.runcancel); return; }
   if (ds.runmon){ const [y, m] = RUNM.split('-').map(Number), d = new Date(y, m - 1 + Number(ds.runmon), 1), v = d.getFullYear() + '-' + pad(d.getMonth() + 1);
     if (v > D.today.slice(0, 7)) return; RUNM = v; render(); return; }
-  if (ds.runsettings){ try { const k = $('#runaikey'); if (k && k.value.trim()) toast('🤖 Đang kiểm tra khóa…'); const r = await call('saveRunSettings', TOKEN, $('#runfolder').value, $('#runsheet').value, k ? k.value : ''); if (k) k.value = ''; toast('💾 ' + r.msg); RUNA = null; render(); } catch(err){ toast('⚠️ ' + err.message); } return; }
+  if (ds.runsettings){ try { const k = $('#runaikey'), d1 = $('#runds1'), d2 = $('#runds2'); if ((k && k.value.trim()) || (d1 && d1.value.trim()) || (d2 && d2.value.trim())) toast('🤖 Đang kiểm tra khóa…'); const r = await call('saveRunSettings', TOKEN, $('#runfolder').value, $('#runsheet').value, k ? k.value : '', d1 ? d1.value : '', d2 ? d2.value : ''); if (k) k.value = ''; if (d1) d1.value = ''; if (d2) d2.value = ''; toast('💾 ' + r.msg); RUNA = null; render(); } catch(err){ toast('⚠️ ' + err.message); } return; }
   if (ds.runsavemap){ const list = [...document.querySelectorAll('[data-runmap]')].map(s => ({id: s.dataset.runmap, sheetName: s.value, gender: (document.querySelector(`[data-rungender="${CSS.escape(s.dataset.runmap)}"]`) || {}).value || ''}));
     try { const r = await call('saveRunMap', TOKEN, list); toast('💾 Đã lưu ghép tên (' + r.n + ' người)'); RUNA = null; RUNB = {}; render(); } catch(err){ toast('⚠️ ' + err.message); } return; }
   if (ds.runresync){ try { const r = await call('runResync', TOKEN); toast(r.msg); RUNA = null; RUNB = {}; render(); } catch(err){ toast('⚠️ ' + err.message); } return; }
@@ -5230,6 +5232,31 @@ async function mindStart(kind){
 }
 function mindEnd(){ if (!MREC) return; clearInterval(MREC.timer); try { MREC.stream.getTracks().forEach(t => t.stop()); } catch(e){} try { MREC.wake && MREC.wake.release(); } catch(e){} }
 function mindCancel(){ if (!MREC) return; try { MREC.mr.onstop = null; MREC.mr.stop(); } catch(e){} mindEnd(); MREC = null; render(); }
+/* Đoạn mẫu bài đọc sách: điện thoại giải mã bản ghi, đo số phút có giọng, cắt 90 giây (30 giây đầu + 2 đoạn ngẫu nhiên) gửi AI thay vì cả 10 phút. Lỗi/máy yếu → trả null, gửi cả tệp như cũ. */
+async function mindSample(blob){
+  let ac = null;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC || blob.size > 19e6) return null;
+    ac = new AC({sampleRate: 16000});
+    const buf = await Promise.race([ac.decodeAudioData(await blob.arrayBuffer()), new Promise((_, no) => setTimeout(() => no(new Error('timeout')), 30000))]);
+    const sr = buf.sampleRate, n = buf.length, ch = buf.numberOfChannels, d0 = buf.getChannelData(0), d1 = ch > 1 ? buf.getChannelData(1) : null;
+    const mono = i => d1 ? (d0[i] + d1[i]) / 2 : d0[i], W = sr, nw = Math.floor(n / W), rms = [];
+    let voiced = 0;
+    for (let w = 0; w < nw; w++){ let s2 = 0; for (let i = w * W; i < (w + 1) * W; i += 8){ const v = mono(i); s2 += v * v; } const r = Math.sqrt(s2 / (W / 8)); rms.push(r); if (r > 0.01) voiced++; }
+    if (nw < 100) return null;
+    const seg = 30, starts = [0], pick = () => { for (let t = 0; t < 12; t++){ const a = 60 + Math.floor(Math.random() * Math.max(1, nw - 60 - seg)); if (rms.slice(a, a + seg).filter(x => x > 0.01).length >= 15 && starts.every(b => Math.abs(b - a) >= seg)) return a; } return null; };
+    for (let k = 0; k < 2; k++){ const a = pick(); if (a != null) starts.push(a); }
+    const out = new Int16Array(starts.length * seg * sr);
+    starts.forEach((a, k) => { for (let i = 0; i < seg * sr; i++){ const v = Math.max(-1, Math.min(1, mono(a * sr + i) || 0)); out[k * seg * sr + i] = v < 0 ? v * 32768 : v * 32767; } });
+    const wav = new ArrayBuffer(44 + out.length * 2), dv = new DataView(wav), ws = (o, t) => { for (let i = 0; i < t.length; i++) dv.setUint8(o + i, t.charCodeAt(i)); };
+    ws(0, 'RIFF'); dv.setUint32(4, 36 + out.length * 2, true); ws(8, 'WAVE'); ws(12, 'fmt '); dv.setUint32(16, 16, true); dv.setUint16(20, 1, true); dv.setUint16(22, 1, true);
+    dv.setUint32(24, sr, true); dv.setUint32(28, sr * 2, true); dv.setUint16(32, 2, true); dv.setUint16(34, 16, true); ws(36, 'data'); dv.setUint32(40, out.length * 2, true);
+    new Int16Array(wav, 44).set(out);
+    const b64 = await new Promise(res => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(',')[1] || ''); fr.readAsDataURL(new Blob([wav], {type: 'audio/wav'})); });
+    return b64.length > 2000 ? {b64, voiced: Math.round(voiced / 60 * 10) / 10} : null;
+  } catch(e){ return null; }
+  finally { try { ac && ac.close(); } catch(e){} }
+}
 function mindStop(){
   const r = MREC; if (!r || r.sending) return;
   r.secs = Math.floor((Date.now() - r.t0)/1000); r.sending = true;
@@ -5238,7 +5265,8 @@ function mindStop(){
     const blob = new Blob(r.chunks, {type: r.mime});
     const b64 = await new Promise(res => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(',')[1] || ''); fr.readAsDataURL(blob); });
     try {
-      const x = await call('mindSubmit', TOKEN, {kind: r.kind, b64, mime: r.mime, secs: r.secs, book: MBOOK, mode: MMODE});
+      const sm = r.kind === 'docsach' ? await mindSample(blob) : null;
+      const x = await call('mindSubmit', TOKEN, {kind: r.kind, b64, mime: r.mime, secs: r.secs, book: MBOOK, mode: MMODE, sample: sm ? sm.b64 : '', voiced: sm ? sm.voiced : 0});
       MIND = x.data; mindAutoTick(); loadQuota(true); toast(x.st === 'Đạt' ? '✅ Đạt! ' + (r.kind === 'camket' ? 'Đã đọc đủ 7 điều cam kết' : 'Đã ghi nhận 10 phút đọc sách') : x.st === 'Chưa đạt' ? '❌ Chưa đạt: ' + x.note : '⏳ Đã nhận bản ghi, đang chờ chấm');
     } catch(e){ toast('⚠️ ' + e.message); }
     MREC = null; render();
@@ -5258,7 +5286,8 @@ document.addEventListener('change', async e => {
   MREC = {kind, sending: true}; render();
   const b64 = await new Promise(res => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(',')[1] || ''); fr.readAsDataURL(f); });
   try {
-    const x = await call('mindSubmit', TOKEN, {kind, b64, mime: f.type || 'audio/mp4', secs: isFinite(dur) ? Math.round(dur) : 0, upload: 1, fmod: f.lastModified || 0, book: MBOOK, mode: MMODE});
+    const sm = kind === 'docsach' ? await mindSample(f) : null;
+    const x = await call('mindSubmit', TOKEN, {kind, b64, mime: f.type || 'audio/mp4', secs: isFinite(dur) ? Math.round(dur) : 0, upload: 1, fmod: f.lastModified || 0, book: MBOOK, mode: MMODE, sample: sm ? sm.b64 : '', voiced: sm ? sm.voiced : 0});
     MIND = x.data; loadQuota(true); toast(x.st === 'Đạt' ? '✅ Đạt!' : x.st === 'Chưa đạt' ? '❌ Chưa đạt: ' + x.note : '⏳ Đã nhận bản ghi, đang chờ chấm');
   } catch(err){ toast('⚠️ ' + err.message); }
   MREC = null; render();
