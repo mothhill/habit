@@ -2,6 +2,7 @@
 <html lang="vi">
 <head>
 <base target="_top">
+<title>90 Days Rich Habits</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2240,11 +2241,17 @@ const blkEnd = s => { const b = blkStart(s), n = +b.slice(8); if (n < 22) return
 const restDay = s => +s.slice(8) >= 29;
 
 /* ================== Gọi máy chủ ================== */
+const API_URL = 'https://script.google.com/macros/s/AKfycbxbxFDzYyGOJgo0GUbq0AKDb9k_cEjY5GtwLjRwLFX_sC3UxonTs9X_ooBrG5R1FMLZ6A/exec';
+/* Dùng chung: trong Apps Script chạy google.script.run, trên GitHub Pages gọi fetch tới API_URL. */
 function call(fn, ...args){
-  return new Promise((ok, bad) => {
-    if (typeof google === 'undefined' || !google.script) return bad(new Error('App cần mở từ link Google Apps Script.'));
-    google.script.run.withSuccessHandler(ok).withFailureHandler(e => bad(e instanceof Error ? e : new Error(e && e.message || String(e))))[fn](...args);
-  });
+  if (typeof google !== 'undefined' && google.script && google.script.run) {
+    return new Promise((ok, bad) => {
+      google.script.run.withSuccessHandler(ok).withFailureHandler(e => bad(e instanceof Error ? e : new Error(e && e.message || String(e))))[fn](...args);
+    });
+  }
+  return fetch(API_URL, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({fn: fn, args: args})})
+    .then(r => r.json())
+    .then(o => { if (!o || !o.ok) throw new Error((o && o.error) || 'Lỗi máy chủ'); return o.v; });
 }
 function dropToken(){ LS.del('rh_token'); LS.del('rh_dc'); LS.del('rh_bc'); }
 const isAuthErr = e => /AUTH/.test(e && e.message || '');
