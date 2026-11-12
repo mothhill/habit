@@ -3,6 +3,11 @@
 <head>
 <base target="_top">
 <title>90 Days Rich Habits</title>
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0B2F20">
+<meta name="apple-mobile-web-app-title" content="Siêu Nhẩm">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -530,6 +535,8 @@ html:not([data-theme=light]) .sbadd input{background:#0F1914;border-color:#2F403
 @media (prefers-reduced-motion:reduce){.fxc{display:none}}
 
 .badges{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.badge.hid{grid-column:1/-1;border:1px dashed var(--line,#3d5a49);background:transparent}
+.badge.hid .bi{font-size:30px}
 @media(min-width:620px){.badges{grid-template-columns:repeat(3,1fr)}}
 .badge{background:var(--card);border-radius:16px;padding:14px;box-shadow:var(--shadow);text-align:center}
 .badge .bi{font-size:34px;line-height:1.2}
@@ -2198,22 +2205,108 @@ const SPEC = {
 const PIN = ['02','29','25'];
 const PIN_TONE = {'02':['--primary-soft','--primary'],'13':['--mint-soft','--mint'],'29':['--lav-soft','--lav'],'25':['--peach-soft','--peach']};
 const BADGES = [
- {ic:'🌱',n:'Khởi đầu',d:'Tick thói quen đầu tiên',k:'ticks',g:1},
- {ic:'🔥',n:'Chuỗi 3 ngày',d:'Giữ lửa 3 ngày liền',k:'best',g:3},
- {ic:'⚡',n:'Một tuần bền bỉ',d:'Giữ lửa 7 ngày liền',k:'best',g:7},
- {ic:'🏅',n:'21 ngày thành nếp',d:'Giữ lửa 21 ngày liền',k:'best',g:21},
- {ic:'👑',n:'Chuỗi 50 ngày',d:'Giữ lửa 50 ngày liền',k:'best',g:50},
- {ic:'🌟',n:'Ngày hoàn hảo',d:'Hoàn thành 100% một ngày',k:'perfect',g:1},
- {ic:'✨',n:'10 ngày hoàn hảo',d:'10 ngày đạt 100%',k:'perfect',g:10},
- {ic:'💎',n:'Tuần hoàn hảo',d:'Cả 7 ngày trong một tuần đều 100%',k:'pweeks',g:1},
- {ic:'🎯',n:'100 lượt tick',d:'Tổng cộng 100 lượt tick',k:'ticks',g:100},
- {ic:'🚀',n:'500 lượt tick',d:'Tổng cộng 500 lượt tick',k:'ticks',g:500},
- {ic:'🐷',n:'Heo đất chăm chỉ',d:'Tick tiết kiệm 10% đủ 4 tuần',k:'save',g:4},
- {ic:'🧱',n:'Xong Giai đoạn 1',d:'Hết ngày 28, trung bình từ 70%',k:'p0',g:1},
- {ic:'🧠',n:'Xong Giai đoạn 2',d:'Hết ngày 56, trung bình từ 70%',k:'p1',g:1},
- {ic:'🤝',n:'Xong Giai đoạn 3',d:'Hết ngày 90, trung bình từ 70%',k:'p2',g:1},
- {ic:'🏆',n:'Đủ mọi thói quen',d:'Thói quen nào cũng đã tick ít nhất 1 lần',k:'distinct',get g(){ return typeof D !== 'undefined' && D && D.habits ? D.habits.length : 30; }}
+ {id:'seed',ic:'🌱',n:'Hạt mầm đầu tiên',d:"Tick thói quen đầu tiên",xp:20,hid:0,kd:'de',k:'ticks',g:1},
+ {id:'f3',ic:'🔥',n:'Nhóm lửa',d:"Giữ chuỗi 3 ngày liền",xp:20,hid:0,kd:'de',k:'best',g:3},
+ {id:'f7',ic:'📆',n:'Bảy ngày không tắt',d:"Giữ chuỗi 7 ngày liền",xp:20,hid:0,kd:'de',k:'best',g:7},
+ {id:'f21',ic:'🏅',n:'21 ngày thành nếp',d:"Giữ chuỗi 21 ngày liền",xp:50,hid:0,kd:'moc',k:'best',g:21},
+ {id:'p1d',ic:'⭐',n:'Ngày điểm 10',d:"Một ngày đạt 100%",xp:20,hid:0,kd:'de',k:'perfect',g:1},
+ {id:'p10',ic:'✨',n:'Mười điểm mười',d:"10 ngày đạt 100% (không cần liền)",xp:50,hid:0,kd:'moc',k:'perfect',g:10},
+ {id:'pw',ic:'💎',n:'Tuần kim cương',d:"Cả 7 ngày trong một tuần đều 100%",xp:50,hid:0,kd:'moc',k:'pweeks',g:1},
+ {id:'t100',ic:'🎯',n:'Trăm phát trăm trúng',d:"Tổng cộng 100 lượt tick",xp:20,hid:0,kd:'de',k:'ticks',g:100},
+ {id:'t500',ic:'🖐️',n:'Ngón tay vàng',d:"Tổng cộng 500 lượt tick",xp:50,hid:0,kd:'moc',k:'ticks',g:500},
+ {id:'save',ic:'🐷',n:'Heo đất no bụng',d:"Tick tiết kiệm 10% đủ 4 tuần",xp:50,hid:0,kd:'moc',k:'save',g:4},
+ {id:'ph0',ic:'🧱',n:'Đổ xong móng',d:"Hết ngày 28, trung bình từ 70%",xp:50,hid:0,kd:'moc',k:'p0',g:1},
+ {id:'ph1',ic:'🏗️',n:'Cất nóc',d:"Hết ngày 56, trung bình từ 70%",xp:50,hid:0,kd:'moc',k:'p1',g:1},
+ {id:'ph2',ic:'🏁',n:'Cán đích 90 ngày',d:"Hết ngày 90, trung bình từ 70%",xp:50,hid:0,kd:'moc',k:'p2',g:1},
+ {id:'all',ic:'🍱',n:'Nếm đủ 25 vị',d:"Thói quen nào cũng tick ít nhất 1 lần",xp:50,hid:0,kd:'moc',k:'distinct',get g(){ return typeof D !== 'undefined' && D && D.habits ? D.habits.length : 25; }},
+ {id:'lv5',ic:'🐥',n:'Lớn phổng phao',d:"Thú cưng lên cấp 5",xp:50,hid:0,kd:'moc',lv:4},
+ {id:'lv10',ic:'👑',n:'Đỉnh cao tiến hóa',d:"Thú cưng lên cấp 10",xp:50,hid:0,kd:'moc',lv:9},
+ {id:'fgoal',ic:'🧭',n:'Người có hướng',d:"Nhóm Mục tiêu đạt 21 ngày",xp:50,hid:0,kd:'moc',k:'fam',fk:'goal',g:21},
+ {id:'fhealth',ic:'💪',n:'Thân thép',d:"Nhóm Sức khỏe đạt 21 ngày",xp:50,hid:0,kd:'moc',k:'fam',fk:'health',g:21},
+ {id:'fdisc',ic:'⏰',n:'Đồng hồ biết đi',d:"Nhóm Kỷ luật đạt 21 ngày",xp:50,hid:0,kd:'moc',k:'fam',fk:'disc',g:21},
+ {id:'fmind',ic:'🧘',n:'Tâm như mặt hồ',d:"Nhóm Tâm trí đạt 21 ngày",xp:50,hid:0,kd:'moc',k:'fam',fk:'mind',g:21},
+ {id:'flearn',ic:'📚',n:'Mọt sách chính hiệu',d:"Nhóm Học hỏi đạt 21 ngày",xp:50,hid:0,kd:'moc',k:'fam',fk:'learn',g:21},
+ {id:'fconn',ic:'🤝',n:'Sợi dây gắn kết',d:"Nhóm Kết nối đạt 21 ngày",xp:50,hid:0,kd:'moc',k:'fam',fk:'conn',g:21},
+ {id:'fwork',ic:'💰',n:'Ví dày lên',d:"Nhóm Công việc và tiền đạt 21 ngày",xp:50,hid:0,kd:'moc',k:'fam',fk:'work',g:21},
+ {id:'volcano',ic:'🌋',n:'Núi lửa không ngủ',d:"Giữ chuỗi 50 ngày liền",xp:90,hid:1,kd:'kho',k:'best',g:50},
+ {id:'m28',ic:'💯',n:'Tháng không tì vết',d:"Cả 28 ngày tuần của một tháng đều 100%",xp:90,hid:1,kd:'kho',f:(s,x) => x.m28},
+ {id:'run10',ic:'🎼',n:'Mười ngày như một',d:"10 ngày hoàn hảo liên tiếp",xp:90,hid:1,kd:'kho',f:(s,x) => x.perfRun >= 10},
+ {id:'read21',ic:'🍚',n:'Sách là cơm',d:"Đọc sách 21 ngày liền",xp:80,hid:1,kd:'kho',f:(s,x) => x.read21},
+ {id:'vow14',ic:'🎙️',n:'Lời hứa không ngắt quãng',d:"Ghi âm cam kết 14 ngày liền",xp:80,hid:1,kd:'kho',f:(s,x) => x.vow14},
+ {id:'wke4',ic:'🎒',n:'Cuối tuần không xả vai',d:"Đủ việc cả Thứ Bảy và Chủ nhật, 4 tuần liền",xp:80,hid:1,kd:'kho',f:(s,x) => x.wke4 >= 4},
+ {id:'rainbow',ic:'🌈',n:'Cầu vồng bảy sắc',d:"Mở đủ 7 huy hiệu 21 ngày theo nhóm",xp:100,hid:1,kd:'kho',f2:g => ['fgoal','fhealth','fdisc','fmind','flearn','fconn','fwork'].every(i => g.has(i))},
+ {id:'hunter',ic:'🔦',n:'Thợ săn kho báu',d:"Mở 10 huy hiệu ẩn",xp:30,hid:1,kd:'moc',f2:g => [...g].filter(i => BMAP[i] && BMAP[i].hid).length >= 10},
+ {id:'sun4',ic:'🛌',n:'Chủ nhật không ngủ nướng',d:"Đủ việc 4 Chủ nhật liền",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.sun4 >= 4},
+ {id:'rest',ic:'🤷',n:'Nghỉ là gì?',d:"Vẫn làm việc vào ngày 29, 30 hoặc 31",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.restWork},
+ {id:'dbl',ic:'📅',n:'Lịch đẹp đôi',d:"Hoàn hảo ngày có ngày = tháng (12/12, 1/1, 2/2…)",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.dbl},
+ {id:'phoenix',ic:'🔁',n:'Tro tàn bùng cháy',d:"Sau khi đứt chuỗi, dựng lại chuỗi mới ≥7 ngày",xp:30,hid:1,kd:'moc',f:(s,x) => x.phoenix},
+ {id:'nolazy',ic:'🐝',n:'Không có ngày lười',d:"14 ngày liền không dùng ngày lười",xp:30,hid:1,kd:'moc',f:(s,x) => x.noLazy14},
+ {id:'sev',ic:'🍲',n:'Bảy món một mâm',d:"Đủ việc cả 7 nhóm trong một ngày",xp:30,hid:1,kd:'moc',f:(s,x) => x.sevenFam},
+ {id:'t30',ic:'🔨',n:'Một nghề cho chín',d:"Tick cùng một thói quen 30 lần",xp:30,hid:1,kd:'moc',f:(s,x) => x.tick30},
+ {id:'fl',ic:'📒',n:'Mở bát và chốt sổ',d:"Đủ việc ngày 1 và ngày 28 cùng một tháng",xp:30,hid:1,kd:'moc',f:(s,x) => x.firstLast},
+ {id:'ny',ic:'🎆',n:'Đón giao thừa',d:"Hoàn hảo ngày 31/12 hoặc 1/1",xp:30,hid:1,kd:'moc',f:(s,x) => x.newYear},
+ {id:'half',ic:'⛰️',n:'Lưng chừng dốc',d:"Hoàn hảo ngày thứ 45",xp:30,hid:1,kd:'moc',f:(s,x) => x.half},
+ {id:'sprint',ic:'🏎️',n:'Nước rút',d:"Hoàn hảo 3 ngày cuối của hành trình 90 ngày",xp:30,hid:1,kd:'moc',f:(s,x) => x.sprint},
+ {id:'unlock',ic:'🗝️',n:'Có hẹn là đến',d:"Làm thói quen mới ngay ngày nó mở, 3 thói quen liền",xp:30,hid:1,kd:'moc',f:(s,x) => x.unlock3},
+ {id:'fall',ic:'🩹',n:'Ngã là đứng dậy',d:"Đứt chuỗi rồi quay lại ngay hôm sau, 3 lần",xp:15,hid:1,kd:'hai_lo',f:(s,x) => x.fall3},
+ {id:'lazym',ic:'🦥',n:'Lười có tâm',d:"Dùng ngày lười 3 lần trong một tháng",xp:15,hid:1,kd:'hai_lo',f:(s,x) => x.lazyM3},
+ {id:'ghost',ic:'🛸',n:'Người về từ cõi xa',d:"Vắng ≥7 ngày rồi quay lại làm việc",xp:15,hid:1,kd:'hai_lo',f:(s,x) => x.ghost},
+ {id:'min3',ic:'🪫',n:'Sống sót tối thiểu',d:"Đúng 1/3 việc ngày (ngày lười), 3 hôm liền",xp:15,hid:1,kd:'hai_lo',f:(s,x) => x.min3},
+ {id:'busy3',ic:'🏃',n:'Bận mà vẫn ghé',d:"Xin bận nhưng vẫn làm ít nhất 1 việc, 3 lần",xp:15,hid:1,kd:'hai_la',f:(s,x) => x.busy3},
+ {id:'lastsave',ic:'🦸',n:'Siêu nhân phút 89',d:"Dùng thẻ giữ lửa đúng ngày cuối tuần",xp:15,hid:1,kd:'hai_lo',f:(s,x) => x.lastSave},
+ {id:'early',ic:'🌅',n:'Dậy trước cả gà',d:"Xong việc đầu tiên trước 5:30",xp:15,hid:1,kd:'hai_la',f:(s,x) => x.early},
+ {id:'owl',ic:'🦉',n:'Cú mèo trực đêm',d:"Nộp việc cuối ngày sau 23:30",xp:15,hid:1,kd:'hai_lo',f:(s,x) => x.owl},
+ {id:'flash',ic:'⚡',n:'Tia chớp',d:"Xong hết việc trong ngày trong vòng 10 phút",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.flash},
+ {id:'s707',ic:'🎰',n:'Bảy giờ bảy',d:"Tick một việc đúng lúc 7:07",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.s707},
+ {id:'twin',ic:'🕰️',n:'Giờ sinh đôi',d:"Tick một việc cùng giờ, cùng phút hai ngày liền",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.twin},
+ {id:'latenoon',ic:'🐸',n:'Nước đến chân mới nhảy',d:"Bổ sung việc ngày trong khoảng 11:30–12:00 trưa hôm sau",xp:15,hid:1,kd:'hai_lo',f:(s,x) => x.lateNoon},
+ {id:'early12',ic:'🏖️',n:'Xong sớm, chơi sớm',d:"Xong hết việc trước 12:00, 10 ngày",xp:30,hid:1,kd:'moc',f:(s,x) => x.early12},
+ {id:'first8',ic:'🧧',n:'Mở hàng đầu tháng',d:"Xong việc ngày 1 của tháng trước 8:00",xp:30,hid:1,kd:'moc',f:(s,x) => x.firstMonth8},
+ {id:'r2359',ic:'😴',n:'Đọc bằng mắt nhắm',d:"Nộp bài đọc sách lúc 23:59, 3 lần",xp:15,hid:1,kd:'hai_lo',f:(s,x) => x.read2359},
+ {id:'sleep3',ic:'🐓',n:'Ngủ dậy như in',d:"3 ngày liền giờ ngủ và giờ dậy lệch nhau ≤5 phút",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.sleep3},
+ {id:'sleep7',ic:'🛏️',n:'Gối đúng giờ',d:"7 ngày liền giờ ngủ lệch ≤30 phút",xp:30,hid:1,kd:'moc',f:(s,x) => x.sleep7},
+ {id:'quota1',ic:'🍽️',n:'Tuần đủ món',d:"Đủ chỉ tiêu tuần (chạy, đọc, cam kết); người được miễn chỉ tính phần không miễn",xp:20,hid:0,kd:'de',f:(s,x) => x.quotaWeek},
+ {id:'run1',ic:'👟',n:'Bước chân đầu tiên',d:"Nộp buổi chạy đầu tiên",xp:20,hid:0,kd:'de',f:(s,x) => x.run1},
+ {id:'km200',ic:'🛣️',n:'Đôi chân vạn dặm',d:"Chạy 200 km trong một tháng",xp:90,hid:1,kd:'kho',f:(s,x) => x.km200},
+ {id:'legend',ic:'🏺',n:'Kho báu huyền thoại',d:"Mở 40 huy hiệu ẩn",xp:100,hid:1,kd:'kho',f2:g => [...g].filter(i => BMAP[i] && BMAP[i].hid).length >= 40},
+ {id:'clock',ic:'⏱️',n:'Chạy như đồng hồ',d:"3 ngày chạy liền, giờ nộp bài chạy lệch nhau ≤30 phút",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.clock},
+ {id:'round',ic:'🎱',n:'Tròn như vo',d:"Một buổi chạy đúng 5,00 hoặc 10,00 km",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.round},
+ {id:'k1000',ic:'🎉',n:'Nghìn điểm đẹp đôi',d:"Chạm 1000 XP đúng vào một ngày hoàn hảo",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.k1000},
+ {id:'double',ic:'✌️',n:'Cú đúp',d:"Chạy bộ và tập gym trong cùng một ngày",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.double},
+ {id:'gymup',ic:'📈',n:'Lớn lúc nào không hay',d:"e1RM gym tăng 3 tuần liên tiếp",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.gymUp},
+ {id:'sum100',ic:'🔢',n:'Tròn sáu chục',d:"Hết ngày 28 của tháng, tổng lượt chạy + đọc + cam kết đúng 60",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.sum60},
+ {id:'mirror',ic:'🪞',n:'Soi gương',d:"Tổng km chạy trong tháng là số đối xứng (ví dụ 12,21 km)",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.mirror},
+ {id:'ram',ic:'🌕',n:'Trăng rằm soi bước',d:"Hoàn hảo đúng ngày 15 âm lịch",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.ram},
+ {id:'tet',ic:'🧨',n:'Xông đất đầu năm',d:"Hoàn hảo đúng mùng 1 Tết",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.tet},
+ {id:'trio',ic:'🔱',n:'Bộ ba hoàn hảo',d:"Đủ cả 3 chỉ tiêu tuần (chạy, đọc, cam kết), 2 tuần liền",xp:30,hid:1,kd:'moc',f:(s,x) => x.trio},
+ {id:'king',ic:'🦁',n:'Chúa tể tuần',d:"Nhiều XP nhất tuần",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.king},
+ {id:'pacepr',ic:'💨',n:'Nhanh hơn chính mình',d:"Phá kỷ lục pace của chính mình",xp:30,hid:1,kd:'moc',f:(s,x) => x.pacePR},
+ {id:'gympr',ic:'🏋️',n:'Tạ cũng phải nể',d:"Phá kỷ lục e1RM của chính mình",xp:30,hid:1,kd:'moc',f:(s,x) => x.gymPR},
+ {id:'pround',ic:'⏲️',n:'Pace tròn trịa',d:"Pace một buổi chạy chẵn phút/km (ví dụ 6'00\")",xp:30,hid:1,kd:'moc',f:(s,x) => x.pround},
+ {id:'exact',ic:'🧩',n:'Vừa khít',d:"3 chỉ tiêu tuần đạt đúng mức, không hơn",xp:30,hid:1,kd:'moc',f:(s,x) => x.exact},
+ {id:'run6',ic:'🚄',n:'Thừa sức',d:"Chạy 6 buổi trong tuần (gấp đôi chỉ tiêu)",xp:30,hid:1,kd:'moc',f:(s,x) => x.run6},
+ {id:'ton',ic:'⚓',n:'Một tấn sắt',d:"Tổng tạ một buổi gym ≥1000 kg",xp:30,hid:1,kd:'moc',f:(s,x) => x.ton},
+ {id:'sow',ic:'🌿',n:'Bén rễ',d:"Đủ việc 7 ngày liền ngay sau tuần làm quen",xp:30,hid:1,kd:'moc',f:(s,x) => x.sow},
+ {id:'bday',ic:'🎂',n:'Tuổi mới chăm chỉ',d:"Hoàn hảo đúng ngày sinh nhật mình",xp:30,hid:1,kd:'moc',f:(s,x) => x.bday},
+ {id:'together',ic:'🫂',n:'Không một mình',d:"Hoàn hảo cùng ngày với ≥10 người (chỉ báo số người)",xp:30,hid:1,kd:'moc',f:(s,x) => x.together},
+ {id:'morning7',ic:'☀️',n:'Bạn thân buổi sáng',d:"Chạm nhân vật vào 7 buổi sáng khác nhau",xp:30,hid:1,kd:'moc',f:(s,x) => x.morning7},
+ {id:'tap20',ic:'👉',n:'Chọc mãi không chán',d:"Chạm nhân vật ≥20 lần trong một ngày",xp:15,hid:1,kd:'hai_la',f:(s,x) => x.tap20},
+ {id:'uturn',ic:'🔄',n:'Quay xe',d:"Đổi hướng tiến hóa rồi quay lại hướng cũ",xp:15,hid:1,kd:'hai_la',f:(s,x) => x.uturn},
+ {id:'curious',ic:'🔍',n:'Mò khắp ngóc ngách',d:"Mở hết mọi tab trong một ngày",xp:15,hid:1,kd:'hai_la',f:(s,x) => x.curious},
+ {id:'airead',ic:'📸',n:'Ảnh nét căng',d:"10 lần AI đọc được km ngay, không phải chờ",xp:15,hid:1,kd:'hai_la',f:(s,x) => x.aiRead},
+ {id:'makeup',ic:'🧵',n:'Vá kịp lúc',d:"Nộp bù bài chạy hôm qua, 3 lần",xp:15,hid:1,kd:'hai_lo',f:(s,x) => x.makeup},
+ {id:'edits',ic:'🔧',n:'Thợ chỉnh',d:"Sửa cách rèn hoặc mục tiêu 5 lần",xp:15,hid:1,kd:'hai_la',f:(s,x) => x.edits5},
+ {id:'run7',ic:'🥾',n:'Đôi giày không nghỉ',d:"Chạy bộ 7 ngày liền",xp:30,hid:1,kd:'moc',f:(s,x) => x.run7},
+ {id:'read10',ic:'📖',n:'Mười phút vàng',d:"Đọc sách đúng 10 phút, 5 lần",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.read10},
+ {id:'ck1',ic:'🎤',n:'Nói một lần là chuẩn',d:"Lần ghi âm cam kết đầu tiên trong ngày khớp 100%",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.ck1},
+ {id:'guard',ic:'🏮',n:'Người gác lửa',d:"Dùng đủ 2 thẻ giữ lửa trong tuần mà không đứt chuỗi",xp:30,hid:1,kd:'moc',f:(s,x) => x.guard},
+ {id:'spy',ic:'🕵️',n:'Thám tử tò mò',d:"Xem cách rèn của 5 người khác nhau",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.spy},
+ {id:'party',ic:'🎁',n:'Đi ăn sinh nhật',d:"Đủ việc vào ngày sinh nhật của 3 người khác (không hiện tên)",xp:30,hid:1,kd:'moc',f:(s,x) => x.party},
+ {id:'early3',ic:'🐦',n:'Chim sớm',d:"Là người chạm thói quen đầu tiên trong ngày, 3 lần",xp:30,hid:1,kd:'moc',f:(s,x) => x.early3},
+ {id:'lvtog',ic:'🎈',n:'Cùng nhau lớn',d:"Lên cấp cùng ngày với người khác (không hiện tên)",xp:30,hid:1,kd:'moc',f:(s,x) => x.lvTog},
+ {id:'hunt5',ic:'🧺',n:'Hốt cả mẻ',d:"Mở 5 huy hiệu trong cùng một ngày",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.hunt5}
 ];
+const BMAP = {}; BADGES.forEach(b => { BMAP[b.id] = b; });
 const WD = ['CN','T2','T3','T4','T5','T6','T7'];
 const WDL = ['Chủ nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
 
@@ -2331,7 +2424,7 @@ function buildData(d, noAF, keepVi){
   D = {u0: U0, today: d.today, days, weeks, habits, daily:{}, weekly:{}, entries:{}, meta:{plans:{}, lists:{}, subs:{}, look:{}, sleep:{}, bd:'', sleepGoal:['',''], busy:{}, gym:[], lazy:{}}, frz:{}};
   habits.forEach(h => { if (/tuần/i.test(h.freq)) D.weekly[h.code] = Array(weeks.length).fill(0); else D.daily[h.code] = Array(90).fill(0); });
   const rows = d.rows || {};
-  if (rows.META){ D.meta.plans = rows.META.plans || {}; D.meta.lists = rows.META.lists || {}; D.meta.hist = rows.META.hist || {}; D.meta.subs = rows.META.subs || {}; D.meta.look = rows.META.look || {}; D.meta.sleep = rows.META.sleep || {}; D.meta.bd = rows.META.bd || ''; D.meta.sleepGoal = rows.META.sleepGoal || ['','']; D.meta.busy = rows.META.busy || {}; D.meta.gym = rows.META.gym || []; D.meta.lazy = rows.META.lazy || {}; }
+  if (rows.META){ D.meta.plans = rows.META.plans || {}; D.meta.lists = rows.META.lists || {}; D.meta.hist = rows.META.hist || {}; D.meta.subs = rows.META.subs || {}; D.meta.look = rows.META.look || {}; D.meta.sleep = rows.META.sleep || {}; D.meta.bd = rows.META.bd || ''; D.meta.sleepGoal = rows.META.sleepGoal || ['','']; D.meta.busy = rows.META.busy || {}; D.meta.gym = rows.META.gym || []; D.meta.lazy = rows.META.lazy || {}; if (rows.META.bdg) D.meta.bdg = rows.META.bdg; D.meta.tt = rows.META.tt || {}; D.meta.ix = rows.META.ix || {}; D.meta.lvd = rows.META.lvd || {}; D.meta.bdNo = rows.META.bdNo || 0; }
   Object.keys(rows).forEach(k => {
     const m = k.match(/^([DW]):(\d{4}-\d{2}-\d{2})$/); if (!m) return;
     const isD = m[1] === 'D', pk = m[2], idx = isD ? days.indexOf(pk) : weeks.indexOf(pk);
@@ -2399,7 +2492,7 @@ document.addEventListener('visibilitychange', () => {
 
 /* ================== Lưu ================== */
 function rowFor(key){
-  if (key === 'META') return {hist: D.meta.hist || {}, plans: D.meta.plans, lists: D.meta.lists, subs: D.meta.subs, look: D.meta.look, sleep: D.meta.sleep || {}, bd: D.meta.bd || '', sleepGoal: D.meta.sleepGoal || ['',''], busy: D.meta.busy || {}, gym: D.meta.gym || []};
+  if (key === 'META') return {hist: D.meta.hist || {}, plans: D.meta.plans, lists: D.meta.lists, subs: D.meta.subs, look: D.meta.look, sleep: D.meta.sleep || {}, bd: D.meta.bd || '', sleepGoal: D.meta.sleepGoal || ['',''], busy: D.meta.busy || {}, gym: D.meta.gym || [], lazy: D.meta.lazy || {}, bdg: D.meta.bdg, tt: D.meta.tt || {}, ix: D.meta.ix || {}, lvd: D.meta.lvd || {}, bdNo: D.meta.bdNo || 0};
   const isD = key[0] === 'D', pk = key.slice(2), idx = isD ? D.days.indexOf(pk) : D.weeks.indexOf(pk), o = {h:{}};
   (isD ? DAILY : WEEKLY).forEach(h => {
     const arr = isD ? D.daily[h.code] : D.weekly[h.code], e = D.entries['E:'+h.code+':'+pk];
@@ -2453,9 +2546,11 @@ function syncInner(){ return `<span class="syncdot ${pending?'busy':''}"></span>
 function renderSync(){ const el = document.getElementById('syncline'); if (el) el.innerHTML = syncInner(); }
 function statsNow(){
   const s = summary(), wk = blkStart(D.today);
+  bdgRecord(s);
   let xw = 0;
   for (let i = 0; i <= T && !PRACTICE; i++){ if (D.days[i] < wk) continue; if (isLazy(i)) continue; const st = dayStat(i); xw += st.done*XP_DAILY + (st.total && st.done === st.total ? XP_PERFECT : 0); }
   WEEKLY.forEach(h => { for (let w = 0; w <= weekOf(Math.max(T,0)) && !PRACTICE; w++) if (D.weeks[w] >= wk && activeWeek(h,w) && D.weekly[h.code][w]) xw += XP_WEEKLY; });
+  if (s.bset && D.meta.bdg) s.bset.forEach(id => { const d = D.meta.bdg[id]; if (d && d >= wk) xw += BMAP[id].xp; });
   return {day: PRACTICE ? 0 : T+1, xp: s.xp, level: levelOf(s.xp)+1, cur: s.cur, best: s.best, p7: PRACTICE ? 0 : (rangePct(Math.max(0,T-6), T) || 0), week: wk, xpWeek: xw, freeze: Object.keys(D.frz).filter(k => D.frz[k]).length, sum: JSON.stringify(profSum())};
 }
 function profSum(){
@@ -2511,6 +2606,217 @@ function hFreezeUsed(c,w){ let n = 0; for (let j = wkA(w); j <= wkB(w); j++) if 
 const hFreezeLeft = (c,w) => Math.max(0, HFREEZE_PER_WEEK - hFreezeUsed(c,w));
 function canHFreeze(c,i){ const h = byCode[c]; return !!h && !!D.daily[c] && T > 0 && i > 0 && i < T && i >= T-7 && activeDay(h,i) && activeDay(h,i-1) && !hOk(c,i) && hOk(c,i-1) && hFreezeLeft(c,weekOf(i)) > 0; }
 function habitStreak(h){ const c0 = h.code; let i = hOk(c0,T) ? T : T-1, n = 0; while (i >= 0 && activeDay(h,i) && (hOk(c0,i) || inGrace(h,i))) { if (hOk(c0,i)) n++; i--; } return n; }
+
+/* ===== Huy hiệu v2: thống kê mở rộng ===== */
+const pf = i => { const st = dayStat(i); return !isLazy(i) && st.total > 0 && st.done === st.total; };
+function hBest(c){ const h = byCode[c]; if (!h || !D.daily[c]) return 0; let run = 0, best = 0;
+  for (let i = 0; i <= T && i < D.days.length; i++){ if (!activeDay(h,i)) continue; if (inGrace(h,i) && !D.daily[c][i]) continue;
+    if (hOk(c,i)){ run++; if (run > best) best = run; } else if (i < T) run = 0; }
+  return best; }
+const famFull = (f,i) => { const cs = f.c.filter(c => D.daily[c] && byCode[c] && activeDay(byCode[c], i) && !isNeutral(c,i)); return cs.length > 0 && cs.every(c => D.daily[c][i]); };
+function xstats(){
+  const x = {perfRun:0, m28:false, sun4:0, wke4:0, restWork:false, dbl:false, phoenix:false, noLazy14:false, sevenFam:false, tick30:false, firstLast:false, newYear:false, half:false, sprint:false, unlock3:false, fall3:false, lazyM3:false, ghost:false, min3:false, busy3:false, lastSave:false, read21:false, vow14:false, fam:{}};
+  if (T < 0 || PRACTICE || !D) return x;
+  const n = Math.min(T, D.days.length-1);
+  let pr = 0, sr = 0, wr = 0, nl = 0, ms = 0, gz = 0, broke = false, r7 = 0, falls = 0, busyN = 0, sp = 0, satP = false;
+  const mN = {}, mP = {}, firstP = {}, lazyM = {};
+  for (let i = 0; i <= n; i++){
+    const ds = D.days[i], md = ds.slice(5), dd = +ds.slice(8), mo = ds.slice(0,7), wd = pd(ds).getDay(), st = dayStat(i), P = pf(i);
+    pr = P ? pr+1 : 0; if (pr > x.perfRun) x.perfRun = pr;
+    if (dd <= 28){ mN[mo] = (mN[mo]||0) + 1; if (P) mP[mo] = (mP[mo]||0) + 1; }
+    if (wd === 6) satP = P;
+    if (wd === 0){ sr = P ? sr+1 : 0; if (sr > x.sun4) x.sun4 = sr; wr = (satP && P) ? wr+1 : 0; if (wr > x.wke4) x.wke4 = wr; satP = false; }
+    if (isRest(i) && st.done > 0) x.restWork = true;
+    if (P && ds.slice(5,7) === ds.slice(8,10)) x.dbl = true;
+    if (P && (md === '12-31' || md === '01-01')) x.newYear = true;
+    if (P && dd === 1) firstP[mo] = true;
+    if (P && dd === 28 && firstP[mo]) x.firstLast = true;
+    nl = (okDay(i) && !isLazy(i) && st.total > 0) ? nl+1 : 0; if (nl >= 14) x.noLazy14 = true;
+    if (i < T && !okS(i)){ broke = true; r7 = 0; falls += okS(i+1) ? 1 : 0; }
+    else if (okS(i) && broke){ r7++; if (r7 >= 7) x.phoenix = true; }
+    if (st.total > 0){ if (st.done === 0) gz++; else { if (gz >= 7) x.ghost = true; gz = 0; } }
+    ms = (isLazy(i) && okDay(i)) ? ms+1 : 0; if (ms >= 3) x.min3 = true;
+    if (isBusy(i) && st.done > 0) busyN++;
+    if (frozen(i) && i === wkB(weekOf(i))) x.lastSave = true;
+    if (isLazy(i)) lazyM[mo] = (lazyM[mo]||0) + 1;
+    if (i === 44 && P) x.half = true;
+    if (i >= 87 && P) sp++;
+    if (!isLazy(i) && FAMILIES.every(f => famFull(f,i))) x.sevenFam = true;
+  }
+  { const tt = D.meta.tt || {}, sl = D.meta.sleep || {}; let prev = null, e12 = 0, r23 = 0, sleepRows = [];
+    const hm = t => (+t.slice(0,2)) * 60 + (+t.slice(2,4));
+    const tmin = v => { const m = /^(\d{1,2}):(\d{2})$/.exec(v || ''); return m ? (+m[1]) * 60 + (+m[2]) : null; };
+    for (let i = 0; i <= n; i++){
+      const ds = D.days[i], st = dayStat(i), P = pf(i);
+      const tk = (tt[ds] || []).map(s => { const p = s.split(':'); return {t: p[0], m: hm(p[0]), c: p[1], late: p[2] === 'L'}; }), on = tk.filter(k => !k.late);
+      if (on.length){ const mn = Math.min(...on.map(k => k.m)), mx = Math.max(...on.map(k => k.m));
+        if (mn < 330) x.early = true; if (mx >= 1410) x.owl = true;
+        if (P && on.length >= 3 && on.length >= st.done && mx - mn <= 10) x.flash = true;
+        if (P && on.length >= st.done && mx < 720){ e12++; }
+        if (P && +ds.slice(8) === 1 && on.length >= st.done && mx < 480) x.firstMonth8 = true; }
+      if (tk.some(k => k.t === '0707' && !k.late)) x.s707 = true;
+      if (tk.some(k => k.late && k.m >= 690 && k.m <= 720)) x.lateNoon = true;
+      r23 += tk.filter(k => k.c === '03' && k.t === '2359' && !k.late).length;
+      const set = new Set(on.map(k => k.t)); if (prev && [...set].some(t => prev.has(t))) x.twin = true; prev = set;
+      const b = tmin((sl[ds] || [])[0]), w = tmin((sl[ds] || [])[1]);
+      sleepRows.push(b == null || w == null ? null : {b: b < 720 ? b + 1440 : b, w});
+    }
+    x.early12 = e12 >= 10; x.read2359 = r23 >= 3;
+    const win = (len, tol) => { for (let i = 0; i + len <= sleepRows.length; i++){ const g = sleepRows.slice(i, i+len); if (g.some(v => !v)) continue;
+      const bs = g.map(v => v.b), ws = g.map(v => v.w); if (Math.max(...bs) - Math.min(...bs) <= tol && Math.max(...ws) - Math.min(...ws) <= tol) return true; } return false; };
+    x.sleep3 = win(3, 5); x.sleep7 = win(7, 30); }
+  x.m28 = Object.keys(mN).some(m => mN[m] === 28 && (mP[m]||0) >= 24);
+  x.sprint = sp >= 3; x.fall3 = falls >= 3; x.busy3 = busyN >= 3; x.lazyM3 = Object.keys(lazyM).some(m => lazyM[m] >= 3);
+  x.tick30 = D.habits.some(h => (D.daily[h.code] || []).filter(v => v).length >= 30);
+  x.unlock3 = D.habits.filter(h => D.daily[h.code] && h.week > 1 && h.start && (() => { const j = D.days.indexOf(h.start); return j >= 0 && j <= n && D.daily[h.code][j]; })()).length >= 3;
+  x.read21 = hBest('03') >= 21; x.vow14 = hBest('13') >= 14;
+  FAMILIES.forEach(f => { x.fam[f.k] = Math.max(0, ...f.c.map(hBest)); });
+  xstats2(x, n);
+  return x;
+}
+/* ===== Âm lịch (thuật toán Hồ Ngọc Đức, múi giờ +7) ===== */
+function lnJd(dd, mm, yy){ const a = Math.floor((14 - mm)/12), y = yy + 4800 - a, m = mm + 12*a - 3; let jd = dd + Math.floor((153*m+2)/5) + 365*y + Math.floor(y/4) - Math.floor(y/100) + Math.floor(y/400) - 32045; if (jd < 2299161) jd = dd + Math.floor((153*m+2)/5) + 365*y + Math.floor(y/4) - 32083; return jd; }
+function lnNewMoon(k, tz){ const T = k/1236.85, T2 = T*T, T3 = T2*T, dr = Math.PI/180; let J = 2415020.75933 + 29.53058868*k + 0.0001178*T2 - 0.000000155*T3; J += 0.00033*Math.sin((166.56 + 132.87*T - 0.009173*T2)*dr);
+  const M = 359.2242 + 29.10535608*k - 0.0000333*T2 - 0.00000347*T3, Mp = 306.0253 + 385.81691806*k + 0.0107306*T2 + 0.00001236*T3, F = 21.2964 + 390.67050646*k - 0.0016528*T2 - 0.00000239*T3;
+  let C = (0.1734 - 0.000393*T)*Math.sin(M*dr) + 0.0021*Math.sin(2*dr*M) - 0.4068*Math.sin(Mp*dr) + 0.0161*Math.sin(dr*2*Mp) - 0.0004*Math.sin(dr*3*Mp) + 0.0104*Math.sin(dr*2*F) - 0.0051*Math.sin(dr*(M+Mp)) - 0.0074*Math.sin(dr*(M-Mp)) + 0.0004*Math.sin(dr*(2*F+M)) - 0.0004*Math.sin(dr*(2*F-M)) - 0.0006*Math.sin(dr*(2*F+Mp)) + 0.0010*Math.sin(dr*(2*F-Mp)) + 0.0005*Math.sin(dr*(2*Mp+M));
+  const dt = T < -11 ? 0.001 + 0.000839*T + 0.0002261*T2 - 0.00000845*T3 - 0.000000081*T*T3 : -0.000278 + 0.000265*T + 0.000262*T2;
+  return Math.floor(J + C - dt + 0.5 + tz/24); }
+function lnSun(jdn, tz){ const T = (jdn - 2451545.5 - tz/24)/36525, T2 = T*T, dr = Math.PI/180, M = 357.52910 + 35999.05030*T - 0.0001559*T2 - 0.00000048*T*T2, L0 = 280.46645 + 36000.76983*T + 0.0003032*T2;
+  const DL = (1.914600 - 0.004817*T - 0.000014*T2)*Math.sin(dr*M) + (0.019993 - 0.000101*T)*Math.sin(dr*2*M) + 0.000290*Math.sin(dr*3*M); let L = (L0 + DL)*dr; L = L - Math.PI*2*Math.floor(L/(Math.PI*2)); return Math.floor(L/Math.PI*6); }
+function lnM11(yy, tz){ const off = lnJd(31, 12, yy) - 2415021, k = Math.floor(off/29.530588853); let nm = lnNewMoon(k, tz); if (lnSun(nm, tz) >= 9) nm = lnNewMoon(k-1, tz); return nm; }
+function lnLeap(a11, tz){ const k = Math.floor((a11 - 2415021.076998695)/29.530588853 + 0.5); let last = 0, i = 1, arc = lnSun(lnNewMoon(k+i, tz), tz); do { last = arc; i++; arc = lnSun(lnNewMoon(k+i, tz), tz); } while (arc !== last && i < 14); return i - 1; }
+function lunarOf(ds){ const dd = +ds.slice(8), mm = +ds.slice(5,7), yy = +ds.slice(0,4), tz = 7, dn = lnJd(dd, mm, yy), k = Math.floor((dn - 2415021.076998695)/29.530588853);
+  let ms = lnNewMoon(k+1, tz); if (ms > dn) ms = lnNewMoon(k, tz); let a11 = lnM11(yy, tz), b11 = a11, ly;
+  if (a11 >= ms){ ly = yy; a11 = lnM11(yy-1, tz); } else { ly = yy+1; b11 = lnM11(yy+1, tz); }
+  const ld = dn - ms + 1, diff = Math.floor((ms - a11)/29); let lm = diff + 11;
+  if (b11 - a11 > 365){ const lo = lnLeap(a11, tz); if (diff >= lo){ lm = diff + 10; } }
+  if (lm > 12) lm -= 12; return [ld, lm]; }
+
+/* ===== Theo dõi tương tác (chạm nhân vật, mở tab, đổi hướng, sửa cách rèn) ===== */
+function ixObj(){ return D ? (D.meta.ix = D.meta.ix || {}) : null; }
+function ixAward(){
+  if (!D || PRACTICE) return; const s = summary(); if (!s.bset) return;
+  if (!D.meta.bdg){ bdgRecord(s); return; }
+  const nw = BADGES.filter(b => s.bset.has(b.id) && !D.meta.bdg[b.id]); if (!nw.length) return;
+  bdgRecord(s); try { confetti(); } catch(e){}
+  const hb = nw.find(b => b.hid);
+  toast(`🏅 Huy hiệu mới: ${nw.map(b => b.ic + ' ' + b.n + ' +' + b.xp + ' XP').join(', ')}${hb ? ' · ' + badgeSay(hb) : ''}`, hb ? 5200 : 3200);
+}
+function ixTap(){
+  if (!D || PRACTICE) return; const o = ixObj(), tp = o.tap = o.tap || {}; let ch = false; tp[D.today] = (tp[D.today] || 0) + 1;
+  if (new Date().getHours() < 12){ const am = o.am = o.am || []; if (!am.includes(D.today)){ am.push(D.today); ch = true; } }
+  if (ch || tp[D.today] === 1 || tp[D.today] % 5 === 0){ markDirty('META'); ixAward(); }
+}
+function ixTab(t){
+  if (!D || PRACTICE) return; const k = t === 'badge' ? 'prog' : t, o = ixObj(), tb = o.tabs = o.tabs || {}, a = tb[D.today] = tb[D.today] || [];
+  if (!a.includes(k)){ a.push(k); const ks = Object.keys(tb).sort(); while (ks.length > 14) delete tb[ks.shift()]; markDirty('META'); ixAward(); }
+}
+function ixLine(l){
+  if (!D || PRACTICE) return; const o = ixObj(), a = o.lines = o.lines || []; if (a[a.length-1] === l) return; a.push(l); if (a.length > 12) a.shift(); markDirty('META'); ixAward();
+}
+function ixSeen(id){
+  if (!D || PRACTICE || !ME || id === ME.id) return; const o = ixObj(), a = o.seen = o.seen || []; if (a.includes(id)) return; a.push(id); if (a.length > 20) a.shift(); markDirty('META'); ixAward();
+}
+function ixEdit(){
+  if (!D || PRACTICE) return; const o = ixObj(); o.edits = (o.edits || 0) + 1; markDirty('META'); ixAward();
+}
+
+/* ===== Dữ liệu chạy bộ / gym từ máy chủ (badgeStats) ===== */
+let BSTAT = null, BSBUSY = false, BSAT = 0;
+async function loadBS(force){
+  if (PRACTICE || !TOKEN || !ME || BSBUSY) return;
+  if (!BSTAT){ try { const c = JSON.parse(LS.get('rh_bs_' + ME.id) || 'null'); if (c && c.runs) BSTAT = c; } catch(e){} }
+  if (!force && BSAT && Date.now() - BSAT < 600000) return;
+  BSBUSY = true;
+  try { const r = await call('badgeStats', TOKEN); if (r && r.runs){ BSTAT = r; LS.set('rh_bs_' + ME.id, JSON.stringify(r)); } BSAT = Date.now(); ixAward(); }
+  catch(e){ BSAT = Date.now(); } finally { BSBUSY = false; }
+}
+const dayNo = ds => Math.floor(pd(ds).getTime()/864e5);
+function xstats2(x, n){
+  const bs = BSTAT || {runs: [], gym: []}, runs = bs.runs || [], gym = bs.gym || [];
+  const rd = {}; runs.forEach(r => { rd[r.d] = (rd[r.d] || 0) + r.km; });
+  const rdays = Object.keys(rd).sort(), dset = new Set(rdays), mk = {};
+  runs.forEach(r => { const m = r.d.slice(0,7); mk[m] = (mk[m] || 0) + r.km; });
+  x.run1 = runs.length > 0;
+  x.km200 = Object.keys(mk).some(m => mk[m] >= 200);
+  x.mirror = Object.keys(mk).some(m => { const t = mk[m].toFixed(2).replace('.', ''); return mk[m] >= 10 && t === t.split('').reverse().join(''); });
+  x.round = runs.some(r => Math.abs(r.km - 5) < 0.005 || Math.abs(r.km - 10) < 0.005);
+  { let run = 0, best = 0; if (rdays.length){ let d = pd(rdays[0]); const end = pd(rdays[rdays.length-1]); while (d <= end){ if (dset.has(ymd(d))){ run++; if (run > best) best = run; } else run = 0; d = new Date(d.getTime() + 864e5); } } x.run7 = best >= 7; }
+  { const wk = {}; rdays.forEach(d => { const b = blkStart(d); wk[b] = (wk[b] || 0) + 1; }); x.run6 = Object.keys(wk).some(b => wk[b] >= 6); }
+  { const first = {}; runs.forEach(r => { if (r.tm != null && (first[r.d] == null || r.tm < first[r.d])) first[r.d] = r.tm; });
+    const ds = Object.keys(first).sort(); let chain = []; ds.forEach(d => { if (chain.length && dayNo(d) - dayNo(chain[chain.length-1]) === 1) chain.push(d); else chain = [d];
+      if (chain.length >= 3){ for (let i = 0; i + 3 <= chain.length; i++){ const v = chain.slice(i, i+3).map(k => first[k]); if (Math.max(...v) - Math.min(...v) <= 30) x.clock = true; } } }); }
+  { const pr = runs.filter(r => r.km >= 2 && r.mn).slice().sort((a, b) => a.d < b.d ? -1 : a.d > b.d ? 1 : 0); let best = 1e9;
+    pr.forEach((r, i) => { const p = r.mn / r.km; if (Math.abs(p - Math.round(p)) < 0.0083) x.pround = true; if (i >= 3 && p < best - 1e-4) x.pacePR = true; if (p < best) best = p; }); }
+  x.aiRead = runs.filter(r => r.ai).length >= 10;
+  x.makeup = runs.filter(r => r.sd && r.sd > r.d).length >= 3;
+  const gd = new Set(gym.map(g => g.d)); x.double = rdays.some(d => gd.has(d));
+  { const v = {}; gym.forEach(g => { v[g.d] = (v[g.d] || 0) + g.vol; }); x.ton = Object.keys(v).some(d => v[d] >= 1000); }
+  { const ex = {}; gym.forEach(g => { (ex[g.ex] = ex[g.ex] || []).push(g); });
+    Object.keys(ex).forEach(k => { const a = ex[k].slice().sort((p, q) => p.d < q.d ? -1 : p.d > q.d ? 1 : 0); let best = 0;
+      a.forEach((g, i) => { if (i >= 2 && g.rm > best + 1e-9) x.gymPR = true; if (g.rm > best) best = g.rm; });
+      const wk = {}; a.forEach(g => { const w = Math.floor(dayNo(g.d)/7); wk[w] = Math.max(wk[w] || 0, g.rm); });
+      Object.keys(wk).map(Number).forEach(w => { if (wk[w+1] != null && wk[w+2] != null && wk[w] < wk[w+1] && wk[w+1] < wk[w+2]) x.gymUp = true; }); }); }
+  const q = (typeof QUOTA !== 'undefined' && QUOTA && QUOTA.weeks) ? QUOTA : null;
+  if (q){ const need = q.need || {run: 3, read: 5, ck: 5}, ks = w => ['run','read','ck'].filter(k => w[k] != null);
+    const met = w => ks(w).length > 0 && ks(w).every(k => w[k] >= need[k]);
+    x.quotaWeek = q.weeks.some(met); x.trio = q.weeks.some((w, i) => i > 0 && met(w) && met(q.weeks[i-1]));
+    x.exact = q.weeks.some(w => ks(w).length >= 2 && ks(w).every(k => w[k] === need[k]));
+    x.sum60 = (q.day || 0) >= 28 && q.weeks.reduce((a, w) => a + (w.run || 0) + (w.read || 0) + (w.ck || 0), 0) === 60; }
+  const bd = D.meta.bd || '', ix = D.meta.ix || {};
+  let cum = 0, lvK = 0; const lvd = {};
+  for (let i = 0; i <= n; i++){
+    const ds = D.days[i], st = dayStat(i), P = pf(i); let before = cum;
+    if (!isLazy(i)) cum += st.done * XP_DAILY + (P ? XP_PERFECT : 0);
+    if (i === wkB(weekOf(i))) WEEKLY.forEach(h => { const w = weekOf(i); if (activeWeek(h, w) && D.weekly[h.code][w]) cum += XP_WEEKLY; });
+    while (lvK < LEVELS.length - 1 && cum >= LEVELS[lvK+1].xp){ lvK++; lvd[lvK] = ds; }
+    if (P && before < 1000 && cum >= 1000) x.k1000 = true;
+    if (P && bd && ds.slice(5) === bd) x.bday = true;
+    if (P){ const L = lunarOf(ds); if (L[0] === 15) x.ram = true; if (L[0] === 1 && L[1] === 1) x.tet = true; }
+  }
+  D.habits.forEach(h => { if (h.week > 1 && h.start && D.daily[h.code]){ const s0 = D.days.indexOf(h.start); if (s0 >= 0 && s0 + 13 <= n){ let ok = true; for (let j = s0 + 7; j <= s0 + 13; j++) if (!pf(j)) ok = false; if (ok) x.sow = true; } } });
+  if (typeof BOARD !== 'undefined' && BOARD && BOARD.rows && BOARD.me){
+    const wk = blkStart(D.today), rows = BOARD.rows.filter(r => r.week && blkStart(String(r.week).slice(0,10)) === wk), me = rows.find(r => r.id === BOARD.me);
+    if (me && me.xpWeek > 0 && rows.every(r => r.id === me.id || r.xpWeek < me.xpWeek)) x.king = true;
+  }
+  if (bs.crowd){ for (let i = 0; i <= n; i++) if (pf(i) && bs.crowd[D.days[i]]) x.together = true; }
+  { const tp = ix.tap || {}; x.tap20 = Object.keys(tp).some(d => tp[d] >= 20); x.morning7 = (ix.am || []).length >= 7;
+    x.curious = Object.keys(ix.tabs || {}).some(d => ['today','health','mind','prog','rank'].every(t => ix.tabs[d].includes(t)));
+    const L = ix.lines || []; for (let a = 0; a < L.length; a++) for (let b = a+1; b < L.length; b++) for (let c = b+1; c < L.length; c++) if (L[a] === L[c] && L[b] !== L[a]) x.uturn = true;
+    x.edits5 = (ix.edits || 0) >= 5; x.spy = (ix.seen || []).length >= 5; }
+  if (!PRACTICE && JSON.stringify(D.meta.lvd || {}) !== JSON.stringify(lvd)){ D.meta.lvd = lvd; markDirty('META'); }
+  { const c = {}; Object.keys(D.meta.bdg || {}).forEach(k => { const d = D.meta.bdg[k]; if (d && d > '2001') c[d] = (c[d] || 0) + 1; }); x.hunt5 = Object.keys(c).some(d => c[d] >= 5); }
+  for (let w = 0; w <= weekOf(n); w++){ if (wkB(w) > n || freezeCountWeek(w) < FREEZE_PER_WEEK) continue; let ok = true; for (let j = wkA(w); j <= wkB(w); j++) if (!okS(j)) ok = false; if (ok) x.guard = true; }
+  x.read10 = (bs.read10 || 0) >= 5; x.ck1 = (bs.ck1 || 0) >= 1; x.early3 = (bs.first || []).length >= 3;
+  { const ld = bs.lvDays || {}; x.lvTog = Object.keys(lvd).some(k => ld[lvd[k]] >= 1); }
+  { const bl = bs.bdays || []; let c = 0; bl.forEach(md => { for (let i = 0; i <= n; i++) if (D.days[i].slice(5) === md && okDay(i)){ c++; break; } }); x.party = c >= 3; }
+}
+
+function badgeEval(s){
+  const x = xstats(), got = new Set();
+  BADGES.forEach(b => { if (b.k === 'fam' ? x.fam[b.fk] >= b.g : b.k ? s[b.k] >= b.g : (b.f && b.f(s,x))) got.add(b.id); });
+  if (D && D.meta && D.meta.bdg) Object.keys(D.meta.bdg).forEach(id => { if (BMAP[id]) got.add(id); });
+  let xp1 = s.xp; got.forEach(id => { xp1 += BMAP[id].xp; });
+  BADGES.forEach(b => { if (b.lv != null && levelOf(xp1) >= b.lv) got.add(b.id); });
+  BADGES.forEach(b => { if (b.f2 && b.f2(got)) got.add(b.id); });
+  return got;
+}
+/* Ghi ngày mở huy hiệu (lần đầu chạy bản này: ghi mốc cũ, không tính vào XP tuần) */
+function bdgRecord(s){
+  if (!D || PRACTICE || !s.bset) return;
+  let m = D.meta.bdg, first = false; if (!m){ m = D.meta.bdg = {}; first = true; }
+  let ch = first; s.bset.forEach(id => { if (!m[id]){ m[id] = first ? '2000-01-01' : D.today; ch = true; } });
+  if (ch) markDirty('META');
+}
+
+/* Ghi giờ tick (dạng HHMM:mã, thêm :L nếu là bổ sung ngày hôm trước) để mở huy hiệu theo giờ */
+function ttRec(c, i, nv){
+  if (PRACTICE || !D || i > T) return;
+  const ds = D.days[i], tt = D.meta.tt = D.meta.tt || {}, arr = (tt[ds] || []).filter(s => s.split(':')[1] !== c);
+  if (nv){ const n = new Date(); arr.push(pad(n.getHours()) + pad(n.getMinutes()) + ':' + c + (i < T ? ':L' : '')); }
+  if (arr.length) tt[ds] = arr; else delete tt[ds];
+  markDirty('META');
+}
 function summary(){
   const s = {ticks:0, xp:0, perfect:0, pweeks:0, cur:0, best:0, distinct:0, save:0, p0:0, p1:0, p2:0};
   if (T < 0 || PRACTICE) return s;
@@ -2528,10 +2834,11 @@ function summary(){
     let ok = true; for (let j = a; j <= b; j++){ if (isOff(j)) continue; const st = dayStat(j); if (!st.total || st.done < st.total) ok = false; } if (ok) s.pweeks++; }
   D.habits.forEach(h => { const arr = D.daily[h.code] || D.weekly[h.code]; if (arr && arr.some(v => v)) s.distinct++; });
   PHASES.forEach((ph,k) => { const b = Math.min(ph.b, D.days.length-1); if (T >= b){ const p = rangePct(ph.a, b); if (p != null && p >= 0.7 - 1e-9) s['p'+k] = 1; } });
+  s.bset = badgeEval(s); s.bset.forEach(id => { s.xp += BMAP[id].xp; });
   return s;
 }
 function levelOf(xp){ let k = 0; LEVELS.forEach((l,j) => { if (xp >= l.xp) k = j; }); return k; }
-const earned = s => BADGES.filter(b => s[b.k] >= b.g).map(b => b.n);
+const earned = s => s.bset ? BADGES.filter(b => s.bset.has(b.id)).map(b => b.n) : [];
 
 /* ---- nội dung từng thói quen ---- */
 const NO = c => byCode[c] ? pad(byCode[c].no) : c;
@@ -2549,7 +2856,7 @@ function verOn(kind, c, d){ const cur = kind === 'l' ? D.meta.lists[c] : D.meta.
   if (!h || !h.length) return cur; let v = h[0][1]; for (const x of h) if (x[0] <= d) v = x[1]; return v; }
 const verAt = (kind, c) => verOn(kind, c, atDate());
 /* Ghi phiên bản từ ngày i: only = chỉ ngày i (ngày sau giữ bản cũ); không only = áp dụng từ ngày i trở đi (xoá các bản sau) */
-function setVer(kind, c, val, i, only){ if (i == null) i = vi; i = Math.max(0, Math.min(i, D.days.length-1));
+function setVer(kind, c, val, i, only){ ixEdit(); if (i == null) i = vi; i = Math.max(0, Math.min(i, D.days.length-1));
   const d = D.days[i], nx = D.days[i+1], H = (D.meta.hist = D.meta.hist || {}), K = (H[kind] = H[kind] || {});
   let h = K[c]; if (!h || !h.length){ const old = kind === 'l' ? D.meta.lists[c] : D.meta.plans[c]; h = K[c] = old === undefined ? [] : [['0000-00-00', old]]; }
   if (only && nx && !h.some(x => x[0] === nx)){ const keep = verOn(kind, c, nx); if (keep !== undefined) h.push([nx, keep]); }
@@ -2630,7 +2937,7 @@ function subline(c){
 }
 
 /* ================== Hiển thị ================== */
-function render(){
+function render(){ if (typeof loadBS === 'function') loadBS(); if (typeof bdAsk === 'function') setTimeout(bdAsk, 1500);
   if (!D) return;
   const s = summary();
   $('#root').innerHTML = `<div class="layout tab-${tab}"><aside class="side">${side(s)}</aside><main>
@@ -3161,7 +3468,37 @@ function pdayHtml(){
     return `<div class="prow"><div class="pn">${ICON[c]||'⭐'} ${NO(c)} · ${esc(h.name)}${e.d ? ' <b class="okb">✓</b>' : ''}</div>${body}</div>`; }).join('');
   return `<div class="sec"><h3>Ngày ${dm(PROFSEL)}</h3><span>cách chấm từng thói quen</span></div><div class="card pd">${rows || '<div class="muted">Ngày này chưa có ghi nhận.</div>'}</div>`;
 }
+/* ===== Ngày sinh: hỏi lần đăng nhập, lưu đủ ngày tháng năm ở máy chủ (ai cũng thấy ngày-tháng, năm chỉ mình và quản lý) ===== */
+async function bdSave(txt){
+  const t = String(txt || '').trim();
+  if (!t){ D.meta.bd = ''; if (ME) ME.bday = ''; markDirty('META'); try { await call('setBirthday', TOKEN, ''); } catch(e){} toast('Đã xoá ngày sinh'); return true; }
+  const m = t.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (!m || +m[1] < 1 || +m[1] > 31 || +m[2] < 1 || +m[2] > 12 || +m[3] < 1930 || +m[3] > new Date().getFullYear() - 5){ toast('Nhập theo dạng ngày/tháng/năm, ví dụ 05/09/1990'); return false; }
+  const ymd = m[3] + '-' + pad(+m[2]) + '-' + pad(+m[1]);
+  try { await call('setBirthday', TOKEN, ymd); } catch(e){ toast(e.message || 'Chưa lưu được ngày sinh'); return false; }
+  if (ME) ME.bday = ymd; D.meta.bd = ymd.slice(5); D.meta.bdNo = 0; markDirty('META'); toast('🎂 Đã lưu ngày sinh'); try { ixAward(); } catch(e){}
+  return true;
+}
+let BDASKED = false;
+function bdAsk(){
+  if (BDASKED || !D || PRACTICE || !ME || !TOKEN) return; BDASKED = true;
+  if (ME.bday){ if (D.meta.bd !== ME.bday.slice(5)){ D.meta.bd = ME.bday.slice(5); markDirty('META'); } return; }
+  if (D.meta.bdNo) return;
+  const el = document.createElement('div'); el.className = 'pvo';
+  el.innerHTML = `<div class="pvc"><h3 style="margin:2px 0 6px">🎂 Sinh nhật của bạn là ngày nào?</h3>
+    <div class="muted" style="font-size:13px;margin-bottom:10px">Để nhân vật chúc mừng và mở huy hiệu sinh nhật. Mọi người chỉ thấy ngày và tháng; năm sinh chỉ bạn và quản lý thấy.</div>
+    <input type="text" inputmode="numeric" placeholder="dd/mm/yyyy" maxlength="10" data-bdin style="width:100%;font-size:18px;padding:10px;box-sizing:border-box">
+    <div class="btns" style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn" data-bdok>Lưu</button><button class="btn ghost" data-bdlater>Để sau</button><button class="btn ghost" data-bdno>Đừng hỏi nữa</button></div></div>`;
+  document.body.appendChild(el);
+  el.addEventListener('click', async e => {
+    if (e.target.closest('[data-bdok]')){ if (await bdSave(el.querySelector('[data-bdin]').value)) el.remove(); }
+    else if (e.target.closest('[data-bdno]')){ D.meta.bdNo = 1; markDirty('META'); el.remove(); }
+    else if (e.target.closest('[data-bdlater]')) el.remove();
+  });
+}
+
 async function openProfile(id){
+  ixSeen(id);
   PROFSEL = '';
   PROF = PROFC[id] || {id, loading: true}; drawProfile();
   try { PROF = PROFC[id] = await call('getProfile', TOKEN, id); }
@@ -3290,10 +3627,14 @@ function badges(s){
   const strip = (ln, cur) => LEVELS.map((l,j) => `<div data-pv="${ln}:${j}" class="${j<=lk?'got':'lock'} ${j===lk?'cur':''}"><span class="evl">${evo(ln, 'base', j)}</span>${j+1}. ${LINES[ln].st[j]}<small>${l.xp} XP</small></div>`).join('');
   const ladder = strip(lo.l);
   const lines = Object.keys(LINES).map(k => `<button class="pick ${k===lo.l?'on':''}" data-line="${k}"><span class="evp">${evo(k, 'base', lk)}</span><b>${LINES[k].n}</b><small>${LINES[k].st[lk]}</small></button>`).join('');
-  const got = BADGES.filter(b => s[b.k] >= b.g).length;
-  const bg = BADGES.map(b => { const v = Math.min(s[b.k], b.g), on = s[b.k] >= b.g;
+  const has = id => !!(s.bset && s.bset.has(id));
+  const vis = BADGES.filter(b => !b.hid), hid = BADGES.filter(b => b.hid);
+  const got = vis.filter(b => has(b.id)).length, hOpen = hid.filter(b => has(b.id));
+  const cardOf = b => { const on = has(b.id), v = b.k && b.k !== 'fam' ? Math.min(s[b.k], b.g) : b.k === 'fam' ? Math.min((xstats().fam[b.fk]||0), b.g) : 0;
     return `<div class="badge ${on?'on':'off'}"><div class="bi">${b.ic}</div><b>${b.n}</b><small>${b.d}</small>
-      ${on ? '<small style="color:var(--mint);font-weight:700">Đã đạt ✓</small>' : `<div class="bp"><i style="width:${Math.round(v/b.g*100)}%"></i></div><small>${v}/${b.g}</small>`}</div>`; }).join('');
+      ${on ? `<small style="color:var(--mint);font-weight:700">Đã đạt ✓ +${b.xp} XP</small>` : b.k ? `<div class="bp"><i style="width:${Math.round(v/b.g*100)}%"></i></div><small>${v}/${b.g} · +${b.xp} XP</small>` : `<small>+${b.xp} XP</small>`}</div>`; };
+  const bg = vis.map(cardOf).join('') + hOpen.map(cardOf).join('')
+    + (hOpen.length < hid.length ? `<div class="badge hid off"><div class="bi">🎁</div><b>Còn ${hid.length - hOpen.length} huy hiệu ẩn</b><small>Không ai biết trước cách mở. Cứ làm đều, bất ngờ sẽ tới.</small></div>` : '');
   return `<div class="card"><div class="lvl">${(() => { const dc = sceneDeco(); return `<div class="big evbig ${dc.cls}" data-pv="${lo.l}:${lk}">${evfx(lo.l, lk, evo(lo.l, 'base', lk, 'big'))}${dc.html}</div>`; })()}<div style="flex:1">
       <div class="muted" style="font-size:13px">Cấp ${lk+1}/${LEVELS.length} <button class="sndb" data-snd title="Bật/tắt tiếng nhân vật">${SND_ON ? '🔊' : '🔇'}</button></div><h2>${lvName(lk)}</h2>
       <div class="xpbar"><i style="width:${Math.round(prog*100)}%"></i></div>
@@ -3304,7 +3645,7 @@ function badges(s){
       <div class="rules">Cách tính XP: mỗi tick hằng ngày +${XP_DAILY} · mỗi tick hằng tuần +${XP_WEEKLY} · ngày hoàn hảo 100% +${XP_PERFECT}.<br>
       Giữ lửa = làm từ 2/3 thói quen trong ngày · 🧊 2 thẻ/tuần, không cộng dồn.</div></div>
     ${chalHtml()}
-    <div class="sec"><h3>Huy hiệu</h3><span>${got}/${BADGES.length} đã đạt</span></div><div class="badges">${bg}</div>`;
+    <div class="sec"><h3>Huy hiệu</h3><span>${got}/${vis.length} đã đạt · ẩn ${hOpen.length}/${hid.length}</span></div><div class="badges">${bg}</div>`;
 }
 
 /* ================== Hiệu ứng pixel (canvas) ================== */
@@ -3392,7 +3733,7 @@ document.addEventListener('click', e => {
   const pv = document.getElementById('pv');
   if (pv){
     const pk = e.target.closest('[data-pvpick]');
-    if (pk && D){ const ln = pk.dataset.pvpick; D.meta.look = {l: ln}; markDirty('META'); pv.remove(); render(); toast(LINES[ln].ic + ' Đã chọn hướng ' + LINES[ln].n); return; }
+    if (pk && D){ const ln = pk.dataset.pvpick; D.meta.look = {l: ln}; markDirty('META'); ixLine(ln); pv.remove(); render(); toast(LINES[ln].ic + ' Đã chọn hướng ' + LINES[ln].n); return; }
     if (e.target === pv || e.target.closest('.pvx')) pv.remove();
     return;
   }
@@ -3455,6 +3796,8 @@ const pick = a => a[Math.random()*a.length|0];
 /* ---- Thoại theo tình huống: điền chỗ trống, chọn câu theo trạng thái ---- */
 const XUNG = {sage: k => k < 2 ? 'tại hạ' : k < 4 ? 'ta' : k < 7 ? 'bản tọa' : k < 9 ? 'ta' : 'bản tiên'};
 function fill(t, s, ln, k){ ln = ln || s.ln; if (k == null) k = s.lk; return t.replace(/\{left\}/g, s.left).replace(/\{streak\}/g, s.streak).replace(/\{need\}/g, s.need).replace(/\{day\}/g, s.day || '').replace(/\{total\}/g, s.total || '').replace(/\{quota\}/g, s.quota || '').replace(/\{ta\}/g, (XUNG[ln] ? XUNG[ln](k) : '')).replace(/\{goi\}/g, (GOI[ln] ? GOI[ln](k) : '')); }
+const BADGE_SAY = {"cat": {"de": ["Sen vừa mở «{badge}»! Cho phép vuốt lông {ta} một cái, một cái thôi.", "«{badge}» đây sen. Làm đều thế thì tối nay thêm pate nhé.", "Huy hiệu «{badge}» hả? Để {ta} ngửi thử… ừm, mùi chăm chỉ, được."], "moc": ["«{badge}»! Sen bền bỉ từng ngày, {ta} tự hào xù cả đuôi.", "Bao nhiêu ngày không bỏ cuộc mới có «{badge}». Hôm nay {ta} ngồi lên đùi sen, đặc ân đấy.", "«{badge}»! Cả phố mèo phải nghe chuyện này. Sen, gãi cằm ăn mừng mau."], "tinhco": ["Ơ kìa, «{badge}» rơi từ đâu xuống? Sen may như mèo vớ được cá.", "Không định mà vẫn trúng «{badge}». Chắc sen có số làm mèo.", "Vừa ngủ dậy, {ta} đã thấy «{badge}». Trùng hợp kiểu này thì thích."], "hai_lo": ["«{badge}»… sen ơi, {ta} vừa cười vừa lăn ra sàn đây.", "Huy hiệu «{badge}» cơ đấy. Để {ta} cất kỹ, không kể ai đâu… chắc vậy.", "Được «{badge}» rồi nhé. Mai nhớ làm sớm cho {ta} đỡ lo."], "kho": ["«{badge}»!!! Phải nhảy lên nóc tủ, {ta} mới đủ cao ngắm thành tích này.", "Không phải ai cũng chạm được «{badge}». Sen đi đường dài thật, {ta} cúi đầu… một chút.", "Đây là «{badge}» đấy. Từ nay sen được đánh thức {ta} bất cứ lúc nào. Trừ ban đêm."], "hai_la": ["«{badge}»? Sen nghịch y như mèo con, {ta} duyệt.", "Sen làm trò gì mà ra «{badge}» vậy? Thôi, {ta} thích, cho qua."]}, "sage": {"de": ["«{badge}» đã vào túi. Mỗi ngày một bước, đạo tâm vững thêm một phân.", "Tích tiểu thành đại, đạo hữu nay được «{badge}». Chúc mừng.", "Một viên đá nhỏ trên đường tu: «{badge}». Cứ thế mà đi, đạo hữu."], "moc": ["«{badge}»! Đạo hữu vừa phá một tầng bình cảnh, {ta} cũng thấy linh khí dâng trào.", "Bao ngày khổ luyện không bỏ, nay kết thành «{badge}». Đạo tâm này đáng nể.", "Trời đất chứng giám: đạo hữu đạt «{badge}». Tu vi đã khác hẳn ngày đầu."], "tinhco": ["Cơ duyên tự tìm tới: «{badge}». Đạo hữu không cầu mà được.", "Lạ thay, «{badge}» rơi xuống như sao băng. Thiên ý đấy, đạo hữu cứ nhận.", "Vô tâm mà đắc đạo, chính là «{badge}» này."], "hai_lo": ["«{badge}»… đạo hữu tu theo lối riêng ghê, {ta} không dám bình luận.", "Huy hiệu «{badge}» đây. Tu tiên cũng có lúc lạc đường, quay về là được.", "Được «{badge}» rồi. Đạo hữu đừng để sư huynh đệ biết, kẻo cười."], "kho": ["«{badge}»! Cảnh giới này trăm người mới có một, {ta} phải đứng dậy hành lễ.", "Phi thăng một bậc: «{badge}». Đạo hữu đã đi con đường mà nhiều người bỏ dở.", "Đại công cáo thành, «{badge}»! Ngày sau sử sách tu tiên sẽ ghi tên đạo hữu."], "hai_la": ["«{badge}»… đạo hữu ngộ ra một môn tâm pháp lạ, {ta} chưa thấy trong kinh thư.", "Thiên hạ tu một đường, đạo hữu tu đường riêng: «{badge}». Cũng là một cái duyên."]}, "tree": {"de": ["Ồ, «{badge}». Người làm vườn tưới đều tay, cây cũng thấy mát rễ.", "Thêm một chiếc lá non: «{badge}». Cứ chậm mà chắc, người làm vườn ạ.", "«{badge}» đây. Mỗi ngày một gáo nước, vườn xanh lên trông thấy."], "moc": ["«{badge}»… vậy là {ta} vừa mọc thêm một vòng gỗ vì người làm vườn đấy.", "Rễ đã bám sâu rồi. Bao ngày người làm vườn không bỏ, nay có «{badge}».", "Gió thổi qua tán lá cũng thì thầm: «{badge}». Cây già này mừng lắm."], "tinhco": ["Hạt nào rơi đúng chỗ thế nhỉ? «{badge}» tự mọc lên giữa vườn.", "Không trồng mà vẫn ra quả: «{badge}». Đất lành thật.", "Ồ, một bông hoa lạ nở: «{badge}». Cây sống lâu mới thấy."], "hai_lo": ["«{badge}» à… ha ha, cây cười rung cả lá đây.", "Huy hiệu «{badge}». Vườn nào cũng có cỏ dại, nhổ dần là được.", "Được «{badge}» rồi. Mai nhớ tưới sớm hơn chút cho {ta} đỡ khát nhé."], "kho": ["«{badge}»! Đứng đây trăm năm, {ta} mới thấy được mấy người như thế.", "Cây cổ thụ nào cũng từ một hạt kiên nhẫn. Người làm vườn vừa chứng minh: «{badge}».", "Đây là «{badge}» đấy. Vòng gỗ năm nay {ta} sẽ khắc tên người làm vườn."], "hai_la": ["«{badge}»? Người làm vườn này vui tính thật, cây rung lá cười khúc khích.", "Vườn nào cũng có một góc lạ. Góc của người làm vườn tên là «{badge}»."]}, "dragon": {"de": ["«{badge}». Chuyện nhỏ, nhưng thời cá chép ta cũng bắt đầu từ những bước nhỏ thế.", "Được «{badge}» rồi. Mây đã bắt đầu tụ quanh {goi} đấy.", "Thêm một vảy rồng: «{badge}». Cứ đều như vậy, {goi}."], "moc": ["«{badge}»! Năm xưa ta vượt vũ môn cũng nhờ bơi đều từng ngày như {goi}.", "Mây mưa nổi lên mừng «{badge}». Bao ngày bền bỉ của {goi} không uổng.", "Long châu sáng thêm một phần: «{badge}». Ta công nhận {goi}."], "tinhco": ["«{badge}» tự rơi vào tay {goi}? Ngay cả rồng cũng ghen với vận may này.", "Trời ban «{badge}» chẳng báo trước. Ta thấy khí vận trên người {goi}.", "Hừm, «{badge}». Thời cá chép ta cũng từng vớ được viên ngọc như thế."], "hai_lo": ["«{badge}»… ta giả vờ không thấy, giữ thể diện cho {goi}.", "Huy hiệu «{badge}». Rồng cũng có ngày ngủ quên trong mây, ta hiểu.", "Được «{badge}». Chuyện này đừng kể với cá chép trong hồ nhé, {goi}."], "kho": ["«{badge}»! Ta cuộn mình bay ba vòng trời để mừng {goi}.", "Kẻ vượt được cửa này hiếm như rồng giữa đàn cá: «{badge}». Đó chính là {goi}.", "Long châu đã soi thấy «{badge}». Từ nay ta coi {goi} ngang hàng."], "hai_la": ["«{badge}»? Ta sống nghìn năm chưa thấy ai được cái này. Đúng là kỳ nhân, {goi}.", "Rồng ta cũng phải ngoái lại nhìn: «{badge}». Thú vị đấy, {goi}."]}, "phoenix": {"de": ["«{badge}»! Thêm một thanh củi, lửa của {goi} cháy đều rồi đó!", "Tí tách, «{badge}» bén lửa rồi! Cứ thế mà giữ nhé, {goi}.", "Mỗi việc nhỏ là một tia lửa, và «{badge}» vừa lóe lên!"], "moc": ["«{badge}»! Lửa bùng cháy cao quá, {ta} muốn hót vang cả trời!", "Bao ngày {goi} tiếp củi không ngừng, nay rực lên «{badge}»!", "Nhìn kìa, «{badge}»! Ngọn lửa này do chính tay {goi} nhóm từng ngày."], "tinhco": ["Một tia lửa lạc mà thành «{badge}»! Vận may cũng biết cháy đấy!", "Ơ, «{badge}» tự bùng lên! Lửa hợp với {goi} thật.", "Không ai đốt mà lửa vẫn cháy: «{badge}». Tuyệt!"], "hai_lo": ["«{badge}»… lửa hơi khói tí, nhưng vẫn là lửa, ha ha!", "Huy hiệu «{badge}». Từ tro tàn đứng dậy, {ta} rành chuyện này lắm!", "Được «{badge}» rồi! Mai thêm củi sớm cho {ta} nhé, {goi}."], "kho": ["«{badge}»!!! Lửa cháy tới tận trời, {ta} vui đến mức muốn tái sinh thêm lần nữa!", "Chỉ ngọn lửa bền nhất mới tới được «{badge}». Và đó là lửa của {goi}!", "«{badge}»! Từ nay tro tàn cũng phải gọi {goi} là huyền thoại."], "hai_la": ["«{badge}»! Ha ha, lửa của {goi} cháy kiểu gì lạ thế, {ta} thích!", "Lửa thường cháy thẳng, lửa của {goi} cháy xoắn ốc: «{badge}»!"]}, "hero": {"de": ["Báo cáo: mục tiêu «{badge}» đã chiếm được, {goi}!", "«{badge}» vào kho chiến lợi phẩm. Hành quân đều thế là chuẩn, sir!", "Một trận nhỏ thắng gọn: «{badge}». Tiếp tục tiến lên!"], "moc": ["Báo cáo {goi}: «{badge}»! Bao ngày hành quân không nghỉ, toàn quân đứng nghiêm chào!", "«{badge}»! Mục tiêu lớn đã hạ. Skål!", "Chiến dịch dài, kỷ luật thép, kết quả là «{badge}». Xin chúc mừng, {goi}."], "tinhco": ["Báo cáo: tình cờ chiếm thêm cứ điểm «{badge}»! Trinh sát cũng không ngờ.", "«{badge}» về tay ta không tốn viên đạn nào. Vận may đứng về phía {goi}!", "Ngoài kế hoạch nhưng vẫn ghi công: «{badge}», sir!"], "hai_lo": ["Báo cáo… ờ, «{badge}». Chuyện này {ta} không ghi vào sổ chiến sự.", "«{badge}»! Lùi một bước để phản công, chiến thuật cổ điển đấy, {goi}.", "Huy hiệu «{badge}». Mai {goi} nhớ ra quân sớm, {ta} đứng gác mỏi chân rồi."], "kho": ["Toàn quân nghe lệnh! «{badge}» đã về tay {goi}! Skål!", "«{badge}»! Chiến công này {ta} sẽ kể cho lính mới mãi về sau.", "Báo cáo: mục tiêu tối thượng «{badge}» đã hạ. Xin nghiêng cờ chào {goi}."], "hai_la": ["Báo cáo: phát hiện chiến thuật lạ «{badge}». Bộ chỉ huy đang… nghiên cứu.", "«{badge}»! Sách binh pháp không có chiêu này, {goi}. Ghi công riêng."]}, "rocket": {"de": ["Tín hiệu xanh: «{badge}» đã mở. Nhiên liệu nạp thêm một vạch.", "Trạm mặt đất xác nhận «{badge}». Quỹ đạo ổn định, {goi}.", "«{badge}» ghi vào nhật ký bay. Tiếp tục đếm ngược ngày mai."], "moc": ["Rời bệ phóng thành công: «{badge}»! Bao ngày nạp nhiên liệu đều đặn đã có kết quả.", "«{badge}»! Cả trung tâm điều khiển đứng dậy vỗ tay, {goi}.", "Đã vượt tầng khí quyển: «{badge}». Tầm nhìn từ đây đẹp lắm."], "tinhco": ["Phát hiện vật thể lạ trên radar… là «{badge}»! Bất ngờ dễ thương.", "Lệch quỹ đạo một chút mà trúng ngay «{badge}». May mắn cấp vũ trụ.", "Tín hiệu lạ từ không gian: «{badge}». Xin chúc mừng, {goi}."], "hai_lo": ["«{badge}»… trung tâm điều khiển xin phép tắt micro để cười.", "Huy hiệu «{badge}». Tàu lâu lâu cũng trôi lệch, chỉnh lại hướng là ổn.", "Được «{badge}». Mai {goi} lên tàu sớm giúp, {ta} chờ ở bệ phóng nãy giờ."], "kho": ["«{badge}»! Ra khỏi hệ Mặt Trời luôn rồi, {goi}!", "Hiếm con tàu nào bay xa được tới «{badge}». Hành trình này đi vào lịch sử.", "Trung tâm điều khiển xác nhận: «{badge}». Cả bầu trời đang nhìn về phía {goi}."], "hai_la": ["«{badge}»… trung tâm điều khiển chưa có quy trình cho tình huống này. Đang soạn gấp.", "Thao tác ngoài sổ tay bay: «{badge}». Không sai luật, chỉ hơi… sáng tạo."]}, "sci": {"de": ["Dữ liệu ghi nhận: «{badge}». Xu hướng đi lên, giáo sư ạ.", "«{badge}» đã được kiểm chứng. Lặp lại đều tay là phương pháp chuẩn.", "Thí nghiệm hôm nay cho kết quả: «{badge}». Sai số bằng không."], "moc": ["«{badge}»! Bao ngày đo đạc liên tục, đồ thị của giáo sư đẹp như sách giáo khoa.", "Định luật mới được xác lập: kiên trì đều đặn thì ra «{badge}».", "Phải ghi đậm vào sổ: giáo sư đạt «{badge}». Mẫu dữ liệu này hiếm lắm."], "tinhco": ["Ồ, một kết quả ngoài giả thuyết: «{badge}». Khoa học cần những bất ngờ thế này.", "«{badge}»! Xác suất thấp nhưng vẫn xảy ra, tôi phải chép lại ngay.", "Không ai thiết kế thí nghiệm này mà vẫn ra «{badge}». Thú vị thật."], "hai_lo": ["«{badge}»… tôi xếp mẫu này vào mục ngoại lệ đáng yêu.", "Huy hiệu «{badge}». Quán tính đôi khi kéo lùi, nhưng lực đẩy của giáo sư vẫn còn.", "Được «{badge}». Ghi chú cho ngày mai: làm sớm để giảm sai số."], "kho": ["«{badge}»! Kết quả này đủ để đăng tạp chí khoa học, giáo sư.", "Hiếm có chuỗi dữ liệu nào bền như thế: «{badge}». Tôi xin ngả mũ.", "«{badge}»! Phương trình của giáo sư giờ đã có nghiệm đẹp nhất."], "hai_la": ["«{badge}». Giáo sư vừa tạo ra một hiện tượng chưa có tên, tôi tạm gọi như vậy.", "Ghi vào phụ lục thí nghiệm: «{badge}». Không ai hỏi, nhưng kết quả rất vui."]}, "bot": {"de": ["Quét xong: «{badge}» đã mở. Hiệu suất của {goi} tăng 1 đơn vị.", "«{badge}» được lưu. Đơn vị này ghi nhận: làm đều tay, không lỗi.", "Thông báo: «{badge}». Mức hài lòng của đơn vị này: cao."], "moc": ["«{badge}»! Đơn vị này đã kiểm tra ba lần, kết quả không phải lỗi.", "Phân tích chuỗi ngày của {goi}: ổn định tuyệt đối. Phần thưởng: «{badge}».", "Cảnh báo: mức tự hào vượt ngưỡng. Nguyên nhân: «{badge}»."], "tinhco": ["Xác suất mở «{badge}» rất thấp. Vậy mà {goi} làm được. Đang cập nhật mô hình.", "Phát hiện sự kiện ngẫu nhiên: «{badge}». Đơn vị này không dự đoán được, thích thật.", "«{badge}». Không có trong kế hoạch, nhưng kết quả hợp lệ."], "hai_lo": ["«{badge}»… đơn vị này đang cố tỏ ra không buồn cười. Thất bại.", "Huy hiệu «{badge}». Lỗi nhỏ đã được ghi nhận và tha thứ.", "Được «{badge}». Gợi ý tối ưu: ngày mai bắt đầu sớm hơn."], "kho": ["«{badge}»! Đơn vị này đề nghị nâng {goi} lên phiên bản huyền thoại.", "Kết quả quét: «{badge}». Không mô hình nào dự đoán được mức bền bỉ này.", "Hệ thống nhấp nháy đèn mừng «{badge}». Đơn vị này… cảm động. Có thể là lỗi."], "hai_la": ["«{badge}». Hành vi này không có trong hướng dẫn sử dụng. Đơn vị này đã bổ sung.", "Phát hiện thao tác bất thường nhưng vô hại: «{badge}». Mức giải trí: cao."]}, "wolf": {"de": ["«{badge}». Con mồi nhỏ, nhưng sạch gọn.", "Thêm «{badge}». Bầy thấy rồi, {goi}.", "«{badge}». Đi đều. Thế là tốt."], "moc": ["«{badge}». Bao đêm không bỏ cuộc săn. Cả bầy hú vang cho {goi}.", "Tôi ít khi nói. Nhưng «{badge}» thì đáng nói.", "«{badge}»! Dấu chân {goi} giờ cả rừng đều biết."], "tinhco": ["«{badge}» tự chạy vào tầm săn. Bro may thật.", "Không rình mà vẫn trúng: «{badge}». Mũi thính đấy, {goi}.", "«{badge}». Rừng đôi khi tặng quà. Cứ nhận."], "hai_lo": ["«{badge}». Tôi không cười. Chỉ hơi nhếch mép.", "Huy hiệu «{badge}». Sói giỏi cũng có hôm lạc dấu.", "«{badge}». Mai đi săn sớm, bro."], "kho": ["«{badge}». Cả bầy cúi đầu. Tôi cũng vậy.", "Con mồi lớn nhất mùa: «{badge}». Hú lên đi, {goi}!", "«{badge}». Hiếm sói nào đi được xa vậy. Tôi theo {goi}."], "hai_la": ["«{badge}». Lạ. Nhưng tôi thích.", "Cả bầy đứng nhìn {goi}. «{badge}». Không ai nói gì."]}, "castle": {"de": ["Tâu bệ hạ, «{badge}» đã được dâng lên. Thêm một viên gạch vững.", "«{badge}». Công trường hôm nay chạy đều, bệ hạ yên lòng.", "Muôn tâu, «{badge}» đã vào kho báu hoàng gia."], "moc": ["«{badge}»! Tường thành cao thêm một tầng nhờ bệ hạ bền chí bao ngày.", "Tâu bệ hạ, cả triều đình đang mở tiệc mừng «{badge}».", "Phụng sự bao năm, hiếm khi {ta} được tấu tin vui lớn như «{badge}»."], "tinhco": ["Tâu bệ hạ, thợ đào móng vừa tìm thấy «{badge}». Quả là điềm lành.", "«{badge}» tự đến cửa thành. Vận nước đang hưng, bệ hạ ạ.", "Bất ngờ thay: «{badge}». Xin ghi ngay vào sử ký."], "hai_lo": ["Tâu… «{badge}». Cho {ta} quay đi giấu nụ cười một chút.", "Huy hiệu «{badge}». Thành Rome cũng không xây xong trong một ngày, bệ hạ ạ.", "«{badge}». Mai bệ hạ thượng triều sớm giúp, {ta} đa tạ."], "kho": ["«{badge}»! Chuông khắp kinh thành đã điểm, muôn dân tung hô bệ hạ!", "Tâu bệ hạ, «{badge}» là viên ngọc quý nhất trên vương miện.", "Tòa tháp cao nhất đã xong: «{badge}». Bệ hạ làm nên lịch sử."], "hai_la": ["Tâu bệ hạ, «{badge}»… triều đình chưa có lễ nghi cho chuyện này. Thần xin soạn gấp.", "«{badge}». Sử quan hỏi có nên ghi không, thần bảo ghi, ghi thật to."]}, "star": {"de": ["Một đốm sáng nhỏ vừa thắp: «{badge}». Đẹp lắm, lữ khách.", "«{badge}». Bầu trời của lữ khách thêm một vì sao.", "Từng bước nhỏ cũng thành chòm sao: «{badge}»."], "moc": ["«{badge}»… cả dải ngân hà như sáng lên vì lữ khách.", "Bao đêm lữ khách không bỏ đường, nay bầu trời khắc «{badge}».", "Ánh sáng đi xa lắm mới tới, như «{badge}» hôm nay."], "tinhco": ["Sao băng vừa rơi đúng chỗ lữ khách đứng: «{badge}».", "«{badge}». Có những ánh sáng chẳng ai hẹn mà vẫn tới.", "Một vì sao lạc vào túi lữ khách: «{badge}»."], "hai_lo": ["«{badge}»… sao trên trời cũng nháy mắt trêu lữ khách kìa.", "Huy hiệu «{badge}». Đêm nào chẳng có mây, rồi trời lại trong.", "«{badge}». Mai thắp đèn sớm nhé, {ta} chờ dưới bầu trời này."], "kho": ["«{badge}»! Lữ khách vừa thành một chòm sao có tên trên bầu trời.", "Ít ánh sáng nào đi xa được tới «{badge}». Ngắm mãi, {ta} vẫn lặng người ngắm mãi.", "«{badge}»… nếu bầu trời biết nói, nó sẽ gọi tên lữ khách."], "hai_la": ["«{badge}». Có những vì sao đi đường vòng, lữ khách là một trong số đó.", "Sao trên trời đổi chỗ cho nhau để xem «{badge}» của lữ khách."]}};
+function badgeSay(b){ const lo = look(), k = levelOf(summary().xp), set = BADGE_SAY[lo.l] || BADGE_SAY.cat, arr = set[b.kd] || set.de; return fill(pick(arr).replace(/\{badge\}/g, b.n), {ln: lo.l, lk: k}, lo.l, k); }
 const mk = (base, not, dn, stk, ned) => s => fill(pick([...base, ...(s.done ? dn : not), ...(s.streak >= 2 ? stk : []), ...(s.need > 0 ? ned : [])]), s);
 const GOI = {sage: k => 'đạo hữu'};
 const SIT_ALWAYS = {angry:1, lvup:1, milestone:1, away:1, first:1};
@@ -3905,19 +4248,17 @@ function openJourney(){
     <div class="muted" style="font-size:13px;margin-bottom:10px">${s.xp} XP · chuỗi ${s.cur} ngày${pet ? ' · bạn đồng hành: ' + pet[1] + ' ' + pet[2] : ''}</div>
     <div class="jlist">${rows}</div>
     <div class="jpet">Bạn đồng hành lớn dần theo chuỗi ngày: ${PETS.map(p => `<span title="${p[2]}">${p[1]} ${p[0]}+</span>`).join(' ')}</div>
-    <label class="jbd">🎂 Ngày sinh (để nhân vật chúc mừng): <input type="text" inputmode="numeric" placeholder="dd/mm" maxlength="5" value="${bd ? bd.slice(3) + '/' + bd.slice(0,2) : ''}" data-bd></label></div>`;
+    <label class="jbd">🎂 Ngày sinh (để nhân vật chúc mừng): <input type="text" inputmode="numeric" placeholder="dd/mm/yyyy" maxlength="10" value="${ME && ME.bday ? ME.bday.split('-').reverse().join('/') : (bd ? bd.slice(3) + '/' + bd.slice(0,2) : '')}" data-bd></label></div>`;
   document.body.appendChild(el);
   el.addEventListener('click', e => { if (e.target === el || e.target.closest('.pvx')) el.remove(); });
-  el.querySelector('[data-bd]').addEventListener('change', e => { const m = e.target.value.trim().match(/^(\d{1,2})\/(\d{1,2})$/);
-    if (!e.target.value.trim()){ D.meta.bd = ''; markDirty('META'); toast('Đã xoá ngày sinh'); return; }
-    if (!m || +m[1] < 1 || +m[1] > 31 || +m[2] < 1 || +m[2] > 12){ toast('Nhập theo dạng ngày/tháng, ví dụ 05/09'); return; }
-    D.meta.bd = String(+m[2]).padStart(2,'0') + '-' + String(+m[1]).padStart(2,'0'); markDirty('META'); toast('🎂 Đã lưu ngày sinh'); });
+  el.querySelector('[data-bd]').addEventListener('change', e => { bdSave(e.target.value); });
 }
 document.addEventListener('click', e => { if (e.target.closest('[data-journey]')) openJourney(); });
 
 const CHEERS = ['Cố lên! 💪','Hôm nay tick đủ nhé!','Giữ lửa nào 🔥','Mình tin bạn!','Từng chút một ✨','Sắp lên cấp rồi!','Bạn làm tốt lắm 👏','90 ngày thôi mà!'];
 let TILTED = false, TILT_T = 0, TOUCH_N = 0, TOUCH_AT = 0;
 function cheer(el){
+  ixTap();
   el.classList.remove('jump'); void el.offsetWidth; el.classList.add('jump');
   let b = el.querySelector('.bub'); if (!b){ b = document.createElement('div'); b.className = 'bub'; el.appendChild(b); }
   const lo = look(), lk = D ? levelOf(summary().xp) : 0, v = voiceOf(lo.l, lk);
@@ -3947,9 +4288,9 @@ document.addEventListener('click', async e => {
   const t = e.target.closest('[data-tab],[data-nav],[data-tick],[data-go],[data-expand],[data-chk],[data-editlist],[data-cancellist],[data-savelist],[data-addli],[data-bchk],[data-bopen],[data-freeze],[data-unfreeze],[data-preview],[data-sug],[data-lsug],[data-logout],[data-rmode],[data-rgroup],[data-reset],[data-closepin],[data-unlockall],[data-prof],[data-closeprof],[data-showfut],[data-ln],[data-ck],[data-sk],[data-addsub],[data-scancel],[data-sadd],[data-sdel],[data-hfz],[data-hunfz],[data-pday],[data-editplan],[data-saveplan],[data-line]');
   if (!t || !D) return;
   const ds = t.dataset, c = ds.code;
-  if (ds.tab){ tab = ds.tab; render(); if (tab === 'rank' && BOARD) loadBoard(); if (tab === 'admin' && ADMIN) loadAdmin(); scrollTo({top:0,behavior:'smooth'}); return; }
+  if (ds.tab){ tab = ds.tab; ixTab(tab); render(); if (tab === 'rank' && BOARD) loadBoard(); if (tab === 'admin' && ADMIN) loadAdmin(); scrollTo({top:0,behavior:'smooth'}); return; }
   if (ds.logout){ doLogout(); return; }
-  if (ds.line){ D.meta.look = {l: ds.line}; markDirty('META'); render(); toast(LINES[ds.line].ic + ' Đã chọn hướng ' + LINES[ds.line].n); return; }
+  if (ds.line){ D.meta.look = {l: ds.line}; markDirty('META'); ixLine(ds.line); render(); toast(LINES[ds.line].ic + ' Đã chọn hướng ' + LINES[ds.line].n); return; }
   if (ds.rmode){ rankMode = ds.rmode; render(); return; }
   if (ds.rgroup){ rankGroup = ds.rgroup; render(); return; }
   if (ds.closepin){ NEWPIN = null; render(); return; }
@@ -4047,6 +4388,7 @@ function setDone(c, i, nv, opt){
   const before = summary(), bLvl = levelOf(before.xp), bBadges = earned(before), bDay = dayStat(i);
   arr[idx] = nv ? 1 : 0;
   markDirty(rowKeyOf(c,i));
+  if (isD) ttRec(c, i, nv);
   if (isD && c !== '01' && D.daily['01'] && activeDay(byCode['01'], i)){
     const want = satisfied('01', i), m01 = peek('01', D.days[i]).m;
     if (want && !D.daily['01'][i]) D.daily['01'][i] = 1;
@@ -4060,7 +4402,7 @@ function setDone(c, i, nv, opt){
     if (PRACTICE) toast('🌱 Chấm thử thôi, ngày mai mới tính điểm nhé!');
     else if (!counts) toast('👀 Đã lưu bản xem trước (chưa tính điểm)');
     else if (aLvl > bLvl){ levelUp(bLvl, aLvl); }
-    else if (newB.length){ confetti(); toast(`🏅 Huy hiệu mới: ${newB.join(', ')}`); }
+    else if (newB.length){ confetti(); bdgRecord(after); const nb = BADGES.filter(b => after.bset.has(b.id) && !before.bset.has(b.id)); const hb = nb.find(b => b.hid); toast(`🏅 Huy hiệu mới: ${nb.map(b => b.ic + ' ' + b.n + ' +' + b.xp + ' XP').join(', ')}${hb ? ' · ' + badgeSay(hb) : ''}`, hb ? 5200 : 3200); }
     else if (isD && !isLazy(T) && aDay.total && aDay.done === aDay.total && bDay.done < bDay.total){ confetti(); toast('🎉 Hoàn thành 100% hôm nay! +' + (XP_DAILY + XP_PERFECT) + ' XP'); }
     else if (opt.minimal) toast('⚡ Đã tick nhanh. Mai làm đầy đủ nhé!');
     else if (isD && okDay(i) && bDay.total && bDay.done/bDay.total < THRESHOLD - 1e-9) toast('🔥 Đã giữ lửa hôm nay!');
@@ -4080,7 +4422,7 @@ function liveUpdate(c, i){
   if (dc) dc.textContent = `Ngày ${i+1}/${D.days.length} · ${st.done}/${st.total} thói quen`;
 }
 let tt, subT;
-function toast(m){ const el = $('#toast'); el.textContent = m; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('on'), 2600); }
+function toast(m, ms){ const el = $('#toast'); el.textContent = m; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('on'), ms || 2600); }
 
 /* ================== Pháo hoa ================== */
 function levelUp(a, b){
@@ -4138,7 +4480,7 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 .run-km input,.run-min input{flex:1;min-width:0;border:1.5px solid var(--line);border-radius:10px;padding:9px 11px;font:inherit;font-size:14px;background:transparent;color:var(--ink)}
 .run-ocr{font-size:12px;color:var(--mint);white-space:nowrap}
 .run-note,.run-hint,.run-pace{font-size:12.5px;color:var(--muted);margin-bottom:8px}
-.run-hint{color:var(--gold)}
+.run-hint{color:var(--gold);text-wrap:balance}
 .run-msg{font-size:13px;margin:6px 0 8px;padding:8px 10px;border-radius:10px;background:var(--bg)}
 .run-msg.bad{color:var(--pink)}
 .run-submit{width:100%;padding:11px}
@@ -4194,7 +4536,7 @@ function runCard(){
     ${f.ocr && !f.busy && runNoRead() ? `<div class="run-msg">⏳ Chưa đọc nhanh được số km. Cứ nộp, số km sẽ cập nhật sau.</div>
     <div class="run-bug"><input type="text" maxlength="200" placeholder="Ghi chú thêm, ví dụ: chạy 5,2 km lúc 6h (không bắt buộc)" value="${esc(f.bugmsg || '')}" data-runbugmsg="1"></div>` : ''}
     <div class="run-km"><input type="text" inputmode="decimal" placeholder="Số km (app tự đọc từ ảnh)" value="${esc(f.km)}" data-runkm="1" readonly><span class="run-ocr" ${auto ? '' : 'hidden'}>📷 đọc từ ảnh</span></div>
-    <div class="run-min"><input type="text" inputmode="decimal" placeholder="Thời gian (phút)" value="${esc(f.min)}" data-runmin="1" readonly></div><div class="run-hint">🙏 Nộp nghiêm túc: đúng ảnh của bạn, đúng buổi tập.</div>
+    <div class="run-hint">🙏 Nộp nghiêm túc: đúng ảnh của bạn, đúng buổi&nbsp;tập.</div>
     <div class="run-dyn">${runDyn()}</div>
     ${f.err ? `<div class="run-msg bad">${esc(f.err)}</div>` : f.msg ? `<div class="run-msg">${esc(f.msg)}</div>` : ''}
     <button class="btn run-submit" data-runsubmit="1" ${f.sending || f.busy ? 'disabled' : ''}>${f.sending ? 'Đang nộp…' : 'Nộp bài'}</button>
