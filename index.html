@@ -102,6 +102,7 @@ h1,h2,h3{margin:0}
 .sec h3{font-size:16px;font-weight:700}
 .sec span{font-size:13px;color:var(--muted)}
 .pgf>summary{display:flex;align-items:baseline;justify-content:space-between;margin:14px 2px 8px;cursor:pointer;list-style:none}.pgf>summary::-webkit-details-marker{display:none}.pgf>summary h3{font-size:16px;font-weight:700}.pgf>summary h3::before{content:'▸ ';color:var(--muted)}.pgf[open]>summary h3::before{content:'▾ '}.pgf>summary span{font-size:13px;color:var(--muted)}
+.pgf>summary{align-items:center;gap:8px}.pgf>summary h3{flex:1 1 auto;min-width:0;line-height:1.25}.pgf>summary span{flex:0 1 auto;max-width:42%;text-align:right;font-size:12px;line-height:1.25}
 .dayprog{height:10px;background:var(--line);border-radius:99px;overflow:hidden}
 .dayprog i{display:block;height:100%;background:linear-gradient(90deg,var(--mint),#7EDCB9);border-radius:99px;transition:width .5s}
 
@@ -792,7 +793,7 @@ const WEEKS = [
  ['Về đích','Chốt lại hành trình và đặt mục tiêu tiếp theo.']];
 const weekName = n => (WEEKS[n-1] || ['',''])[0];
 const PHASES = [{n:'Xây nền',a:0,b:27},{n:'Tư duy & tài chính',a:28,b:55},{n:'Kết nối & bứt phá',a:56,b:89}];
-const LEVELS = [0,100,260,540,940,1460,2200,3200,4660,6660].map(xp => ({xp}));
+const LEVELS = [0,150,390,810,1410,2190,3300,4800,6990,10000].map(xp => ({xp}));
 /* ================== Tạo hình tiến hóa (SVG tự vẽ, kiểu game) ================== */
 const LINES = {
   tree:{n:'Thần mộc',ic:'🌳',st:['Hạt giống','Nảy mầm','Mầm xanh','Cây con','Vươn cao','Đơm hoa','Kết trái','Đại thụ','Đại lâm mộc','Thần Mộc']},
@@ -3472,7 +3473,7 @@ function pdayHtml(){
 async function bdSave(txt){
   const t = String(txt || '').trim();
   if (!t){ D.meta.bd = ''; if (ME) ME.bday = ''; markDirty('META'); try { await call('setBirthday', TOKEN, ''); } catch(e){} toast('Đã xoá ngày sinh'); return true; }
-  const m = t.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  const dg = t.replace(/\D/g, ''), m = /^\d{8}$/.test(dg) ? [0, dg.slice(0,2), dg.slice(2,4), dg.slice(4)] : t.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})$/);
   if (!m || +m[1] < 1 || +m[1] > 31 || +m[2] < 1 || +m[2] > 12 || +m[3] < 1930 || +m[3] > new Date().getFullYear() - 5){ toast('Nhập theo dạng ngày/tháng/năm, ví dụ 05/09/1990'); return false; }
   const ymd = m[3] + '-' + pad(+m[2]) + '-' + pad(+m[1]);
   try { await call('setBirthday', TOKEN, ymd); } catch(e){ toast(e.message || 'Chưa lưu được ngày sinh'); return false; }
@@ -3480,6 +3481,7 @@ async function bdSave(txt){
   return true;
 }
 let BDASKED = false;
+document.addEventListener('input', e => { const t = e.target; if (!t || !t.matches || !t.matches('[data-bdin],[data-bd]')) return; const d = t.value.replace(/\D/g, '').slice(0, 8); t.value = d.length > 4 ? d.slice(0,2) + '/' + d.slice(2,4) + '/' + d.slice(4) : d.length > 2 ? d.slice(0,2) + '/' + d.slice(2) : d; });
 function bdAsk(){
   if (BDASKED || !D || PRACTICE || !ME || !TOKEN) return; BDASKED = true;
   if (ME.bday){ if (D.meta.bd !== ME.bday.slice(5)){ D.meta.bd = ME.bday.slice(5); markDirty('META'); } return; }
