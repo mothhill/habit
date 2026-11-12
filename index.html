@@ -3557,7 +3557,12 @@ async function loadAdmin(){
   if (tab === 'admin') render();
 }
 function daysAgo(s){ if (!s) return null; return Math.round((pd(ADMIN.today) - pd(s))/864e5); }
-function adminView(){
+function adminFoldAll(html){      // mỗi mục trong Quản lý gập sẵn như tab Tiến độ (nhớ trạng thái mở)
+  return String(html).split(/(?=<div class="sec"><h3>)/).map(p => { const m = p.match(/^<div class="sec"><h3>([\s\S]*?)<\/h3><span>([\s\S]*?)<\/span><\/div>([\s\S]*)$/);
+    return m ? fold('ad:' + m[1].replace(/<[^>]*>/g, '').trim(), m[1], m[2], m[3]) : p; }).join('');
+}
+function adminView(){ const h = adminView0(); return typeof h === 'string' ? adminFoldAll(h) : h; }
+function adminView0(){
   if (!ADMIN) return `<div class="loading" style="min-height:40vh"><div class="spin"></div>Đang tải…</div>`;
   if (ADMIN.error) return `<div class="empty">${esc(ADMIN.error)}</div>`;
   const ms = ADMIN.members.filter(m => m.status !== 'Ngừng');
