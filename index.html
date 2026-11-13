@@ -787,7 +787,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v13.11.08';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v13.11.09';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -3401,6 +3401,19 @@ function familyView(i, w, d, dt, isT, dEd){
   }
   return late + auto + out.join('') + (soon.length ? `<div class="fsoon">Sắp mở: ${soon.join(' · ')}</div>` : '');
 }
+/* Sinh nhật 7 ngày tới (ai cũng thấy ngày-tháng) */
+function bdOf(id){ const R = (typeof BOARD !== 'undefined' && BOARD && BOARD.rows) || []; const r = R.find(x => x.id === id); return r && r.bd ? String(r.bd) : ''; }
+function bdTxt(md){ return md ? md.slice(3) + '/' + md.slice(0, 2) : ''; }
+function bdWeekHtml(){
+  const R = (typeof BOARD !== 'undefined' && BOARD && BOARD.rows) || []; if (!R.length || !D) return '';
+  const base = pd(D.today), ks = [];
+  for (let k = 0; k < 7; k++){ const d = new Date(base); d.setDate(d.getDate() + k); ks.push(pad(d.getMonth() + 1) + '-' + pad(d.getDate())); }
+  const out = [];
+  R.forEach(r => { const k = r.bd ? ks.indexOf(String(r.bd)) : -1; if (k >= 0) out.push({k, t: `<b>${esc(r.name)}</b>${r.id === BOARD.me ? ' (bạn)' : ''} ${k === 0 ? 'hôm nay' : bdTxt(r.bd)}`}); });
+  if (!out.length) return '';
+  out.sort((a, b) => a.k - b.k);
+  return `<div class="banner">🎂 Sinh nhật tuần này: ${out.map(o => o.t).join(' · ')}</div>`;
+}
 function today(){
   const i = vi, d = D.days[i], dt = pd(d), w = weekOf(i), isT = i === T, st = dayStat(i);
   const nav = PRACTICE ? practiceNav(st) : `<div class="daynav">
@@ -3409,6 +3422,7 @@ function today(){
       <small id="daycount">Ngày ${i+1}/${D.days.length} · ${st.done}/${st.total} thói quen</small></div>
     <button class="arrow" data-nav="1" ${i>=T?'disabled':''}>›</button></div>
     <div class="dayprog"><i style="width:${Math.round((st.p||0)*100)}%"></i></div>`
+    + (i === T ? bdWeekHtml() : '')
     + (isBusy(i) ? `<div class="banner">🌙 Ngày bận: ${esc(D.meta.busy[D.days[i]])}. Chuỗi không bị đứt, vẫn tích được nếu bạn làm.</div>` : '')
     + (i < T && frozen(i) ? `<div class="banner">🧊 Ngày này đã dùng thẻ giữ lửa, chuỗi không bị đứt. <button class="lnk" data-unfreeze="${i}">Huỷ dùng thẻ</button></div>`
       : i < T && canFreeze(i) ? `<div class="banner">Ngày này chưa đạt mức giữ lửa (2/3 thói quen).<button class="btn" style="display:block;margin-top:8px" data-freeze="${i}">🧊 Dùng thẻ giữ lửa cho ngày này</button></div>`
@@ -3618,7 +3632,7 @@ function profBody(){
     <div class="stat"><div class="v">${s.level}</div><div class="l">Cấp · ${esc(lv.n || '')}</div></div>
     <div class="stat"><div class="v">🔥 ${s.cur}</div><div class="l">Chuỗi · kỷ lục ${s.best}</div></div>
     <div class="stat"><div class="v">${pctTxt(s.p7)}</div><div class="l">7 ngày gần nhất</div></div></div>
-    <div class="muted" style="margin:8px 2px 0;font-size:13px">⭐ ${s.xp} XP · 🧊 đã dùng ${s.freeze} thẻ giữ lửa · cập nhật ${s.last ? dm(s.last) : '–'}</div>`;
+    <div class="muted" style="margin:8px 2px 0;font-size:13px">⭐ ${s.xp} XP${bdOf(m.id) ? ' · 🎂 ' + bdTxt(bdOf(m.id)) : ''} · cập nhật ${s.last ? dm(s.last) : '–'}</div>`;
   const pdh = pdayHtml();
   let heat = '';
   if (Array.isArray(S.d) && S.d.length){
@@ -3660,7 +3674,7 @@ function adminView0(){
   const depts = [...new Set(ADMIN.members.map(m => m.dept))].sort();
   const rows = ms.map(m => { const s = m.stats, ago = s ? daysAgo(s.last) : null;
     const warn = !s || ago == null || ago >= 2 || (s.p7 < 0.5);
-    return `<tr class="${warn?'warn':''}"><td><b class="plink" data-prof="${esc(m.id)}">${esc(m.name)}</b><br><small>${esc(m.id)} · ${esc(m.role)}</small></td><td>${esc(m.dept)}</td>
+    return `<tr class="${warn?'warn':''}"><td><b class="plink" data-prof="${esc(m.id)}">${esc(m.name)}</b><br><small>${esc(m.id)} · ${esc(m.role)}${m.bday ? ' · 🎂 ' + String(m.bday).split('-').reverse().join('/') : ''}</small></td><td>${esc(m.dept)}</td>
       <td>${s ? s.day : '–'}</td><td>${s ? pctTxt(s.p7) : '–'}</td><td>${s ? '🔥 ' + s.cur : '–'}</td><td>${s ? s.xp : '–'}</td>
       <td>${ago == null ? 'Chưa mở' : ago === 0 ? 'Hôm nay' : ago + ' ngày trước'}</td>
       <td>${warn ? '⚠️ Cần nhắc' : '✅'}</td><td><button class="lnk" data-reset="${esc(m.id)}">Cấp lại PIN</button></td></tr>`; }).join('');
@@ -5308,10 +5322,9 @@ function mindCK(){
 function mindDS(){
   const d = MIND.ds, rec = MREC && MREC.kind === 'docsach';
   return `<div class="card mcard"><div class="mhead"><b>📚 Đọc sách 10 phút</b><span>${d.done ? '✅ Hôm nay đã đạt' : 'Hôm nay chưa đọc'} · 🔥 ${d.streak} ngày · ${d.minutes} phút</span></div>
-    ${rec ? `<div class="mbook">📖 ${esc(MBOOK)} · ${MMODE === 'nghe' ? '🎧 Nghe sách' : '🗣️ Tự đọc'}</div>` : `<div class="fld"><input id="mbook" list="mbooks" maxlength="120" placeholder="Tên sách đang đọc" value="${esc(MBOOK)}"><datalist id="mbooks">${d.books.map(b => `<option value="${esc(b.b)}">`).join('')}</datalist></div>
-    <div class="mmode"><button class="${MMODE === 'doc' ? 'on' : ''}" data-mmode="doc">🗣️ Tự đọc to</button><button class="${MMODE === 'nghe' ? 'on' : ''}" data-mmode="nghe">🎧 Nghe sách nói</button></div>`}
+    ${rec ? `<div class="mbook">📖 ${esc(MBOOK)}</div>` : `<div class="fld"><input id="mbook" list="mbooks" maxlength="120" placeholder="Tên sách đang đọc" value="${esc(MBOOK)}"><datalist id="mbooks">${d.books.map(b => `<option value="${esc(b.b)}">`).join('')}</datalist></div>`}
     ${mindRecUI('docsach')}${mindRes(d.last)}
-    ${MMODE === 'nghe' ? '<div class="rule">Mở loa ngoài, để điện thoại gần loa.</div>' : ''}
+    <div class="rule">Đọc to, hoặc nghe sách nói thì mở loa ngoài, để điện thoại gần loa.</div>
     ${d.log.length ? `<details class="mlog"><summary>📒 Nhật ký đọc (${d.total} ngày)</summary>${d.books.length ? `<div class="mbooks">${d.books.map(b => `<span>📕 ${esc(b.b)} · ${b.min}′</span>`).join('')}</div>` : ''}${d.log.map(x => `<div class="mli"><b>${dm(x.date)} · ${esc(x.book)}</b>${x.mode ? ' · ' + esc(x.mode) : ''}${x.sum ? `<br><small>${esc(x.sum)}</small>` : ''}</div>`).join('')}</details>` : ''}</div>`;
 }
 async function mindStart(kind){
@@ -5319,7 +5332,7 @@ async function mindStart(kind){
   if (kind === 'docsach'){ const b = ($('#mbook') || {}).value; MBOOK = (b || '').trim(); if (!MBOOK){ toast('📖 Hãy ghi tên sách trước'); return; } try { localStorage.setItem('rh_book', MBOOK); } catch(e){} }
   if (!navigator.mediaDevices || !window.MediaRecorder){ if (kind === 'camket'){ toast('🎙️ Trình duyệt này không ghi âm được. Hãy mở app bằng Chrome (Android) hoặc Safari (iPhone) bản mới'); return; } MFALL = kind; render(); return; }
   let stream;
-  try { stream = await navigator.mediaDevices.getUserMedia({audio: kind === 'docsach' && MMODE === 'nghe' ? {echoCancellation:false, noiseSuppression:false, autoGainControl:true} : {echoCancellation:true, noiseSuppression:true}}); }
+  try { stream = await navigator.mediaDevices.getUserMedia({audio: kind === 'docsach' ? {echoCancellation:false, noiseSuppression:false, autoGainControl:true} : {echoCancellation:true, noiseSuppression:true}}); }
   catch(e){ if (kind === 'camket'){ toast('🎙️ Cam kết phải ghi âm trực tiếp trong app. Hãy cho phép micro: bấm biểu tượng ổ khoá / cài đặt trang → Micro → Cho phép, rồi thử lại'); return; } MFALL = kind; render(); toast(e && e.name === 'NotAllowedError' ? '🎙️ App chưa được dùng micro. Bấm "Mở máy ghi âm của điện thoại" để ghi rồi gửi tệp' : '🎙️ Trình duyệt chặn ghi âm trong app, hãy dùng máy ghi âm của điện thoại'); return; }
   const types = ['audio/webm;codecs=opus','audio/mp4','audio/webm','audio/ogg;codecs=opus'], mime = types.find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || '';
   const mr = new MediaRecorder(stream, Object.assign({audioBitsPerSecond: 24000}, mime ? {mimeType: mime} : {}));
@@ -5486,8 +5499,8 @@ const HELP = [
    'Chỉ ghi trực tiếp trong app. Lần đầu điện thoại hỏi quyền micro: bấm Cho phép.',
    'Đạt thì app tự tích Niềm tin tích cực.']},
  {ic:'📚', t:'Đọc sách', img:'docsach', s:[
-   'Vào 🧠 Tâm Trí → Đọc sách. Ghi tên sách, chọn Tự đọc to hoặc Nghe sách nói.',
-   'Đọc câu mở đầu, rồi đọc hoặc nghe tối thiểu 10 phút. Nghe sách thì mở loa ngoài, để điện thoại gần loa.',
+   'Vào 🧠 Tâm Trí → Đọc sách. Ghi tên sách.',
+   'Đọc câu mở đầu, rồi đọc hoặc nghe tối thiểu 10 phút. Nghe sách nói thì mở loa ngoài, để điện thoại gần loa.',
    'Có thể gửi tệp ghi âm thu sẵn trong ngày, nhớ có câu mở đầu.',
    'Nội dung được tóm tắt vào Nhật ký đọc. Đạt thì app tự tích 30 phút nâng cao kiến thức.']},
  {ic:'🧰', t:'Tập trung, biết ơn, chi tiêu', img:'tools', s:[
