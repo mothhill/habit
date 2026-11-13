@@ -787,7 +787,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v13.11.07';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v13.11.08';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -2776,7 +2776,8 @@ function bdgNext(){
   BDEL.innerHTML = `<div class="bdc"><div class="bdh">${esc(it.t)}${b.hid ? ' · huy hiệu ẩn' : ''}</div><div class="bdi">${b.ic}</div><h2 class="bdn">${esc(b.n)}</h2><div class="bdd">${esc(b.d)}</div><div class="bdx">+${b.xp} XP</div>${say ? `<div class="bds">${esc(say)}</div>` : ''}<button class="btn" data-bdnext>${left ? 'Tiếp theo (còn ' + left + ')' : 'Xong'}</button></div>`;
   try { if (navigator.vibrate) navigator.vibrate(40); confetti(); } catch(e){}
 }
-document.addEventListener('click', e => { if (e.target.closest('[data-bdnext]')) bdgNext(); });
+document.addEventListener('click', e => { if (e.target.closest('[data-bdnext]')){ bdgNext(); return; }
+  const v = e.target.closest('[data-bdgview]'); if (v && !BDEL){ const b = BADGES.find(x => x.id === v.dataset.bdgview); if (b) bdgShow([b], '🏅 Xem lại huy hiệu'); } });
 /* Phát lại tất cả huy hiệu đã đạt khi quản lý ra lệnh (mã phát lại do máy chủ trả ở badgeStats) */
 function bdgReplayCheck(rp){
   if (!D || PRACTICE || !rp || D.meta.rp === rp) return;
@@ -3728,8 +3729,8 @@ function badges(s){
   const vis = BADGES.filter(b => !b.hid), hid = BADGES.filter(b => b.hid);
   const got = vis.filter(b => has(b.id)).length, hOpen = hid.filter(b => has(b.id));
   const cardOf = b => { const on = has(b.id), v = b.k && b.k !== 'fam' ? Math.min(s[b.k], b.g) : b.k === 'fam' ? Math.min((xstats().fam[b.fk]||0), b.g) : 0;
-    return `<div class="badge ${on?'on':'off'}"><div class="bi">${b.ic}</div><b>${b.n}</b><small>${b.d}</small>
-      ${on ? `<small style="color:var(--mint);font-weight:700">Đã đạt ✓ +${b.xp} XP</small>` : b.k ? `<div class="bp"><i style="width:${Math.round(v/b.g*100)}%"></i></div><small>${v}/${b.g} · +${b.xp} XP</small>` : `<small>+${b.xp} XP</small>`}</div>`; };
+    return `<div class="badge ${on?'on':'off'}"${on ? ` data-bdgview="${b.id}" style="cursor:pointer"` : ''}><div class="bi">${b.ic}</div><b>${b.n}</b><small>${b.d}</small>
+      ${on ? `<small style="color:var(--mint);font-weight:700">Đã đạt ✓ +${b.xp} XP · chạm để xem lại</small>` : b.k ? `<div class="bp"><i style="width:${Math.round(v/b.g*100)}%"></i></div><small>${v}/${b.g} · +${b.xp} XP</small>` : `<small>+${b.xp} XP</small>`}</div>`; };
   const bg = vis.map(cardOf).join('') + hOpen.map(cardOf).join('')
     + (hOpen.length < hid.length ? `<div class="badge hid off"><div class="bi">🎁</div><b>Còn ${hid.length - hOpen.length} huy hiệu ẩn</b><small>Không ai biết trước cách mở. Cứ làm đều, bất ngờ sẽ tới.</small></div>` : '');
   return `<div class="card"><div class="lvl">${(() => { const dc = sceneDeco(); return `<div class="big evbig ${dc.cls}" data-pv="${lo.l}:${lk}">${evfx(lo.l, lk, evo(lo.l, 'base', lk, 'big'))}${dc.html}</div>`; })()}<div style="flex:1">
