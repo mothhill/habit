@@ -787,7 +787,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v13.11.09';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v13.11.13';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -2787,8 +2787,13 @@ function bdgReplayCheck(rp){
   bdgShow(arr.map(x => x.b), '🏅 Huy hiệu bạn đã đạt');
 }
 function badgeToastMsg(arr){ const hb = arr.find(b => b.hid) || arr[0], say = badgeSay(hb); return arr.length === 1 ? `🏅 ${hb.ic} +${hb.xp} XP · ${say}` : `🏅 Huy hiệu mới: ${arr.map(b => b.ic + ' ' + b.n + ' +' + b.xp + ' XP').join(', ')} · ${say}`; }
+function lineSync(){      // mục 13: ghi hướng đang chọn lên máy chủ (một lần cho mỗi lần đổi)
+  try { const l = D && D.meta.look && D.meta.look.l; if (!l || !TOKEN) return; const o = ixObj(); if (o.lg === l || LSYNC === l) return; LSYNC = l; const from = o.lg || '';
+    call('lineLog', TOKEN, l, from).then(() => { o.lg = l; markDirty('META'); }).catch(() => { LSYNC = ''; }); } catch(e){}
+}
+var LSYNC = '', LSTAT = null;
 function ixAward(){
-  if (!D || PRACTICE) return; const s = summary(); if (!s.bset) return;
+  if (!D || PRACTICE) return; lineSync(); const s = summary(); if (!s.bset) return;
   if (!D.meta.bdg){ bdgRecord(s); return; }
   const nw = BADGES.filter(b => s.bset.has(b.id) && !D.meta.bdg[b.id]); if (!nw.length) return;
   bdgRecord(s); bdgShow(nw);
@@ -3231,7 +3236,7 @@ function sleepChart(bare){
   const gb = hm2m(g[0]), gw = hm2m(g[1]), gyb = gb == null ? null : rb(gb), gyw = gw == null ? null : rw(gw);
   const vs = ok.flatMap(p => [p.yb, p.yw]).concat([gyb, gyw].filter(v => v != null));
   const lo = Math.floor(Math.min(...vs) / 60) * 60, hi = Math.max(lo + 360, Math.ceil(Math.max(...vs) / 60) * 60);
-  const W = 340, H = 230, L = 38, R = 8, T = 10, B = 34, cw = (W - L - R) / N;
+  const W = 340, H = 200, L = 38, R = 8, T = 10, B = 34, cw = (W - L - R) / N;
   const Y = v => T + (v - lo) / (hi - lo) * (H - T - B), tm = v => { const m = ((v + 1080) % 1440 + 1440) % 1440; return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); };
   const step = (hi - lo) > 600 ? 120 : 60;
   let grid = ''; for (let v = lo; v <= hi; v += step) grid += `<line x1="${L}" x2="${W - R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" class="gc-g"/><text x="${L - 5}" y="${(Y(v) + 3.5).toFixed(1)}" text-anchor="end" class="gc-t">${tm(v)}</text>`;
@@ -3256,7 +3261,7 @@ function sleepChart(bare){
   else an = ['🦉', 'Cú mèo', 'Thức khuya là chính. Giữ giờ dậy cố định và kéo giờ ngủ sớm dần 15 phút.'];
   const animal = `<div class="sc-animal"><span class="sa-e">${an[0]}</span><div><b>${ok.length < 3 ? an[1] : 'Bạn ngủ giống: ' + an[1]}</b><small>${an[2]}</small></div></div>`;
   const stats = `<div class="gym-st"><div><b>${tm(ab)}</b><small>giờ ngủ trung bình</small></div><div><b>${tm(aw)}</b><small>giờ thức trung bình</small></div><div><b>${ad.toFixed(1).replace('.', ',')} giờ</b><small>ngủ mỗi đêm (${ok.length} đêm)</small></div></div>`;
-  return head + `<div class="card"><svg viewBox="0 0 ${W} ${H}" class="gym-svg" role="img" aria-label="Sơ đồ giờ ngủ và giờ thức">${grid}${goal}${bars}</svg>${animal}${stats}
+  return head + `<div class="card"><svg viewBox="0 0 ${W} ${H}" class="gym-svg sl-svg" role="img" aria-label="Sơ đồ giờ ngủ và giờ thức">${grid}${goal}${bars}</svg>${animal}${stats}
     <div class="rule">Đầu thanh = giờ ngủ, cuối thanh = giờ thức.${gyb != null || gyw != null ? ' Vạch đứt = giờ mục tiêu; thanh xanh lá = cả hai đúng giờ (lệch ≤30 phút).' : ' Đặt giờ mục tiêu để thấy vạch đối chiếu.'}</div></div>`;
 }
 document.addEventListener('change', e => {
@@ -3469,7 +3474,7 @@ function itemStats(){
       const p = d ? n/d : null, col = p == null ? '#55655B' : p >= .7 ? 'var(--mint)' : p >= .5 ? 'var(--gold)' : 'var(--peach)';
       return `<div class="hrow"><div style="font-size:13px;color:var(--muted)">${j+1}.</div><div><div class="n">${esc(v)}</div><div class="tr"><i style="width:${Math.round((p||0)*100)}%;background:${col}"></i></div></div><div class="p">${pctTxt(p)}</div></div>`;
     }).join('');
-    return fold('it' + c, esc(SPEC[c].list.pin) + ': từng mục', c === '25' ? 'tỷ lệ ngày tránh được' : 'tỷ lệ ngày làm được', `<div class="card">${rows}</div>`);
+    return fold('it' + c, esc(SPEC[c].list.pin), 'tỷ lệ', `<div class="card">${rows}</div>`);
   }).join('');
 }
 function progTabs(){ return `<div class="seg ptabs"><button class="${tab==='prog'?'on':''}" data-tab="prog">📊 Thống kê</button><button class="${tab==='badge'?'on':''}" data-tab="badge">🏅 Huy hiệu</button></div>`; }
@@ -3508,12 +3513,12 @@ function progress(s){
       <div class="stat"><div class="v">🔥 ${s.best}</div><div class="l">Chuỗi dài nhất (ngày)</div></div>
       <div class="stat"><div class="v">${pctTxt(wp)}</div><div class="l">Tuần ${W+1} đến nay</div></div>
       <div class="stat"><div class="v">${Math.max(0, D.days.length - 1 - Math.max(T,0))}</div><div class="l">Ngày còn lại</div></div></div>
-    ${fold('cal', 'Lịch 90 ngày', 'Chạm một ô để xem ngày đó', `<div class="card">${heat}<div class="legend">Ít <i style="background:var(--cellc)"></i><i style="background:var(--h1)"></i><i style="background:var(--h2)"></i><i style="background:var(--h3)"></i><i style="background:var(--h4)"></i> 100% · 🧊 = dùng thẻ giữ lửa</div></div>`)}
-    ${fold('wk', 'Tỷ lệ hoàn thành theo tuần', 'thói quen hằng ngày', `<div class="card">${bars}</div>`)}
-    ${fold('sl', '🌙 Giấc ngủ', 'giờ ngủ · giờ thức · bạn ngủ giống con gì', sleepChart(true))}
-    ${(() => { const x = runMeProg(); return x ? fold('run', '🏃 Chạy bộ của bạn', 'km, lịch chạy, kỷ lục', x) : ''; })()}
+    ${fold('cal', 'Lịch 90 ngày', '', `<div class="card">${heat}<div class="legend">Ít <i style="background:var(--cellc)"></i><i style="background:var(--h1)"></i><i style="background:var(--h2)"></i><i style="background:var(--h3)"></i><i style="background:var(--h4)"></i> 100% · 🧊 = dùng thẻ giữ lửa</div></div>`)}
+    ${fold('wk', 'Hoàn thành theo tuần', '', `<div class="card">${bars}</div>`)}
+    ${fold('sl', '🌙 Giấc ngủ', '', sleepChart(true))}
+    ${(() => { const x = runMeProg(); return x ? fold('run', '🏃 Chạy bộ', '', x) : ''; })()}
     ${gymProg()}
-    ${fold('hab', 'Độ đều đặn từng thói quen', 'từ ngày bắt đầu đến nay', `<div class="card">${rows || '<div class="muted">Chưa có dữ liệu.</div>'}</div>`)}` + itemStats();
+    ${fold('hab', 'Độ đều đặn', '', `<div class="card">${rows || '<div class="muted">Chưa có dữ liệu.</div>'}</div>`)}` + itemStats();
 }
 
 /* ---- Xếp hạng ---- */
@@ -3572,7 +3577,7 @@ function pdayHtml(){
     else if (L.length && e.c) body = L.map((t,j) => { const v = e.c[j] | 0, q = STC[v]; return `<div class="pln s${v}">${q[0]} <span>${esc(t)}</span></div>`; }).join('');
     else body = `<div class="pst">${e.d ? '✓ Đã tick' : '–'}</div>`;
     return `<div class="prow"><div class="pn">${ICON[c]||'⭐'} ${NO(c)} · ${esc(h.name)}${e.d ? ' <b class="okb">✓</b>' : ''}</div>${body}</div>`; }).join('');
-  return `<div class="sec"><h3>Ngày ${dm(PROFSEL)}</h3><span>cách chấm từng thói quen</span></div><div class="card pd">${rows || '<div class="muted">Ngày này chưa có ghi nhận.</div>'}</div>`;
+  return `<div class="sec"><h3>Ngày ${dm(PROFSEL)}</h3><span></span></div><div class="card pd">${rows || '<div class="muted">Ngày này chưa có ghi nhận.</div>'}</div>`;
 }
 /* ===== Ngày sinh: hỏi lần đăng nhập, lưu đủ ngày tháng năm ở máy chủ (ai cũng thấy ngày-tháng, năm chỉ mình và quản lý) ===== */
 async function bdSave(txt){
@@ -3651,7 +3656,7 @@ function profBody(){
     const plHtml = pl ? splitLines(pl).map((t,j) => `<span class="pl s${pc[j] | 0}">${(pc[j] | 0) ? STC[pc[j]][0] + ' ' : ''}${esc(t)}</span>`).join('') : '';
     return `<div class="hrow"><div style="font-size:18px">${ICON[h.code]||'⭐'}</div><div><div class="n">${NO(h.code)} · ${esc(h.name)}</div>
       ${pl ? `<div class="pplan">Cách rèn:${plHtml}</div>` : ''}<div class="tr"><i style="width:${Math.round((pv||0)*100)}%;background:${c}"></i></div></div><div class="p">${pctTxt(pv)}</div></div>`; }).join('');
-  return head + stats + heat + `<div class="sec"><h3>Từng thói quen</h3><span>${PROFSEL ? 'màu chữ theo ngày ' + dm(PROFSEL) : 'độ đều đặn và cách rèn'}</span></div><div class="rule" style="margin:0 0 8px"><span class="s1">xanh: Đạt</span> · <span class="s2">đỏ: Không đạt</span> · <span class="s3">vàng: Chưa có sự kiện</span></div><div class="card">${rows || '<div class="muted">Chưa có dữ liệu.</div>'}</div>
+  return head + stats + heat + `<div class="sec"><h3>Từng thói quen</h3><span>${PROFSEL ? 'ngày ' + dm(PROFSEL) : ''}</span></div><div class="rule" style="margin:0 0 8px"><span class="s1">xanh: Đạt</span> · <span class="s2">đỏ: Không đạt</span> · <span class="s3">vàng: Chưa có sự kiện</span></div><div class="card">${rows || '<div class="muted">Chưa có dữ liệu.</div>'}</div>
     <div class="rule" style="margin-top:10px">🔒 Danh sách riêng không hiển thị.</div>`;
 }
 
@@ -3663,7 +3668,7 @@ async function loadAdmin(){
 }
 function daysAgo(s){ if (!s) return null; return Math.round((pd(ADMIN.today) - pd(s))/864e5); }
 function adminFoldAll(html){      // mỗi mục trong Quản lý gập sẵn như tab Tiến độ (nhớ trạng thái mở)
-  return String(html).split(/(?=<div class="sec"><h3>)/).map(p => { const m = p.match(/^<div class="sec"><h3>([\s\S]*?)<\/h3><span>([\s\S]*?)<\/span><\/div>([\s\S]*)$/);
+  return String(html).split(/(?=<div class="sec"[^>]*><h3>)/).map(p => { const m = p.match(/^<div class="sec"[^>]*><h3>([\s\S]*?)<\/h3><span>([\s\S]*?)<\/span><\/div>([\s\S]*)$/);
     return m ? fold('ad:' + m[1].replace(/<[^>]*>/g, '').trim(), m[1], m[2], m[3]) : p; }).join('');
 }
 function adminView(){ const h = adminView0(); return typeof h === 'string' ? adminFoldAll(h) : h; }
@@ -4939,9 +4944,11 @@ function mindAdminSection(){
     ${rows ? `<div class="tblwrap" style="margin-top:10px"><table class="tbl"><thead><tr><th>Bài</th><th></th><th>Chấm tay</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<div class="rule">Không có bài nào đang chờ.</div>'}
     <div class="sec" style="margin-top:12px"><h3>📊 Dùng AI hôm nay</h3><span>theo khóa và model, giờ VN</span></div>${aiTbl}
     <div class="rule">AI hết lượt thì bài tự xếp hàng, máy chủ chấm dần mỗi 5 phút. Chấm tay chỉ khi cần gấp.</div></div>
+    <div class="sec" style="margin-top:12px"><h3>📈 Hướng tiến hóa</h3><span>ai đang dùng hướng nào</span></div><div class="card"><button class="btn" data-line-stats="1">📊 Xem thống kê hướng</button>${LSTAT ? (LSTAT.error ? '<div class="rule">'+LSTAT.error+'</div>' : '<div class="rule">'+LSTAT.people+' người, ghi từ '+(LSTAT.since||'—')+'. "Đang chọn" = hướng hiện tại; "Lượt chọn" = tổng lần chọn/đổi.</div><table style="width:100%;font-size:13px"><tr><th align="left">Hướng</th><th>Đang chọn</th><th>Lượt chọn</th></tr>'+LSTAT.rows.slice().sort((a,b)=>a.cur-b.cur||a.tot-b.tot).map(r => '<tr><td>'+((LINES[r.l]&&LINES[r.l].ic)||'')+' '+((LINES[r.l]&&LINES[r.l].n)||r.l)+'</td><td align="center">'+r.cur+'</td><td align="center">'+r.tot+'</td></tr>').join('')+'</table>') : ''}<div class="rule">Xếp từ ít đến nhiều để xét bỏ bớt hướng. Dữ liệu ở tab "Nhật ký hướng" trong Sheet.</div></div>
     <div class="sec" style="margin-top:12px"><h3>🏅 Huy hiệu</h3><span>lệnh cho mọi người</span></div><div class="card"><button class="btn" data-bdg-replay="1">🔁 Phát lại tất cả huy hiệu đã đạt</button><div class="rule">Lần đăng nhập tiếp theo, mỗi người xem lại toàn bộ huy hiệu mình đã đạt, từng cái một. Mỗi lần bấm là một lượt phát lại mới.</div></div>`;
 }
 document.addEventListener('click', async e => {
+  if (e.target.closest('[data-line-stats]')){ try { LSTAT = await call('lineStats', TOKEN); } catch(err){ LSTAT = {error: err.message}; } render(); return; }
   const rb = e.target.closest('[data-bdg-replay]');
   if (rb){ if (!confirm('Phát lại tất cả huy hiệu cho mọi người ở lần đăng nhập tiếp theo?')) return;
     try { await call('badgeReplayAll', TOKEN); toast('✅ Đã ra lệnh phát lại huy hiệu'); } catch(err){ toast('Không ra lệnh được: ' + err.message); } return; }
@@ -5192,7 +5199,7 @@ function gymRecsHtml(){
 function gymProg(){
   if (!GYM && !GYMBUSY) setTimeout(gymLoad, 0);
   if (!GYM || GYM.err || !(GYM.items || []).length) return '';
-  return fold('gym', '🏋️ Thành tích gym', 'kỷ lục và đường tiến bộ', `<div class="card">${gymRecsHtml()}${gymChart()}<div class="rule">Sức mạnh ước tính (e1RM): trung bình công thức Epley và Brzycki.</div></div>`);
+  return fold('gym', '🏋️ Thành tích gym', '', `<div class="card">${gymRecsHtml()}${gymChart()}<div class="rule">Sức mạnh ước tính (e1RM): trung bình công thức Epley và Brzycki.</div></div>`);
 }
 function gymWeek(){
   const its = (GYM && GYM.items) || []; if (!its.length) return '';
@@ -5841,7 +5848,7 @@ function trackView(){
 .gym-exsel{width:100%;margin-bottom:10px;padding-right:30px;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 16px) 50%,calc(100% - 11px) 50%;background-size:5px 5px;background-repeat:no-repeat}
 .sc-animal{display:flex;align-items:center;gap:12px;background:var(--bg);border-radius:14px;padding:10px 12px;margin:6px 0 10px}.sc-animal .sa-e{font-size:34px;line-height:1}.sc-animal b{display:block;font-size:15px}.sc-animal small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
 .sc-bar{fill:#4f8cff;opacity:.9}.sc-bar.good{fill:var(--mint,#7be495)}.sc-goal{stroke:var(--gold,#e9c46a);stroke-width:1;stroke-dasharray:4 3;opacity:.8}.sc-miss{fill:var(--line)}.gc-t.sc-td{fill:var(--primary);font-weight:800}
-.gym-svg{width:100%;height:auto;display:block;margin:4px 0 8px}.gc-g{stroke:var(--line);stroke-width:1}.gc-t{fill:var(--muted);font-size:10px;font-family:inherit}.gc-l{fill:none;stroke:var(--primary);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}.gc-d{fill:var(--card);stroke:var(--primary);stroke-width:2}.gc-pr{fill:var(--gold);stroke:var(--card);stroke-width:1.5}
+.sl-svg{max-width:280px;margin-left:auto!important;margin-right:auto!important}.sl-svg .gc-t{font-size:10.5px}.gym-svg{width:100%;height:auto;display:block;margin:4px 0 8px}.gc-g{stroke:var(--line);stroke-width:1}.gc-t{fill:var(--muted);font-size:10px;font-family:inherit}.gc-l{fill:none;stroke:var(--primary);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}.gc-d{fill:var(--card);stroke:var(--primary);stroke-width:2}.gc-pr{fill:var(--gold);stroke:var(--card);stroke-width:1.5}
 .gym-st{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:6px}.gym-st>div{background:var(--cellc);border-radius:12px;padding:8px 10px}.gym-st b{display:block;font-size:16px}.gym-st small{color:var(--muted);font-size:11.5px}
 .run-cands .gym-chip{font-size:15px}
 .gym-pins{display:flex;flex-direction:column;gap:8px;margin:10px 0}.gym-pins>.gym-chip.add{align-self:flex-start}
