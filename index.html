@@ -787,7 +787,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v13.11.06';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v13.11.07';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -2762,6 +2762,7 @@ function lunarOf(ds){ const dd = +ds.slice(8), mm = +ds.slice(5,7), yy = +ds.sli
 function ixObj(){ return D ? (D.meta.ix = D.meta.ix || {}) : null; }
 /* Thông báo huy hiệu toàn màn hình: hiện lần lượt, bấm nút mới chuyển tiếp */
 var BDQ = [], BDEL = null, BDTITLE = '';
+const BDG_RP0 = 'v13.11.07';   // mã phát lại mặc định: mỗi người xem lại huy hiệu cũ đúng 1 lần ở lần đăng nhập đầu của bản này; quản lý bấm lệnh thì mã máy chủ thay thế
 function bdgShow(list, title){
   if (!list || !list.length) return;
   list.forEach(b => BDQ.push({b, t: title || '🏅 Huy hiệu mới'}));
@@ -2817,7 +2818,7 @@ async function loadBS(force){
   if (!BSTAT){ try { const c = JSON.parse(LS.get('rh_bs_' + ME.id) || 'null'); if (c && c.runs) BSTAT = c; } catch(e){} }
   if (!force && BSAT && Date.now() - BSAT < 600000) return;
   BSBUSY = true;
-  try { const r = await call('badgeStats', TOKEN); if (r && r.runs){ BSTAT = r; LS.set('rh_bs_' + ME.id, JSON.stringify(r)); } BSAT = Date.now(); ixAward(); if (r && r.rp !== undefined) bdgReplayCheck(r.rp); }
+  try { const r = await call('badgeStats', TOKEN); if (r && r.runs){ BSTAT = r; LS.set('rh_bs_' + ME.id, JSON.stringify(r)); } BSAT = Date.now(); ixAward(); bdgReplayCheck((r && r.rp) || BDG_RP0); }
   catch(e){ BSAT = Date.now(); } finally { BSBUSY = false; }
 }
 const dayNo = ds => Math.floor(pd(ds).getTime()/864e5);
