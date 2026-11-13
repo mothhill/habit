@@ -504,6 +504,16 @@ html:not([data-theme=light]) .sbadd input{background:#0F1914;border-color:#2F403
 .rk.t3 .ava.evava::before{background:conic-gradient(#e0a060,#ffd8a8,#a8683a,#e0a060)}
 @keyframes crSpin{0%{transform:translateX(-50%) rotateY(0)}100%{transform:translateX(-50%) rotateY(360deg)}}
 .wcrown{position:absolute;left:50%;top:-15px;font-size:17px;z-index:4;animation:crSpin 2.6s linear infinite;filter:drop-shadow(0 0 4px #ffd34d)}
+.bdo{position:fixed;inset:0;z-index:9999;background:rgba(6,14,10,.92);display:flex;align-items:center;justify-content:center;padding:20px;animation:luIn .3s ease}
+.bdc{text-align:center;color:#fff;max-width:380px;width:100%}
+.bdh{font-size:13px;letter-spacing:1.5px;text-transform:uppercase;color:var(--primary,#b8f061);opacity:.9;margin-bottom:14px}
+.bdi{width:190px;height:190px;margin:0 auto 18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:104px;line-height:1;background:radial-gradient(circle,rgba(184,240,97,.35),rgba(184,240,97,.06) 65%,transparent 72%);box-shadow:0 0 60px rgba(184,240,97,.45);animation:luPop .8s cubic-bezier(.2,1.6,.4,1) both,bdGlow 2.2s ease-in-out .8s infinite}
+@keyframes bdGlow{0%,100%{box-shadow:0 0 40px rgba(184,240,97,.35)}50%{box-shadow:0 0 90px rgba(184,240,97,.7)}}
+.bdn{font-size:26px;font-weight:900;margin:0 0 6px;color:var(--primary,#b8f061);text-shadow:0 0 16px rgba(184,240,97,.5)}
+.bdd{font-size:15px;opacity:.9;margin-bottom:8px}
+.bdx{display:inline-block;font-weight:800;background:rgba(184,240,97,.16);color:var(--primary,#b8f061);border-radius:999px;padding:4px 14px;margin-bottom:12px}
+.bds{font-size:14px;font-style:italic;opacity:.85;margin:0 auto 20px;line-height:1.45}
+.bdc .btn{min-width:180px}
 .luo{position:fixed;inset:0;z-index:9998;background:rgba(6,14,10,.82);display:flex;align-items:center;justify-content:center;animation:luIn .3s ease}
 @keyframes luIn{from{opacity:0}}
 .luc{text-align:center;color:#fff;padding:20px}
@@ -741,7 +751,7 @@ html[data-theme=light] .banner{color:#5A4300}
 .rcam-bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:16px 20px calc(18px + env(safe-area-inset-bottom));background:#000}.rcam-bar .btn{justify-self:start;color:#fff}
 .rcam-shot{width:72px;height:72px;border-radius:50%;background:#fff;border:5px solid #B8F061;box-shadow:0 0 0 3px #000 inset}
 .mcode{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;padding:9px 12px;border-radius:12px;border:1px dashed var(--primary);margin:6px 0;font-size:14px}
-.mcode b{font-size:16px;color:var(--primary)}.mcode small{width:100%;color:var(--muted);font-size:12px}.mfile{display:block;text-align:center;margin:6px 0;font-size:13px;cursor:pointer}
+.mcode b{font-size:16px;color:var(--primary)}.mcode small{width:100%;color:var(--muted);font-size:12px}.mfile{display:block;text-align:center;margin:6px 0;font-size:13px;cursor:pointer}.mhow{font-size:12px;margin:2px 0 6px;color:var(--muted)}.mhow summary{cursor:pointer;text-align:center}.mhow ol{padding-left:18px;margin:6px 0}.mhow li{margin:4px 0}.msh{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:10px 12px;border-radius:12px;background:rgba(127,127,127,.12);margin:8px 0}.msh small{color:var(--muted)}
 .fam{padding:12px 12px 10px;margin-bottom:12px}.fam.done{border-color:var(--primary)}
 .famh{display:flex;align-items:center;gap:8px;margin:0 2px 8px}.famh .fic{font-size:20px}.famh b{font-size:16px}.flv{margin-left:auto;font-size:12px;font-weight:700;color:var(--muted);background:var(--primary-soft);padding:3px 8px;border-radius:99px}
 .fup{font-size:11.5px;font-weight:800;color:#0B1F14;background:#B8F061;padding:3px 8px;border-radius:99px;animation:fupp 1.6s ease-in-out infinite}@keyframes fupp{50%{transform:scale(1.06)}}
@@ -764,19 +774,24 @@ html[data-theme=light] .banner{color:#5A4300}
 .qwarn{margin-top:8px;font-size:12.5px;font-weight:700;color:#0B1A12;background:var(--gold);border-radius:10px;padding:7px 10px}.qmiss{margin-top:6px;font-size:12px;font-weight:600;color:var(--peach)}
 :root[data-theme=light] .qbox{background:linear-gradient(135deg,#EAF9D2,#F6FCEB);border-color:#7BC23A}:root[data-theme=light] .qh b{color:#2F6B12}:root[data-theme=light] .qh span{background:#7BC23A;color:#fff}:root[data-theme=light] .qbar{background:#DCE8DC}
 .qrest{font-size:12.5px;color:var(--muted)}
+.appver{position:fixed;top:calc(3px + env(safe-area-inset-top));right:6px;z-index:5;font:600 9px/1 system-ui,sans-serif;letter-spacing:.3px;color:var(--muted,#8a948e);opacity:.55;pointer-events:none;user-select:none}
 </style>
 </head>
 <body>
 <canvas id="fx"></canvas>
 <div id="toast"></div>
+<div class="appver" id="appver"></div>
 <header class="brandbar"><div class="brand"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAB4CAMAAAAOusbgAAAAwFBMVEX///////7+///8//73//3//v/+/v7//f/9/v7+/vz9/f3+/P77/f38/Pz4/fz0/fr9+/37+/v4+vr5+Pn36Ojq+/Xn9u/Y9erI8+LZ7OO669fV4dvUz86p5suV4sGM2LV41atm06FbyZZIx401xYDQurvKpqZoro0uu3jTeX7LWWB/hIJdXl0du28ZtWkGuGAFs10Jr14Ar1cCq1cFoFRsNTgZGhkHCAcGBAQEBAQDAwMCAgIBAgEBAAEAAAEAAAAdaQCyAAAQvUlEQVR42u1aeXei2pe9AUFlFJBBlBktHACBxDnP7/+teh+sqvfr1/+YSr30Wt11VyYJujnzOftexv6sP+vP+rP+Py1B+F8A5URBmciGyHNfDDxSJjw3Hkua9NUSG6PperNk5virJTbYerPZTLnJFwOL34HZlwKLqmFZ6nyzWfGWZUhfBvqAEthqw/iH9P86uCip9EuaL1fbubTaiM5qtZg9nkcV/z1ZCdVabHeHw+F4XpHE88PxcHjbreYG/mWo/wquZTHmLLeH853W7fgduH91P75tF/i/Zfx2WBUfu9gSzO1yud6vlx/At9P1crnh+mW3nQP6N1sbkix2gL2cLvf79Xw6XX8A/3U8nYF7pn8ctov+1t9nXZHNSNoT1PzXrdft9bD8LnGveMh8O58I2qG7f8+SLCauAHu8QODr+/vlsNuuFnOLgGdVtYKzAf39dLmejoBeQd/ib8Kd76DkK2CBftgtnN57ZQL2qoyxsbPcHYB5PsP+99tuzn5HXCNGIC4seCMj7qIi13FVsR2HgP0m00yyqrWCC1xIKWcSWv20pVXV2J5usC19IPlO2gWOHyVZERBw0KZMUYaqAeVGkPqMpzvfjltDlT7rzc7uDtNdj/fbIYBgk6jOi6br6jYi4LCNmaqIHFMsPW2+bWGL6/vxdN9Zn/NulXChv+v9/vatSXTLFPymLdM4iIEI4KiLxYk4GqFKBl3hSEtY5QSV33cOUz+Le74f78ftxM67gClDOwpcTWB+lxBw3EaCaeojRdazfYxaaW8R5JcH8i9rW1IJF9mR3EUXgqZwFE3j+8rktynfAwdoujTDZEG9LyJnwgWveExoHMi/WjZQdIF7xWccFszSFT2FenVVHdlemORtNlht+LTN49DTmWBn+6zqMi9oym9QNznFTvzFqmGw7f14I9w5s2RJo2zhCbByVnZdUyaD1ZpLqvq1q7LIhTpcL+vKsk6ocvR62jLrl6oRW116+x5mzHQ0mVdY1Ka6Ai8qk8BzHWW1Wc5dL0jKti3LPRxAD6t94U7YjJBPp+PyV3KYSg9+vl8gL2fO8ngw0eTev8ZuWbr9LVPqulaLqROkVV0nDq8xv2hTx6C3XqDvw0wyPt5rGORY59thwSle0e4jpuksSFxetbMu5GzX833PW6wAvmB2XldtEQAZ6s4cmS0OV1LW7uPAElsBFWl/xQy3aLOyCTh9xLMX00TWyGNc2JOlQzbdLIWgy/2sbWJbGbpZmzkmWx1PVxTt5UdjShKnB5S66303tuwM6guaOmATBTn4xU/rfddWeZZlZRtNFpupnTcBs6MK98ksrGEPy0TCQ6Z9M8SPetaW/ON+cAw76TJ7yIVt6TNLYV5St3UW+66t6zoSN9KIHMGlhAkLoBk3qOrY5k11eng/3U731cdSpyHOD9fr++kMv3SLwhN0Fdmx8HqxytjTBYFGRTVrfGWzYjGcOdAmzMvbvNzHvKwJnLu9Afh2cD5ULgy2u5/f4RyYjXjP55GalEEMQ6Zdk3qoxTLTUBjdvPIwUCyYn7b7WNfEWVHXMT/RmB2W1eH9jHZs+xGRKR5ul9P5MBc1HinSGPBMM/WkJckGL6o2dKM0KwrAJMFstVlPB2HZJrYpe2UdawY3y/ZNEh2Be39zpKfzlwgL3/poCHQUPc1iYepxumSnZGeMDQrzX7umyPOi6royXtDY6OfILkjZDfxs4lV1pENrx9sZYfF0/pIk5w0+eT2+1llgoyK5ZedTvXeyfWIrg6E8sSl1kbL9uHz1oW6LIeggMxe3hTvkUTUn4vJ4oZT9/HSlsuX5ggSwC4u2zUObT7qYH49kAx+OvzRrhHmCMsdms14vZp5uwcG0sEIAywrSSzzAo1beCDXmdEEGeroyS9K2F3jF3DDbd3lc5Y6k8RxvTbyyi21uugLkarlYLAl+jdRp6HEDbcAwzK9RSvi4i1W2Be4JteJJYJFB02eKYUVmdpB1bZsiOau8NjQlvyrs5QbVIUiyPM/iwF1Q0oRuawiKhxuZaRcrglcVTp/tqQ0Sn82Wi+P12lc1XSfotG6L2OMno+mUY7632qxmsGxXFr1vRfZyOdbCIuRQfgWBRC7doYbcMoR7na5UVaUnTUxp+nL85jp4pU2Gpp82+yqGKTdLDo409csuDz2kLtuLCsorljJyeFkFGcMPTKTYiAlBmxhshbb4jOylPinx7na8vMOnizT0HR2BPEBOSgGJkAVu2FWh/uNuJ26qgDd4ho5PMdAZCSzcZ7rglg9d3583sqgimE7vh7Tct+2+SGNfM/S88aZIUfCjaUAyjiYTjhthZB6yoKr8ocyLiimDDbK9IKvLGdORTpl6oDng7blpSmLO4X6FTwy8ANWvbbuYk4N9NlivZUvmJ27fACmM4wT6Rr0KmtweKiMoxg3ivOn2dR2iv+8iAUa+3u4HDF9PmXhxvlMUCBBAd/289odc3EWou5ypm+O0DZmpjAV0l/jmxpKFLB4xg/ciasaociVtwg+DLpmgxl3e78f5U7pG+qDR87bkdA3kA59XrqBlnYe6O1J0EWOaJo7Yy4/bX5jCYE9bZUlX50ng6iIGm2zA3Caz+dUNw95t+RQwfJEmh/MC89rElNwy1wWnKO3VWjQNU4ggsPLf36GwpPGHQxpnyEVMyavLKErqMsuKMxqRJ4sydbUwDPSDu3UaRHn8yCfrFRsyxme1y0b/9AofmIK3T5imybIiumXddS1cs35FRrjct88DX6mpdeNAZV6TcoLXZNZm6cdxnFSFPnz5Z6pzm5RnTpVxkjwaarxdwNJxFAa+f6DPeh4YdfTgsOA1fTGcYKYQ+nQzjV/33X6faeN/UMUjZpcwql3mA0Xh+YFgF2gQHi1UH08fBMawlJB22XfghRsEflhlivJPJldwACwAndcGqqpIBCxqiqIpzgeBYZfDFON+oum262pkaEofaLP0otD5fwI/7AE35tUJ0vWQgDmNbDD7KPDt/RiF5JdoMlLES5XDxpylqYOs8UQRqYP9HU8jLuhipjhJyMl2EHgOcsyMaRwnsjmGqOdtjHC6nI6vLeph21T7XJedorLh1RwzkZBCpg3Fn1KDpkc47f0+xkg3+6rI68IRzAnGCOSi+7PhhARCBM/lG/klppScJqW09VZrO/IlHpFlKxo3/HE7zxuCC1eHx0kSeq59npV1neljPJrJlncko+tzCUSix0Su3oqPcE32gR/nbbjYBE02MNAHRczSfkqM1heXwhfIxHEqixtfs+M2QQimPqXMRy6SnmtADkRpoadW0dOOorrcd/Ue3rXMoVED7ZTPtJ+erWoog4XNTFh9PLaL0hnyWRsKLHqNht+LhPNUkQAl+HbH3PTGGcZYsJhf1XkcFI27Xkdd2k+iaHJlQ1N4VTImwwGGYsyoDJXYoEDgJtTpDQdp7Qujtw+URagFvd69n8ftGfJ0hBaX6B0EVNGEQdXlVRVRc8IpSGFu3JYhZlMP6XIySDt/+GgEHJqiZ98bgedbn0eTqSc0NkEHuoYIgcjBvqxpdCy6PPJdXXHQVhOmg1Y/eCGBEQIY5VCJgybVMaxebx9pfebH242MrCTonswJUwYGKnICK8ddHetD3o2rrq5iLmrqIrJli9fjPaZj6vBkIagrVx7A4fpm73Y7PtvsUXt7O5/JJ/x9bjPdz6LRxCk6f7mZpmhHTGuIjjvJY7BdEGtkvJgSF1RtEnUZOoWgSmj4KF0RXgpi9e1J3yJdE91D5D8m7tBP912sGxzRXOsNMya8xA0n8Gpdf3GrTNc03Xfg5XC6uoRlzLHrGlzYJaTpW0/+PDtJIIVg6qFOXAhh1A4DlGGYfNLms82a1wWQezD8UFbG6OhcDo8UE7nsZk2I5kHXhrzs5I0vECvQ0xFPjzAqTT3X62HhpXWdw6kFzaBxsHCnm9UAjEedwbdskywfsKFP7R/ucAJd0WxmWKBJutQkBqYf2p4fzYmIOMMdd2WLkq7LFs2fJXgGi8HMg6zO921TZu4YADHuBv810DRTQ8MSwMf1oVs0vizCYO+nD9FsKpgIpJzTsQjdrCPHHoXErDBLWK0n8CjbjzGXI4d7daZMxnYOek2XNF0AMVUGHFw60fjF8UadzFxUP8S9XC99RAmkx6Ee1/tYG1o8IorPMHoLbGy7psKhbLkkJxyP00zmggSpmzBsiN/bgWS7XLcfYvdUibgIsBFLTonb3AMJEXJEDaw2lo+YUTRDFgR4l5K2AeMnNEErek++gPbZVw0GtiXmtesN5J76UQL1hHnrMB1iBiv20J+qcQomcC6DP5m8PNF1hdd0IszRWnrQCwVU5g4Fv4CiVefBKm4/yNSDjYCVgbxjMjiGwmc6FyX6EgJjXuF4ThFCYtiKGr07SGwF9QNMVAvXMpkXO6Tongi1JOnDlOIF4X+5rZjsYy63MB4UDigHZEVF4TgFlbeu6zJPQzDZA+bA0euYUjanyahpK/gIZs7VhzcIvpOoF9pR03nBRHVsfLS4PhoQBLqiTBxiUV37hU1GTPFiRB5mqrhpIl222fKAfhExbEgf5o0NaXZ4mBk0ucIhMkNus4bAROyxnmN7HAbBiAzKumsSl2EHClUTf8zprb9GG5N/LY/X/u0YZuBhJbFKS6pLFagPz7EHgwGaXz9MwA1VoCoEc9ynbKRYwj1SsvyVPSCxJ1Jvf9HWAAp8ua+innbxwrxuQRiTb+VF2bRIoKE7XUwG5phT4Frp6+H+vTr80tYAHXz4sRnyrSq8CA7sE9GEDU1QPkVV7/d1VWQJoRLrJCvmSDSRVQ9gQS99VRJ/+UQAsYL4mOMrOhtQ4V3q20sCAcc1J+eazX5wXdPN2sJpmBF2IvEGynqS9MubqqpEG0AoF+9H7AsP9TDvOlLr8get9/i1WnihB6Yex1HM6RbR/47pYWdJn9lqo62n0412qxFWbOKEkLqimjibg9dbkuAzMCXVaxUyC8TM4I12BCnxWJ87qmBI1pa2kIjM3c1fmIi6VHT9xkCSYFomW8PTclyMB0SBLQ7kFsjRGFs+t62JZvdIn3VGhcPZDybINkVQvW87rAbenYBrk920/jZHDZkS8Xum+WH72Q1VxDP1bCQ0Nq6X1FAz6uVCHwO/7zl6P0ZNl7tbf2xgye8IGc+5m/5iOP2dSWa7GzoSQOPX23ZJR11yTC0/12y5fYNaboctWyCdb49/XWhb823xySMSeG46nAAhzuQ5OCaw3VaF79iWQ9G07Q8IXM4oKuctnHvdq+j22IT93EkcGNqh4xggra7n/uTL+YijNv3C9ji9BrN+7TniASFTrr72286fPBciYt9quj1AXNqVPp0Ac/+xcBLiQoM8HQ7Az7c5SF4DG8/nMzI97dl/7jCMiHc7Wzr8cqctcQyf99vtdsXXlR4Elw9UGaj2Lyms+O2JHBIuNv/ssRAV7zeWD+zHsRta54foMPuCQvh8Pp6hX9qLoijEyz7zfPKIhEpKwzYInav6qWlISgdhKHB+HHW672yEFbnY4+TT1lI/f1Kv36S0pnPyZizsiMynVv9QBk7IbL+vRb8h9PPljP2GMziS+j8nEknqr0n/0bEt1//B/4m/77STJBEYfaH4iX97oPT4xwIFerGYatbjAvui9YLMSWvKj9iXrhfRItwlTqt+LTCTMGNt1tja/+rjyJxJBZKTxOEXAzNFnM5VXhmNvhwYTIk85McvXw08lnC0TOBevhz4z/qz/qw/6//k+i+jP81KjBqqPQAAAABJRU5ErkJggg==" alt="Vật Lý Siêu Nhẩm"><div class="bt"><span class="bp">90 Days Rich Habits</span><div class="b1">Vật Lý <span class="b2">Siêu Nhẩm</span></div></div><button class="themebtn helpbtn" data-tab="help" type="button" aria-label="Hướng dẫn">❓<span class="tl"> Hướng dẫn</span></button><button class="themebtn" id="themebtn" type="button"></button></div></header>
 <div class="app" id="root"><div class="loading"><div class="spin"></div>Đang mở 90 Days Rich Habits…</div></div>
 <nav class="bnav" id="bnav" style="display:none"></nav>
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
+const APP_VER = 'v13.11.06';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
+const PEN_DAILY = 5, PEN_WEEKLY = 15, MISS_MAX = 3, XP_SUB = 10, PEN_DAY = 20;   // trừ XP khi lỡ (50% XP thưởng); lỡ quá 3 ngày liên tiếp thì đứt chuỗi, hết trừ; +10 XP mỗi loại nộp bài mỗi ngày
 const WEEKS = [
  ['Khởi động','Mục tiêu và những việc cần tránh.'],
  ['Đọc sách, cam kết, sức khỏe','Đọc sách, 7 điều cam kết, ngủ đúng giờ và vận động.'],
@@ -2254,7 +2269,7 @@ const BADGES = [
  {id:'ghost',ic:'🛸',n:'Người về từ cõi xa',d:"Vắng ≥7 ngày rồi quay lại làm việc",xp:15,hid:1,kd:'hai_lo',f:(s,x) => x.ghost},
  {id:'min3',ic:'🪫',n:'Sống sót tối thiểu',d:"Đúng 1/3 việc ngày (ngày lười), 3 hôm liền",xp:15,hid:1,kd:'hai_lo',f:(s,x) => x.min3},
  {id:'busy3',ic:'🏃',n:'Bận mà vẫn ghé',d:"Xin bận nhưng vẫn làm ít nhất 1 việc, 3 lần",xp:15,hid:1,kd:'hai_la',f:(s,x) => x.busy3},
- {id:'lastsave',ic:'🦸',n:'Siêu nhân phút 89',d:"Dùng thẻ giữ lửa đúng ngày cuối tuần",xp:15,hid:1,kd:'hai_lo',f:(s,x) => x.lastSave},
+ {id:'lastsave',ic:'🦸',n:'Siêu nhân phút 89',d:"Cứu chuỗi một thói quen đúng ngày thứ 4 sau khi lỡ 3 ngày liền, và đó là ngày cuối tuần",xp:15,hid:1,kd:'hai_lo',f:(s,x) => x.lastSave},
  {id:'early',ic:'🌅',n:'Dậy trước cả gà',d:"Xong việc đầu tiên trước 5:30",xp:15,hid:1,kd:'hai_la',f:(s,x) => x.early},
  {id:'owl',ic:'🦉',n:'Cú mèo trực đêm',d:"Nộp việc cuối ngày sau 23:30",xp:15,hid:1,kd:'hai_lo',f:(s,x) => x.owl},
  {id:'flash',ic:'⚡',n:'Tia chớp',d:"Xong hết việc trong ngày trong vòng 10 phút",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.flash},
@@ -2300,7 +2315,7 @@ const BADGES = [
  {id:'run7',ic:'🥾',n:'Đôi giày không nghỉ',d:"Chạy bộ 7 ngày liền",xp:30,hid:1,kd:'moc',f:(s,x) => x.run7},
  {id:'read10',ic:'📖',n:'Mười phút vàng',d:"Đọc sách đúng 10 phút, 5 lần",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.read10},
  {id:'ck1',ic:'🎤',n:'Nói một lần là chuẩn',d:"Lần ghi âm cam kết đầu tiên trong ngày khớp 100%",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.ck1},
- {id:'guard',ic:'🏮',n:'Người gác lửa',d:"Dùng đủ 2 thẻ giữ lửa trong tuần mà không đứt chuỗi",xp:30,hid:1,kd:'moc',f:(s,x) => x.guard},
+ {id:'guard',ic:'🏮',n:'Người gác lửa',d:"Lỡ 3 ngày liên tiếp một thói quen mà vẫn giữ được chuỗi (làm lại ở ngày thứ 4)",xp:30,hid:1,kd:'moc',f:(s,x) => x.guard},
  {id:'spy',ic:'🕵️',n:'Thám tử tò mò',d:"Xem cách rèn của 5 người khác nhau",xp:30,hid:1,kd:'tinhco',f:(s,x) => x.spy},
  {id:'party',ic:'🎁',n:'Đi ăn sinh nhật',d:"Đủ việc vào ngày sinh nhật của 3 người khác (không hiện tên)",xp:30,hid:1,kd:'moc',f:(s,x) => x.party},
  {id:'early3',ic:'🐦',n:'Chim sớm',d:"Là người chạm thói quen đầu tiên trong ngày, 3 lần",xp:30,hid:1,kd:'moc',f:(s,x) => x.early3},
@@ -2392,7 +2407,7 @@ async function showLogin(msg){
 }
 async function doLogout(){
   try { await call('logout', TOKEN); } catch(e){}
-  dropToken(); PROFC = {}; TOKEN = ''; D = null; BOARD = null; ADMIN = null; showLogin();
+  dropToken(); PROFC = {}; TOKEN = ''; D = null; Object.keys(timers).forEach(k => clearTimeout(timers[k])); Object.keys(dirty).forEach(k => delete dirty[k]); BOARD = null; ADMIN = null; showLogin();
 }
 const errBox = msg => `<div class="err card"><div style="font-size:40px">😕</div><h3 style="margin:8px 0">Chưa tải được dữ liệu</h3><div class="muted">${esc(msg)}</div><button class="btn" onclick="location.reload()">Thử lại</button></div>`;
 
@@ -2425,7 +2440,7 @@ function buildData(d, noAF, keepVi){
   D = {u0: U0, today: d.today, days, weeks, habits, daily:{}, weekly:{}, entries:{}, meta:{plans:{}, lists:{}, subs:{}, look:{}, sleep:{}, bd:'', sleepGoal:['',''], busy:{}, gym:[], lazy:{}}, frz:{}};
   habits.forEach(h => { if (/tuần/i.test(h.freq)) D.weekly[h.code] = Array(weeks.length).fill(0); else D.daily[h.code] = Array(90).fill(0); });
   const rows = d.rows || {};
-  if (rows.META){ D.meta.plans = rows.META.plans || {}; D.meta.lists = rows.META.lists || {}; D.meta.hist = rows.META.hist || {}; D.meta.subs = rows.META.subs || {}; D.meta.look = rows.META.look || {}; D.meta.sleep = rows.META.sleep || {}; D.meta.bd = rows.META.bd || ''; D.meta.sleepGoal = rows.META.sleepGoal || ['','']; D.meta.busy = rows.META.busy || {}; D.meta.gym = rows.META.gym || []; D.meta.lazy = rows.META.lazy || {}; if (rows.META.bdg) D.meta.bdg = rows.META.bdg; D.meta.tt = rows.META.tt || {}; D.meta.ix = rows.META.ix || {}; D.meta.lvd = rows.META.lvd || {}; D.meta.bdNo = rows.META.bdNo || 0; }
+  if (rows.META){ D.meta.plans = rows.META.plans || {}; D.meta.lists = rows.META.lists || {}; D.meta.hist = rows.META.hist || {}; D.meta.subs = rows.META.subs || {}; D.meta.look = rows.META.look || {}; D.meta.sleep = rows.META.sleep || {}; D.meta.bd = rows.META.bd || ''; D.meta.sleepGoal = rows.META.sleepGoal || ['','']; D.meta.busy = rows.META.busy || {}; D.meta.gym = rows.META.gym || []; D.meta.lazy = rows.META.lazy || {}; if (rows.META.bdg) D.meta.bdg = rows.META.bdg; D.meta.tt = rows.META.tt || {}; D.meta.ix = rows.META.ix || {}; D.meta.lvd = rows.META.lvd || {}; D.meta.bdNo = rows.META.bdNo || 0; D.meta.rp = rows.META.rp || ''; }
   Object.keys(rows).forEach(k => {
     const m = k.match(/^([DW]):(\d{4}-\d{2}-\d{2})$/); if (!m) return;
     const isD = m[1] === 'D', pk = m[2], idx = isD ? days.indexOf(pk) : weeks.indexOf(pk);
@@ -2493,7 +2508,7 @@ document.addEventListener('visibilitychange', () => {
 
 /* ================== Lưu ================== */
 function rowFor(key){
-  if (key === 'META') return {hist: D.meta.hist || {}, plans: D.meta.plans, lists: D.meta.lists, subs: D.meta.subs, look: D.meta.look, sleep: D.meta.sleep || {}, bd: D.meta.bd || '', sleepGoal: D.meta.sleepGoal || ['',''], busy: D.meta.busy || {}, gym: D.meta.gym || [], lazy: D.meta.lazy || {}, bdg: D.meta.bdg, tt: D.meta.tt || {}, ix: D.meta.ix || {}, lvd: D.meta.lvd || {}, bdNo: D.meta.bdNo || 0};
+  if (key === 'META') return {hist: D.meta.hist || {}, plans: D.meta.plans, lists: D.meta.lists, subs: D.meta.subs, look: D.meta.look, sleep: D.meta.sleep || {}, bd: D.meta.bd || '', sleepGoal: D.meta.sleepGoal || ['',''], busy: D.meta.busy || {}, gym: D.meta.gym || [], lazy: D.meta.lazy || {}, bdg: D.meta.bdg, tt: D.meta.tt || {}, ix: D.meta.ix || {}, lvd: D.meta.lvd || {}, bdNo: D.meta.bdNo || 0, rp: D.meta.rp || ''};
   const isD = key[0] === 'D', pk = key.slice(2), idx = isD ? D.days.indexOf(pk) : D.weeks.indexOf(pk), o = {h:{}};
   (isD ? DAILY : WEEKLY).forEach(h => {
     const arr = isD ? D.daily[h.code] : D.weekly[h.code], e = D.entries['E:'+h.code+':'+pk];
@@ -2519,6 +2534,7 @@ function walApply(d){
 let savedAt = 0;
 function markDirty(key){
   if (PRACTICE && key !== 'META') return;
+  if (!D) return;
   dirty[key] = 1; clearTimeout(timers[key]);
   try { walPut(key); } catch(e){}
   timers[key] = setTimeout(() => flush(key), 400);
@@ -2528,6 +2544,7 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 window.addEventListener('pagehide', flushAll);
 async function flush(key){
   if (!dirty[key]) return; delete dirty[key];
+  if (!D || !ME) return;   // chưa đăng nhập / đã thoát: không có gì để lưu (tránh lỗi 'meta' of null)
   pending++; renderSync();
   try { const js = JSON.stringify(rowFor(key)); await call('saveRow', TOKEN, key, js, statsNow()); savedAt = Date.now(); if (!dirty[key]) walDel(key); if (RAWD){ RAWD.rows = RAWD.rows || {}; RAWD.rows[key] = JSON.parse(js); dcSave(); } }
   catch(e){ if (isAuthErr(e)) { dropToken(); return showLogin('Phiên đăng nhập đã hết, hãy đăng nhập lại.'); } dirty[key] = 1; toast('⚠️ Chưa lưu được: ' + e.message); }
@@ -2552,6 +2569,7 @@ function statsNow(){
   for (let i = 0; i <= T && !PRACTICE; i++){ if (D.days[i] < wk) continue; if (isLazy(i)) continue; const st = dayStat(i); xw += st.done*XP_DAILY + (st.total && st.done === st.total ? XP_PERFECT : 0); }
   WEEKLY.forEach(h => { for (let w = 0; w <= weekOf(Math.max(T,0)) && !PRACTICE; w++) if (D.weeks[w] >= wk && activeWeek(h,w) && D.weekly[h.code][w]) xw += XP_WEEKLY; });
   if (s.bset && D.meta.bdg) s.bset.forEach(id => { const d = D.meta.bdg[id]; if (d && d >= wk) xw += BMAP[id].xp; });
+  if (!PRACTICE){ const sm = subMap(), pm = penMap(); for (let i = 0; i <= T; i++){ if (D.days[i] < wk) continue; xw += (sm[D.days[i]] || 0) - (pm.by[i] || 0); } xw = Math.max(0, xw); }
   return {day: PRACTICE ? 0 : T+1, xp: s.xp, level: levelOf(s.xp)+1, cur: s.cur, best: s.best, p7: PRACTICE ? 0 : (rangePct(Math.max(0,T-6), T) || 0), week: wk, xpWeek: xw, freeze: Object.keys(D.frz).filter(k => D.frz[k]).length, sum: JSON.stringify(profSum())};
 }
 function profSum(){
@@ -2583,7 +2601,7 @@ const okDay = i => { const s = dayStat(i); return s.total > 0 ? s.done/s.total >
 const frozen = i => !!D.frz[D.days[i]];
 const isBusy = i => !!(D.meta.busy || {})[D.days[i]];
 const okS = i => okDay(i) || frozen(i) || isBusy(i) || isRest(i);
-const FREEZE_PER_WEEK = 2;
+const FREEZE_PER_WEEK = 0;   // đã bỏ thẻ giữ lửa (13/11/2026)
 function freezeCountWeek(w){ let n = 0; for (let j = wkA(w); j <= wkB(w); j++) if (frozen(j)) n++; return n; }
 const freezeLeft = w => Math.max(0, FREEZE_PER_WEEK - freezeCountWeek(w));
 const freezeUsedWeek = w => freezeLeft(w) === 0;
@@ -2600,13 +2618,61 @@ function habitPct(h, daily){
   return den ? num/den : null;
 }
 /* Chuỗi riêng từng thói quen: ngày làm, ngày Chưa có sự kiện, hoặc ngày dùng thẻ giữ lửa của thói quen đó đều nối chuỗi. */
-const HFREEZE_PER_WEEK = 2;
+const HFREEZE_PER_WEEK = 0;
 const hFrozen = (c,i) => { const e = D.entries['E:'+c+':'+D.days[i]]; return !!(e && e.z); };
 const hOk = (c,i) => !!D.daily[c][i] || isNeutral(c,i) || hFrozen(c,i) || isBusy(i) || isRest(i);
 function hFreezeUsed(c,w){ let n = 0; for (let j = wkA(w); j <= wkB(w); j++) if (hFrozen(c,j)) n++; return n; }
 const hFreezeLeft = (c,w) => Math.max(0, HFREEZE_PER_WEEK - hFreezeUsed(c,w));
 function canHFreeze(c,i){ const h = byCode[c]; return !!h && !!D.daily[c] && T > 0 && i > 0 && i < T && i >= T-7 && activeDay(h,i) && activeDay(h,i-1) && !hOk(c,i) && hOk(c,i-1) && hFreezeLeft(c,weekOf(i)) > 0; }
-function habitStreak(h){ const c0 = h.code; let i = hOk(c0,T) ? T : T-1, n = 0; while (i >= 0 && activeDay(h,i) && (hOk(c0,i) || inGrace(h,i))) { if (hOk(c0,i)) n++; i--; } return n; }
+function habitStreak(h){ const c0 = h.code; let n = 0, miss = 0;   // lỡ tối đa 3 ngày liên tiếp vẫn giữ chuỗi, ngày thứ 4 đứt
+  for (let i = 0; i <= T; i++){ if (!activeDay(h,i)) continue;
+    if (hOk(c0,i)){ n++; miss = 0; } else if (inGrace(h,i) || i === T) continue; else { miss++; if (miss > MISS_MAX) n = 0; } }
+  return n; }
+/* Ngày đã hết hạn bổ sung thì mới tính là lỡ (trừ XP) */
+const dayFinal = i => i < T - 1 || (i === T - 1 && !(new Date().getHours() < EDIT_NOON && ymd(new Date()) === D.today));
+/** Trừ XP khi lỡ việc: chỉ việc đang có chuỗi; lỡ ngày 1-3 liên tiếp trừ, ngày thứ 4 đứt chuỗi và không trừ nữa. by[i] = XP trừ tính vào ngày i */
+function penMap(){
+  const by = new Array(Math.max(D.days.length,1)).fill(0); let total = 0;
+  if (!D || T < 0 || PRACTICE) return {by, total};
+  const add = (i, v) => { by[Math.min(i, by.length-1)] += v; total += v; };
+  DAILY.forEach(h => { const c = h.code; let alive = false, miss = 0;
+    for (let i = 0; i <= T; i++){ if (!activeDay(h,i)) continue;
+      if (D.daily[c][i]){ alive = true; miss = 0; continue; }
+      if (isNeutral(c,i) || hFrozen(c,i) || isBusy(i) || isRest(i) || isLazy(i) || inGrace(h,i) || !dayFinal(i)) continue;
+      if (!alive) continue;
+      miss++; if (miss <= MISS_MAX) add(i, PEN_DAILY); else alive = false; } });
+  WEEKLY.forEach(h => { const c = h.code; let alive = false, miss = 0;
+    for (let w = 0; w <= weekOf(T); w++){ if (!activeWeek(h,w)) continue;
+      if (D.weekly[c][w]){ alive = true; miss = 0; continue; }
+      if (!(wkB(w) < T - 1) || !alive) continue;
+      miss++; if (miss <= MISS_MAX) add(wkB(w) + 1, PEN_WEEKLY); else alive = false; } });
+  /* Chuỗi chung cả ngày: ngày làm dưới 2/3 thói quen (đang có chuỗi) trừ PEN_DAY; lỡ tối đa MISS_MAX ngày liên tiếp, ngày thứ 4 đứt chuỗi và hết trừ */
+  { let alive = false, miss = 0;
+    for (let i = 0; i <= T; i++){ const st = dayStat(i);
+      if (okS(i)){ alive = true; miss = 0; continue; }
+      if (!st.total || isLazy(i) || !dayFinal(i) || !alive) continue;
+      miss++; if (miss <= MISS_MAX) add(i, PEN_DAY); else alive = false; } }
+  return {by, total};
+}
+/** +10 XP mỗi loại nộp bài mỗi ngày: chạy bộ, đọc sách, cam kết (từ máy chủ, lưu trong BSTAT) và giấc ngủ (giờ ngủ + giờ thức) */
+function subMap(){
+  const m = {}, put = d => { if (d) m[d] = (m[d] || 0) + XP_SUB; };
+  if (!D || PRACTICE) return m;
+  const bs = (typeof BSTAT !== 'undefined' && BSTAT) || {};
+  [ (bs.runs || []).map(r => r.d), bs.wd || [], bs.rd || [], bs.ckd || [] ].forEach(a => { const seen = new Set(a); seen.forEach(put); });
+  const sl = D.meta.sleep || {}; Object.keys(sl).forEach(d => { const v = sl[d]; if (v && v[0] && v[1]) put(d); });
+  return m;
+}
+const subTotal = (sm, upto) => D.days.reduce((a, d, i) => a + (i <= upto ? (sm[d] || 0) : 0), 0);
+/** Huy hiệu cứu chuỗi: một thói quen lỡ đúng 3 ngày liên tiếp rồi làm lại ở ngày thứ 4 (chuỗi vẫn giữ); lastSave nếu ngày thứ 4 là cuối tuần */
+function chainRescue(){
+  const r = {guard:false, last:false}; if (T < 0 || PRACTICE) return r;
+  DAILY.forEach(h => { const c = h.code; let miss = 0;
+    for (let i = 0; i <= T; i++){ if (!activeDay(h,i)) continue;
+      if (D.daily[c][i]){ if (miss === MISS_MAX){ r.guard = true; if (i === wkB(weekOf(i))) r.last = true; } miss = 0; }
+      else if (hOk(c,i) || inGrace(h,i) || i === T) continue; else miss++; } });
+  return r;
+}
 
 /* ===== Huy hiệu v2: thống kê mở rộng ===== */
 const pf = i => { const st = dayStat(i); return !isLazy(i) && st.total > 0 && st.done === st.total; };
@@ -2638,7 +2704,6 @@ function xstats(){
     if (st.total > 0){ if (st.done === 0) gz++; else { if (gz >= 7) x.ghost = true; gz = 0; } }
     ms = (isLazy(i) && okDay(i)) ? ms+1 : 0; if (ms >= 3) x.min3 = true;
     if (isBusy(i) && st.done > 0) busyN++;
-    if (frozen(i) && i === wkB(weekOf(i))) x.lastSave = true;
     if (isLazy(i)) lazyM[mo] = (lazyM[mo]||0) + 1;
     if (i === 44 && P) x.half = true;
     if (i >= 87 && P) sp++;
@@ -2695,13 +2760,36 @@ function lunarOf(ds){ const dd = +ds.slice(8), mm = +ds.slice(5,7), yy = +ds.sli
 
 /* ===== Theo dõi tương tác (chạm nhân vật, mở tab, đổi hướng, sửa cách rèn) ===== */
 function ixObj(){ return D ? (D.meta.ix = D.meta.ix || {}) : null; }
+/* Thông báo huy hiệu toàn màn hình: hiện lần lượt, bấm nút mới chuyển tiếp */
+var BDQ = [], BDEL = null, BDTITLE = '';
+function bdgShow(list, title){
+  if (!list || !list.length) return;
+  list.forEach(b => BDQ.push({b, t: title || '🏅 Huy hiệu mới'}));
+  if (!BDEL) bdgNext();
+}
+function bdgNext(){
+  if (!BDQ.length){ if (BDEL){ BDEL.remove(); BDEL = null; } return; }
+  const it = BDQ.shift(), b = it.b; let say = ''; try { say = badgeSay(b); } catch(e){}
+  const left = BDQ.length;
+  if (!BDEL){ BDEL = document.createElement('div'); BDEL.className = 'bdo'; document.body.appendChild(BDEL); }
+  BDEL.innerHTML = `<div class="bdc"><div class="bdh">${esc(it.t)}${b.hid ? ' · huy hiệu ẩn' : ''}</div><div class="bdi">${b.ic}</div><h2 class="bdn">${esc(b.n)}</h2><div class="bdd">${esc(b.d)}</div><div class="bdx">+${b.xp} XP</div>${say ? `<div class="bds">${esc(say)}</div>` : ''}<button class="btn" data-bdnext>${left ? 'Tiếp theo (còn ' + left + ')' : 'Xong'}</button></div>`;
+  try { if (navigator.vibrate) navigator.vibrate(40); confetti(); } catch(e){}
+}
+document.addEventListener('click', e => { if (e.target.closest('[data-bdnext]')) bdgNext(); });
+/* Phát lại tất cả huy hiệu đã đạt khi quản lý ra lệnh (mã phát lại do máy chủ trả ở badgeStats) */
+function bdgReplayCheck(rp){
+  if (!D || PRACTICE || !rp || D.meta.rp === rp) return;
+  const s = summary(); if (!s.bset) return; D.meta.rp = rp; markDirty('META');
+  const m = D.meta.bdg || {}, arr = BADGES.filter(b => s.bset.has(b.id)).map((b, i) => ({b, i, d: m[b.id] || '2000-01-01'}));
+  arr.sort((x, y) => x.d < y.d ? -1 : x.d > y.d ? 1 : x.i - y.i);
+  bdgShow(arr.map(x => x.b), '🏅 Huy hiệu bạn đã đạt');
+}
+function badgeToastMsg(arr){ const hb = arr.find(b => b.hid) || arr[0], say = badgeSay(hb); return arr.length === 1 ? `🏅 ${hb.ic} +${hb.xp} XP · ${say}` : `🏅 Huy hiệu mới: ${arr.map(b => b.ic + ' ' + b.n + ' +' + b.xp + ' XP').join(', ')} · ${say}`; }
 function ixAward(){
   if (!D || PRACTICE) return; const s = summary(); if (!s.bset) return;
   if (!D.meta.bdg){ bdgRecord(s); return; }
   const nw = BADGES.filter(b => s.bset.has(b.id) && !D.meta.bdg[b.id]); if (!nw.length) return;
-  bdgRecord(s); try { confetti(); } catch(e){}
-  const hb = nw.find(b => b.hid);
-  toast(`🏅 Huy hiệu mới: ${nw.map(b => b.ic + ' ' + b.n + ' +' + b.xp + ' XP').join(', ')}${hb ? ' · ' + badgeSay(hb) : ''}`, hb ? 5200 : 3200);
+  bdgRecord(s); bdgShow(nw);
 }
 function ixTap(){
   if (!D || PRACTICE) return; const o = ixObj(), tp = o.tap = o.tap || {}; let ch = false; tp[D.today] = (tp[D.today] || 0) + 1;
@@ -2729,7 +2817,7 @@ async function loadBS(force){
   if (!BSTAT){ try { const c = JSON.parse(LS.get('rh_bs_' + ME.id) || 'null'); if (c && c.runs) BSTAT = c; } catch(e){} }
   if (!force && BSAT && Date.now() - BSAT < 600000) return;
   BSBUSY = true;
-  try { const r = await call('badgeStats', TOKEN); if (r && r.runs){ BSTAT = r; LS.set('rh_bs_' + ME.id, JSON.stringify(r)); } BSAT = Date.now(); ixAward(); }
+  try { const r = await call('badgeStats', TOKEN); if (r && r.runs){ BSTAT = r; LS.set('rh_bs_' + ME.id, JSON.stringify(r)); } BSAT = Date.now(); ixAward(); if (r && r.rp !== undefined) bdgReplayCheck(r.rp); }
   catch(e){ BSAT = Date.now(); } finally { BSBUSY = false; }
 }
 const dayNo = ds => Math.floor(pd(ds).getTime()/864e5);
@@ -2765,10 +2853,11 @@ function xstats2(x, n){
     x.exact = q.weeks.some(w => ks(w).length >= 2 && ks(w).every(k => w[k] === need[k]));
     x.sum60 = (q.day || 0) >= 28 && q.weeks.reduce((a, w) => a + (w.run || 0) + (w.read || 0) + (w.ck || 0), 0) === 60; }
   const bd = D.meta.bd || '', ix = D.meta.ix || {};
-  let cum = 0, lvK = 0; const lvd = {};
+  let cum = 0, lvK = 0; const lvd = {}, sm2 = subMap(), pm2 = penMap();
   for (let i = 0; i <= n; i++){
     const ds = D.days[i], st = dayStat(i), P = pf(i); let before = cum;
     if (!isLazy(i)) cum += st.done * XP_DAILY + (P ? XP_PERFECT : 0);
+    cum = Math.max(0, cum + (sm2[ds] || 0) - (pm2.by[i] || 0));
     if (i === wkB(weekOf(i))) WEEKLY.forEach(h => { const w = weekOf(i); if (activeWeek(h, w) && D.weekly[h.code][w]) cum += XP_WEEKLY; });
     while (lvK < LEVELS.length - 1 && cum >= LEVELS[lvK+1].xp){ lvK++; lvd[lvK] = ds; }
     if (P && before < 1000 && cum >= 1000) x.k1000 = true;
@@ -2787,7 +2876,7 @@ function xstats2(x, n){
     x.edits5 = (ix.edits || 0) >= 5; x.spy = (ix.seen || []).length >= 5; }
   if (!PRACTICE && JSON.stringify(D.meta.lvd || {}) !== JSON.stringify(lvd)){ D.meta.lvd = lvd; markDirty('META'); }
   { const c = {}; Object.keys(D.meta.bdg || {}).forEach(k => { const d = D.meta.bdg[k]; if (d && d > '2001') c[d] = (c[d] || 0) + 1; }); x.hunt5 = Object.keys(c).some(d => c[d] >= 5); }
-  for (let w = 0; w <= weekOf(n); w++){ if (wkB(w) > n || freezeCountWeek(w) < FREEZE_PER_WEEK) continue; let ok = true; for (let j = wkA(w); j <= wkB(w); j++) if (!okS(j)) ok = false; if (ok) x.guard = true; }
+  { const cr = chainRescue(); x.guard = cr.guard; x.lastSave = cr.last; }
   x.read10 = (bs.read10 || 0) >= 5; x.ck1 = (bs.ck1 || 0) >= 1; x.early3 = (bs.first || []).length >= 3;
   { const ld = bs.lvDays || {}; x.lvTog = Object.keys(lvd).some(k => ld[lvd[k]] >= 1); }
   { const bl = bs.bdays || []; let c = 0; bl.forEach(md => { for (let i = 0; i <= n; i++) if (D.days[i].slice(5) === md && okDay(i)){ c++; break; } }); x.party = c >= 3; }
@@ -2821,14 +2910,14 @@ function ttRec(c, i, nv){
 function summary(){
   const s = {ticks:0, xp:0, perfect:0, pweeks:0, cur:0, best:0, distinct:0, save:0, p0:0, p1:0, p2:0};
   if (T < 0 || PRACTICE) return s;
-  let run = 0;
+  let run = 0, gm = 0;
   for (let i = 0; i <= T; i++){
     const st = dayStat(i);
     s.ticks += st.done; if (!isLazy(i)) s.xp += st.done*XP_DAILY;
     if (!isLazy(i) && st.total && st.done === st.total){ s.perfect++; s.xp += XP_PERFECT; }
-    if (okS(i)) { run++; s.best = Math.max(s.best, run); } else if (i < T) run = 0;
+    if (okS(i)) { run++; gm = 0; s.best = Math.max(s.best, run); } else if (i < T){ gm++; if (gm > MISS_MAX) run = 0; }
   }
-  let i = okS(T) ? T : T-1; while (i >= 0 && okS(i)) { s.cur++; i--; }
+  s.cur = run;
   const W = weekOf(T);
   WEEKLY.forEach(h => { for (let w = 0; w <= W; w++) if (activeWeek(h,w) && D.weekly[h.code][w]) { s.ticks++; s.xp += XP_WEEKLY; if (h.code === '09') s.save++; } });
   for (let w = 0; w <= W; w++){ const a = wkA(w), b = wkB(w); if (b > T) break;
@@ -2836,6 +2925,8 @@ function summary(){
   D.habits.forEach(h => { const arr = D.daily[h.code] || D.weekly[h.code]; if (arr && arr.some(v => v)) s.distinct++; });
   PHASES.forEach((ph,k) => { const b = Math.min(ph.b, D.days.length-1); if (T >= b){ const p = rangePct(ph.a, b); if (p != null && p >= 0.7 - 1e-9) s['p'+k] = 1; } });
   s.bset = badgeEval(s); s.bset.forEach(id => { s.xp += BMAP[id].xp; });
+  s.sub = subTotal(subMap(), T); s.pen = penMap().total;
+  s.xp = Math.max(0, s.xp + s.sub - s.pen);
   return s;
 }
 function levelOf(xp){ let k = 0; LEVELS.forEach((l,j) => { if (xp >= l.xp) k = j; }); return k; }
@@ -2967,7 +3058,6 @@ function side(s){
   let banner = '';
   if (T < 0) banner = `<div class="banner">Hành trình của bạn bắt đầu từ ${dm(D.days[0])}.</div>`;
   else if (D.today > D.days[D.days.length-1]) banner = `<div class="banner">🎉 Bạn đã đi hết 90 ngày!</div>`;
-  else if (T >= 2 && canFreeze(T-1) && okS(T-2)) banner = `<div class="banner">😢 Hôm qua bạn lỡ nhịp nên chuỗi bị đứt.<button class="btn" style="display:block;margin-top:8px" data-freeze="${T-1}">🧊 Dùng thẻ giữ lửa để nối lại chuỗi</button></div>`;
   else if (s.cur && !okDay(T)) banner = `<div class="banner">🔥 Chuỗi ${s.cur} ngày đang chờ bạn giữ lửa hôm nay.</div>`;
   return `<div class="card">
     <div class="who"><span>${greet()}<b>${esc(ME.name)}</b></span><button class="lnk" data-logout="1">Đăng xuất</button></div>
@@ -2979,7 +3069,7 @@ function side(s){
         <defs><linearGradient id="g"><stop offset="0" stop-color="#4FC98A"/><stop offset="1" stop-color="#B8F061"/></linearGradient></defs></svg>
         <div class="lbl"><div class="pct">${Math.round(p*100)}%</div><div class="sub">${st.done}/${st.total} việc</div></div></div>
       <div class="chips">
-        <div class="chip"><span class="e">🔥</span><div><b>${s.cur} ngày</b><small>Kỷ lục ${s.best} · 🧊 ${freezeLeft(weekOf(ti)) ? 'còn ' + freezeLeft(weekOf(ti)) + ' thẻ tuần này' : 'hết thẻ tuần này'}</small></div></div>
+        <div class="chip"><span class="e">🔥</span><div><b>${s.cur} ngày</b><small>Kỷ lục ${s.best}</small></div></div>
         <div class="chip click" data-tab="badge"><span class="e evs">${evo(look().l, 'base', lk)}</span><div><b>Cấp ${lk+1}</b><small>${lvName(lk)}</small></div></div>
       </div>
     </div>
@@ -3187,8 +3277,7 @@ function card(h, kind, done, extra){
   const c = h.code, k = kindOf(c), tone = PHASE_TONE[h.phase] || '--primary-soft';
   const hasPanel = k !== 'auto' && k !== 'tool', open = hasPanel && OPEN.has(c), pt = progressTxt(c, vi);
   const ft = (kind === 'daily' && T > 0) ? (vi === T ? T-1 : vi) : -1;
-  const fz = kind !== 'daily' || T <= 0 ? '' : (ft >= 0 && hFrozen(c, ft)) ? `<button class="hfz on" data-hunfz="${ft}" data-code="${c}">🧊 Đã giữ lửa ${vi === T ? 'hôm qua' : 'ngày này'} · Huỷ</button>`
-    : (ft >= 0 && canHFreeze(c, ft)) ? `<button class="hfz" data-hfz="${ft}" data-code="${c}">🧊 Giữ lửa ${vi === T ? 'hôm qua' : 'ngày này'} (còn ${hFreezeLeft(c, weekOf(ft))})</button>` : '';
+  const fz = '';
   const tags = fz + (extra.isNew ? '<span class="tag new">🌱 Làm quen</span>' : '') + (extra.lock ? `<span class="tag lockt">🔒 ${dm(extra.lock)}</span>` : '');
   return `<div class="habit ${done?'done':''} ${open?'open':''}" data-card="${c}">
     <div class="top" ${hasPanel ? `data-expand="${c}"` : k === 'tool' ? `data-tab="${spec(c).go}"` : `data-tick="${kind}" data-code="${c}"`}>
@@ -3250,7 +3339,7 @@ function panel(c){
     }
   }
   x += `<div class="rule">🎯 ${esc(ruleOf(c))}</div>`;
-  if (isDailyCode(c) && T >= 0) x += `<div class="rule">🧊 Thẻ giữ lửa: còn ${hFreezeLeft(c, weekOf(Math.max(T,0)))}/${HFREEZE_PER_WEEK} tuần này</div>`;
+  if (isDailyCode(c) && T >= 0) x += `<div class="rule">🔥 Chuỗi: lỡ tối đa ${MISS_MAX} ngày liên tiếp vẫn giữ, mỗi ngày lỡ -${PEN_DAILY} XP. Lỡ ngày thứ ${MISS_MAX+1} thì đứt chuỗi.</div>`;
   return x;
 }
 function futSection(d){
@@ -3649,8 +3738,10 @@ function badges(s){
       <div class="ladder">${ladder}</div>
       <div class="sec" style="margin-top:16px"><h3>Hướng tiến hóa</h3><span>Đổi bất cứ lúc nào, không mất cấp</span></div><div class="picks">${lines}</div>
       
-      <div class="rules">Cách tính XP: mỗi tick hằng ngày +${XP_DAILY} · mỗi tick hằng tuần +${XP_WEEKLY} · ngày hoàn hảo 100% +${XP_PERFECT}.<br>
-      Giữ lửa = làm từ 2/3 thói quen trong ngày · 🧊 2 thẻ/tuần, không cộng dồn.</div></div>
+      <div class="rules">Cách tính XP: mỗi tick hằng ngày +${XP_DAILY} · mỗi tick hằng tuần +${XP_WEEKLY} · ngày hoàn hảo 100% +${XP_PERFECT} · nộp chạy bộ, đọc sách, cam kết, giấc ngủ mỗi loại +${XP_SUB}.<br>
+      Lỡ thói quen đang có chuỗi: -${PEN_DAILY} XP/ngày (việc tuần -${PEN_WEEKLY} XP/tuần), lỡ tối đa ${MISS_MAX} lần liên tiếp vẫn giữ chuỗi, lần thứ ${MISS_MAX+1} đứt chuỗi và hết trừ. XP có thể làm tụt cấp.<br>
+      Cả ngày làm dưới 2/3 thói quen: -${PEN_DAY} XP/ngày, cũng lỡ tối đa ${MISS_MAX} ngày liên tiếp vẫn giữ chuỗi chung.<br>
+      Giữ lửa = làm từ 2/3 thói quen trong ngày.</div></div>
     ${chalHtml()}
     <div class="sec"><h3>Huy hiệu</h3><span>${got}/${vis.length} đã đạt · ẩn ${hOpen.length}/${hid.length}</span></div><div class="badges">${bg}</div>`;
 }
@@ -3803,7 +3894,7 @@ const pick = a => a[Math.random()*a.length|0];
 /* ---- Thoại theo tình huống: điền chỗ trống, chọn câu theo trạng thái ---- */
 const XUNG = {sage: k => k < 2 ? 'tại hạ' : k < 4 ? 'ta' : k < 7 ? 'bản tọa' : k < 9 ? 'ta' : 'bản tiên'};
 function fill(t, s, ln, k){ ln = ln || s.ln; if (k == null) k = s.lk; return t.replace(/\{left\}/g, s.left).replace(/\{streak\}/g, s.streak).replace(/\{need\}/g, s.need).replace(/\{day\}/g, s.day || '').replace(/\{total\}/g, s.total || '').replace(/\{quota\}/g, s.quota || '').replace(/\{ta\}/g, (XUNG[ln] ? XUNG[ln](k) : '')).replace(/\{goi\}/g, (GOI[ln] ? GOI[ln](k) : '')); }
-const BADGE_SAY = {"cat": {"de": ["Sen vừa mở «{badge}»! Cho phép vuốt lông {ta} một cái, một cái thôi.", "«{badge}» đây sen. Làm đều thế thì tối nay thêm pate nhé.", "Huy hiệu «{badge}» hả? Để {ta} ngửi thử… ừm, mùi chăm chỉ, được."], "moc": ["«{badge}»! Sen bền bỉ từng ngày, {ta} tự hào xù cả đuôi.", "Bao nhiêu ngày không bỏ cuộc mới có «{badge}». Hôm nay {ta} ngồi lên đùi sen, đặc ân đấy.", "«{badge}»! Cả phố mèo phải nghe chuyện này. Sen, gãi cằm ăn mừng mau."], "tinhco": ["Ơ kìa, «{badge}» rơi từ đâu xuống? Sen may như mèo vớ được cá.", "Không định mà vẫn trúng «{badge}». Chắc sen có số làm mèo.", "Vừa ngủ dậy, {ta} đã thấy «{badge}». Trùng hợp kiểu này thì thích."], "hai_lo": ["«{badge}»… sen ơi, {ta} vừa cười vừa lăn ra sàn đây.", "Huy hiệu «{badge}» cơ đấy. Để {ta} cất kỹ, không kể ai đâu… chắc vậy.", "Được «{badge}» rồi nhé. Mai nhớ làm sớm cho {ta} đỡ lo."], "kho": ["«{badge}»!!! Phải nhảy lên nóc tủ, {ta} mới đủ cao ngắm thành tích này.", "Không phải ai cũng chạm được «{badge}». Sen đi đường dài thật, {ta} cúi đầu… một chút.", "Đây là «{badge}» đấy. Từ nay sen được đánh thức {ta} bất cứ lúc nào. Trừ ban đêm."], "hai_la": ["«{badge}»? Sen nghịch y như mèo con, {ta} duyệt.", "Sen làm trò gì mà ra «{badge}» vậy? Thôi, {ta} thích, cho qua."]}, "sage": {"de": ["«{badge}» đã vào túi. Mỗi ngày một bước, đạo tâm vững thêm một phân.", "Tích tiểu thành đại, đạo hữu nay được «{badge}». Chúc mừng.", "Một viên đá nhỏ trên đường tu: «{badge}». Cứ thế mà đi, đạo hữu."], "moc": ["«{badge}»! Đạo hữu vừa phá một tầng bình cảnh, {ta} cũng thấy linh khí dâng trào.", "Bao ngày khổ luyện không bỏ, nay kết thành «{badge}». Đạo tâm này đáng nể.", "Trời đất chứng giám: đạo hữu đạt «{badge}». Tu vi đã khác hẳn ngày đầu."], "tinhco": ["Cơ duyên tự tìm tới: «{badge}». Đạo hữu không cầu mà được.", "Lạ thay, «{badge}» rơi xuống như sao băng. Thiên ý đấy, đạo hữu cứ nhận.", "Vô tâm mà đắc đạo, chính là «{badge}» này."], "hai_lo": ["«{badge}»… đạo hữu tu theo lối riêng ghê, {ta} không dám bình luận.", "Huy hiệu «{badge}» đây. Tu tiên cũng có lúc lạc đường, quay về là được.", "Được «{badge}» rồi. Đạo hữu đừng để sư huynh đệ biết, kẻo cười."], "kho": ["«{badge}»! Cảnh giới này trăm người mới có một, {ta} phải đứng dậy hành lễ.", "Phi thăng một bậc: «{badge}». Đạo hữu đã đi con đường mà nhiều người bỏ dở.", "Đại công cáo thành, «{badge}»! Ngày sau sử sách tu tiên sẽ ghi tên đạo hữu."], "hai_la": ["«{badge}»… đạo hữu ngộ ra một môn tâm pháp lạ, {ta} chưa thấy trong kinh thư.", "Thiên hạ tu một đường, đạo hữu tu đường riêng: «{badge}». Cũng là một cái duyên."]}, "tree": {"de": ["Ồ, «{badge}». Người làm vườn tưới đều tay, cây cũng thấy mát rễ.", "Thêm một chiếc lá non: «{badge}». Cứ chậm mà chắc, người làm vườn ạ.", "«{badge}» đây. Mỗi ngày một gáo nước, vườn xanh lên trông thấy."], "moc": ["«{badge}»… vậy là {ta} vừa mọc thêm một vòng gỗ vì người làm vườn đấy.", "Rễ đã bám sâu rồi. Bao ngày người làm vườn không bỏ, nay có «{badge}».", "Gió thổi qua tán lá cũng thì thầm: «{badge}». Cây già này mừng lắm."], "tinhco": ["Hạt nào rơi đúng chỗ thế nhỉ? «{badge}» tự mọc lên giữa vườn.", "Không trồng mà vẫn ra quả: «{badge}». Đất lành thật.", "Ồ, một bông hoa lạ nở: «{badge}». Cây sống lâu mới thấy."], "hai_lo": ["«{badge}» à… ha ha, cây cười rung cả lá đây.", "Huy hiệu «{badge}». Vườn nào cũng có cỏ dại, nhổ dần là được.", "Được «{badge}» rồi. Mai nhớ tưới sớm hơn chút cho {ta} đỡ khát nhé."], "kho": ["«{badge}»! Đứng đây trăm năm, {ta} mới thấy được mấy người như thế.", "Cây cổ thụ nào cũng từ một hạt kiên nhẫn. Người làm vườn vừa chứng minh: «{badge}».", "Đây là «{badge}» đấy. Vòng gỗ năm nay {ta} sẽ khắc tên người làm vườn."], "hai_la": ["«{badge}»? Người làm vườn này vui tính thật, cây rung lá cười khúc khích.", "Vườn nào cũng có một góc lạ. Góc của người làm vườn tên là «{badge}»."]}, "dragon": {"de": ["«{badge}». Chuyện nhỏ, nhưng thời cá chép ta cũng bắt đầu từ những bước nhỏ thế.", "Được «{badge}» rồi. Mây đã bắt đầu tụ quanh {goi} đấy.", "Thêm một vảy rồng: «{badge}». Cứ đều như vậy, {goi}."], "moc": ["«{badge}»! Năm xưa ta vượt vũ môn cũng nhờ bơi đều từng ngày như {goi}.", "Mây mưa nổi lên mừng «{badge}». Bao ngày bền bỉ của {goi} không uổng.", "Long châu sáng thêm một phần: «{badge}». Ta công nhận {goi}."], "tinhco": ["«{badge}» tự rơi vào tay {goi}? Ngay cả rồng cũng ghen với vận may này.", "Trời ban «{badge}» chẳng báo trước. Ta thấy khí vận trên người {goi}.", "Hừm, «{badge}». Thời cá chép ta cũng từng vớ được viên ngọc như thế."], "hai_lo": ["«{badge}»… ta giả vờ không thấy, giữ thể diện cho {goi}.", "Huy hiệu «{badge}». Rồng cũng có ngày ngủ quên trong mây, ta hiểu.", "Được «{badge}». Chuyện này đừng kể với cá chép trong hồ nhé, {goi}."], "kho": ["«{badge}»! Ta cuộn mình bay ba vòng trời để mừng {goi}.", "Kẻ vượt được cửa này hiếm như rồng giữa đàn cá: «{badge}». Đó chính là {goi}.", "Long châu đã soi thấy «{badge}». Từ nay ta coi {goi} ngang hàng."], "hai_la": ["«{badge}»? Ta sống nghìn năm chưa thấy ai được cái này. Đúng là kỳ nhân, {goi}.", "Rồng ta cũng phải ngoái lại nhìn: «{badge}». Thú vị đấy, {goi}."]}, "phoenix": {"de": ["«{badge}»! Thêm một thanh củi, lửa của {goi} cháy đều rồi đó!", "Tí tách, «{badge}» bén lửa rồi! Cứ thế mà giữ nhé, {goi}.", "Mỗi việc nhỏ là một tia lửa, và «{badge}» vừa lóe lên!"], "moc": ["«{badge}»! Lửa bùng cháy cao quá, {ta} muốn hót vang cả trời!", "Bao ngày {goi} tiếp củi không ngừng, nay rực lên «{badge}»!", "Nhìn kìa, «{badge}»! Ngọn lửa này do chính tay {goi} nhóm từng ngày."], "tinhco": ["Một tia lửa lạc mà thành «{badge}»! Vận may cũng biết cháy đấy!", "Ơ, «{badge}» tự bùng lên! Lửa hợp với {goi} thật.", "Không ai đốt mà lửa vẫn cháy: «{badge}». Tuyệt!"], "hai_lo": ["«{badge}»… lửa hơi khói tí, nhưng vẫn là lửa, ha ha!", "Huy hiệu «{badge}». Từ tro tàn đứng dậy, {ta} rành chuyện này lắm!", "Được «{badge}» rồi! Mai thêm củi sớm cho {ta} nhé, {goi}."], "kho": ["«{badge}»!!! Lửa cháy tới tận trời, {ta} vui đến mức muốn tái sinh thêm lần nữa!", "Chỉ ngọn lửa bền nhất mới tới được «{badge}». Và đó là lửa của {goi}!", "«{badge}»! Từ nay tro tàn cũng phải gọi {goi} là huyền thoại."], "hai_la": ["«{badge}»! Ha ha, lửa của {goi} cháy kiểu gì lạ thế, {ta} thích!", "Lửa thường cháy thẳng, lửa của {goi} cháy xoắn ốc: «{badge}»!"]}, "hero": {"de": ["Báo cáo: mục tiêu «{badge}» đã chiếm được, {goi}!", "«{badge}» vào kho chiến lợi phẩm. Hành quân đều thế là chuẩn, sir!", "Một trận nhỏ thắng gọn: «{badge}». Tiếp tục tiến lên!"], "moc": ["Báo cáo {goi}: «{badge}»! Bao ngày hành quân không nghỉ, toàn quân đứng nghiêm chào!", "«{badge}»! Mục tiêu lớn đã hạ. Skål!", "Chiến dịch dài, kỷ luật thép, kết quả là «{badge}». Xin chúc mừng, {goi}."], "tinhco": ["Báo cáo: tình cờ chiếm thêm cứ điểm «{badge}»! Trinh sát cũng không ngờ.", "«{badge}» về tay ta không tốn viên đạn nào. Vận may đứng về phía {goi}!", "Ngoài kế hoạch nhưng vẫn ghi công: «{badge}», sir!"], "hai_lo": ["Báo cáo… ờ, «{badge}». Chuyện này {ta} không ghi vào sổ chiến sự.", "«{badge}»! Lùi một bước để phản công, chiến thuật cổ điển đấy, {goi}.", "Huy hiệu «{badge}». Mai {goi} nhớ ra quân sớm, {ta} đứng gác mỏi chân rồi."], "kho": ["Toàn quân nghe lệnh! «{badge}» đã về tay {goi}! Skål!", "«{badge}»! Chiến công này {ta} sẽ kể cho lính mới mãi về sau.", "Báo cáo: mục tiêu tối thượng «{badge}» đã hạ. Xin nghiêng cờ chào {goi}."], "hai_la": ["Báo cáo: phát hiện chiến thuật lạ «{badge}». Bộ chỉ huy đang… nghiên cứu.", "«{badge}»! Sách binh pháp không có chiêu này, {goi}. Ghi công riêng."]}, "rocket": {"de": ["Tín hiệu xanh: «{badge}» đã mở. Nhiên liệu nạp thêm một vạch.", "Trạm mặt đất xác nhận «{badge}». Quỹ đạo ổn định, {goi}.", "«{badge}» ghi vào nhật ký bay. Tiếp tục đếm ngược ngày mai."], "moc": ["Rời bệ phóng thành công: «{badge}»! Bao ngày nạp nhiên liệu đều đặn đã có kết quả.", "«{badge}»! Cả trung tâm điều khiển đứng dậy vỗ tay, {goi}.", "Đã vượt tầng khí quyển: «{badge}». Tầm nhìn từ đây đẹp lắm."], "tinhco": ["Phát hiện vật thể lạ trên radar… là «{badge}»! Bất ngờ dễ thương.", "Lệch quỹ đạo một chút mà trúng ngay «{badge}». May mắn cấp vũ trụ.", "Tín hiệu lạ từ không gian: «{badge}». Xin chúc mừng, {goi}."], "hai_lo": ["«{badge}»… trung tâm điều khiển xin phép tắt micro để cười.", "Huy hiệu «{badge}». Tàu lâu lâu cũng trôi lệch, chỉnh lại hướng là ổn.", "Được «{badge}». Mai {goi} lên tàu sớm giúp, {ta} chờ ở bệ phóng nãy giờ."], "kho": ["«{badge}»! Ra khỏi hệ Mặt Trời luôn rồi, {goi}!", "Hiếm con tàu nào bay xa được tới «{badge}». Hành trình này đi vào lịch sử.", "Trung tâm điều khiển xác nhận: «{badge}». Cả bầu trời đang nhìn về phía {goi}."], "hai_la": ["«{badge}»… trung tâm điều khiển chưa có quy trình cho tình huống này. Đang soạn gấp.", "Thao tác ngoài sổ tay bay: «{badge}». Không sai luật, chỉ hơi… sáng tạo."]}, "sci": {"de": ["Dữ liệu ghi nhận: «{badge}». Xu hướng đi lên, giáo sư ạ.", "«{badge}» đã được kiểm chứng. Lặp lại đều tay là phương pháp chuẩn.", "Thí nghiệm hôm nay cho kết quả: «{badge}». Sai số bằng không."], "moc": ["«{badge}»! Bao ngày đo đạc liên tục, đồ thị của giáo sư đẹp như sách giáo khoa.", "Định luật mới được xác lập: kiên trì đều đặn thì ra «{badge}».", "Phải ghi đậm vào sổ: giáo sư đạt «{badge}». Mẫu dữ liệu này hiếm lắm."], "tinhco": ["Ồ, một kết quả ngoài giả thuyết: «{badge}». Khoa học cần những bất ngờ thế này.", "«{badge}»! Xác suất thấp nhưng vẫn xảy ra, tôi phải chép lại ngay.", "Không ai thiết kế thí nghiệm này mà vẫn ra «{badge}». Thú vị thật."], "hai_lo": ["«{badge}»… tôi xếp mẫu này vào mục ngoại lệ đáng yêu.", "Huy hiệu «{badge}». Quán tính đôi khi kéo lùi, nhưng lực đẩy của giáo sư vẫn còn.", "Được «{badge}». Ghi chú cho ngày mai: làm sớm để giảm sai số."], "kho": ["«{badge}»! Kết quả này đủ để đăng tạp chí khoa học, giáo sư.", "Hiếm có chuỗi dữ liệu nào bền như thế: «{badge}». Tôi xin ngả mũ.", "«{badge}»! Phương trình của giáo sư giờ đã có nghiệm đẹp nhất."], "hai_la": ["«{badge}». Giáo sư vừa tạo ra một hiện tượng chưa có tên, tôi tạm gọi như vậy.", "Ghi vào phụ lục thí nghiệm: «{badge}». Không ai hỏi, nhưng kết quả rất vui."]}, "bot": {"de": ["Quét xong: «{badge}» đã mở. Hiệu suất của {goi} tăng 1 đơn vị.", "«{badge}» được lưu. Đơn vị này ghi nhận: làm đều tay, không lỗi.", "Thông báo: «{badge}». Mức hài lòng của đơn vị này: cao."], "moc": ["«{badge}»! Đơn vị này đã kiểm tra ba lần, kết quả không phải lỗi.", "Phân tích chuỗi ngày của {goi}: ổn định tuyệt đối. Phần thưởng: «{badge}».", "Cảnh báo: mức tự hào vượt ngưỡng. Nguyên nhân: «{badge}»."], "tinhco": ["Xác suất mở «{badge}» rất thấp. Vậy mà {goi} làm được. Đang cập nhật mô hình.", "Phát hiện sự kiện ngẫu nhiên: «{badge}». Đơn vị này không dự đoán được, thích thật.", "«{badge}». Không có trong kế hoạch, nhưng kết quả hợp lệ."], "hai_lo": ["«{badge}»… đơn vị này đang cố tỏ ra không buồn cười. Thất bại.", "Huy hiệu «{badge}». Lỗi nhỏ đã được ghi nhận và tha thứ.", "Được «{badge}». Gợi ý tối ưu: ngày mai bắt đầu sớm hơn."], "kho": ["«{badge}»! Đơn vị này đề nghị nâng {goi} lên phiên bản huyền thoại.", "Kết quả quét: «{badge}». Không mô hình nào dự đoán được mức bền bỉ này.", "Hệ thống nhấp nháy đèn mừng «{badge}». Đơn vị này… cảm động. Có thể là lỗi."], "hai_la": ["«{badge}». Hành vi này không có trong hướng dẫn sử dụng. Đơn vị này đã bổ sung.", "Phát hiện thao tác bất thường nhưng vô hại: «{badge}». Mức giải trí: cao."]}, "wolf": {"de": ["«{badge}». Con mồi nhỏ, nhưng sạch gọn.", "Thêm «{badge}». Bầy thấy rồi, {goi}.", "«{badge}». Đi đều. Thế là tốt."], "moc": ["«{badge}». Bao đêm không bỏ cuộc săn. Cả bầy hú vang cho {goi}.", "Tôi ít khi nói. Nhưng «{badge}» thì đáng nói.", "«{badge}»! Dấu chân {goi} giờ cả rừng đều biết."], "tinhco": ["«{badge}» tự chạy vào tầm săn. Bro may thật.", "Không rình mà vẫn trúng: «{badge}». Mũi thính đấy, {goi}.", "«{badge}». Rừng đôi khi tặng quà. Cứ nhận."], "hai_lo": ["«{badge}». Tôi không cười. Chỉ hơi nhếch mép.", "Huy hiệu «{badge}». Sói giỏi cũng có hôm lạc dấu.", "«{badge}». Mai đi săn sớm, bro."], "kho": ["«{badge}». Cả bầy cúi đầu. Tôi cũng vậy.", "Con mồi lớn nhất mùa: «{badge}». Hú lên đi, {goi}!", "«{badge}». Hiếm sói nào đi được xa vậy. Tôi theo {goi}."], "hai_la": ["«{badge}». Lạ. Nhưng tôi thích.", "Cả bầy đứng nhìn {goi}. «{badge}». Không ai nói gì."]}, "castle": {"de": ["Tâu bệ hạ, «{badge}» đã được dâng lên. Thêm một viên gạch vững.", "«{badge}». Công trường hôm nay chạy đều, bệ hạ yên lòng.", "Muôn tâu, «{badge}» đã vào kho báu hoàng gia."], "moc": ["«{badge}»! Tường thành cao thêm một tầng nhờ bệ hạ bền chí bao ngày.", "Tâu bệ hạ, cả triều đình đang mở tiệc mừng «{badge}».", "Phụng sự bao năm, hiếm khi {ta} được tấu tin vui lớn như «{badge}»."], "tinhco": ["Tâu bệ hạ, thợ đào móng vừa tìm thấy «{badge}». Quả là điềm lành.", "«{badge}» tự đến cửa thành. Vận nước đang hưng, bệ hạ ạ.", "Bất ngờ thay: «{badge}». Xin ghi ngay vào sử ký."], "hai_lo": ["Tâu… «{badge}». Cho {ta} quay đi giấu nụ cười một chút.", "Huy hiệu «{badge}». Thành Rome cũng không xây xong trong một ngày, bệ hạ ạ.", "«{badge}». Mai bệ hạ thượng triều sớm giúp, {ta} đa tạ."], "kho": ["«{badge}»! Chuông khắp kinh thành đã điểm, muôn dân tung hô bệ hạ!", "Tâu bệ hạ, «{badge}» là viên ngọc quý nhất trên vương miện.", "Tòa tháp cao nhất đã xong: «{badge}». Bệ hạ làm nên lịch sử."], "hai_la": ["Tâu bệ hạ, «{badge}»… triều đình chưa có lễ nghi cho chuyện này. Thần xin soạn gấp.", "«{badge}». Sử quan hỏi có nên ghi không, thần bảo ghi, ghi thật to."]}, "star": {"de": ["Một đốm sáng nhỏ vừa thắp: «{badge}». Đẹp lắm, lữ khách.", "«{badge}». Bầu trời của lữ khách thêm một vì sao.", "Từng bước nhỏ cũng thành chòm sao: «{badge}»."], "moc": ["«{badge}»… cả dải ngân hà như sáng lên vì lữ khách.", "Bao đêm lữ khách không bỏ đường, nay bầu trời khắc «{badge}».", "Ánh sáng đi xa lắm mới tới, như «{badge}» hôm nay."], "tinhco": ["Sao băng vừa rơi đúng chỗ lữ khách đứng: «{badge}».", "«{badge}». Có những ánh sáng chẳng ai hẹn mà vẫn tới.", "Một vì sao lạc vào túi lữ khách: «{badge}»."], "hai_lo": ["«{badge}»… sao trên trời cũng nháy mắt trêu lữ khách kìa.", "Huy hiệu «{badge}». Đêm nào chẳng có mây, rồi trời lại trong.", "«{badge}». Mai thắp đèn sớm nhé, {ta} chờ dưới bầu trời này."], "kho": ["«{badge}»! Lữ khách vừa thành một chòm sao có tên trên bầu trời.", "Ít ánh sáng nào đi xa được tới «{badge}». Ngắm mãi, {ta} vẫn lặng người ngắm mãi.", "«{badge}»… nếu bầu trời biết nói, nó sẽ gọi tên lữ khách."], "hai_la": ["«{badge}». Có những vì sao đi đường vòng, lữ khách là một trong số đó.", "Sao trên trời đổi chỗ cho nhau để xem «{badge}» của lữ khách."]}};
+const BADGE_SAY = {"cat": {"de": ["Sen vừa mở «{badge}»! Cho phép vuốt lông {ta} một cái, một cái thôi.", "«{badge}» đây sen. Làm đều thế thì tối nay thêm pate nhé.", "Huy hiệu «{badge}» hả? Để {ta} ngửi thử… ừm, mùi chăm chỉ, được."], "moc": ["«{badge}»! Sen bền bỉ từng ngày, {ta} tự hào xù cả đuôi.", "Bao nhiêu ngày không bỏ cuộc mới có «{badge}». Hôm nay {ta} ngồi lên đùi sen, đặc ân đấy.", "«{badge}»! Cả phố mèo phải nghe chuyện này. Sen, gãi cằm ăn mừng mau."], "tinhco": ["Ơ kìa, «{badge}» rơi từ đâu xuống? Sen may như mèo vớ được cá.", "Không định mà vẫn trúng «{badge}». Chắc sen có số làm mèo.", "Vừa ngủ dậy, {ta} đã thấy «{badge}». Trùng hợp kiểu này thì thích."], "hai_lo": ["«{badge}»… sen ơi, {ta} vừa cười vừa lăn ra sàn đây.", "Huy hiệu «{badge}» cơ đấy. Để {ta} cất kỹ, không kể ai đâu… chắc vậy.", "Được «{badge}» rồi nhé. Mai nhớ làm sớm cho {ta} đỡ lo."], "kho": ["«{badge}»!!! Phải nhảy lên nóc tủ, {ta} mới đủ cao ngắm thành tích này.", "Không phải ai cũng chạm được «{badge}». Sen đi đường dài thật, {ta} cúi đầu… một chút.", "Đây là «{badge}» đấy. Từ nay sen được đánh thức {ta} bất cứ lúc nào. Trừ ban đêm."], "hai_la": ["«{badge}»? Sen nghịch y như mèo con, {ta} duyệt.", "Sen làm trò gì mà ra «{badge}» vậy? Thôi, {ta} thích, cho qua."]}, "sage": {"de": ["«{badge}» đã vào túi. Mỗi ngày một bước, đạo tâm vững thêm một phân.", "Tích tiểu thành đại, đạo hữu nay được «{badge}». Chúc mừng.", "Một viên đá nhỏ trên đường tu: «{badge}». Cứ thế mà đi, đạo hữu."], "moc": ["«{badge}»! Đạo hữu vừa phá một tầng bình cảnh, {ta} cũng thấy linh khí dâng trào.", "Bao ngày khổ luyện không bỏ, nay kết thành «{badge}». Đạo tâm này đáng nể.", "Trời đất chứng giám: đạo hữu đạt «{badge}». Tu vi đã khác hẳn ngày đầu."], "tinhco": ["Cơ duyên tự tìm tới: «{badge}». Đạo hữu không cầu mà được.", "Lạ thay, «{badge}» rơi xuống như sao băng. Thiên ý đấy, đạo hữu cứ nhận.", "Vô tâm mà đắc đạo, chính là «{badge}» này."], "hai_lo": ["«{badge}»… đạo hữu tu theo lối riêng ghê, {ta} không dám bình luận.", "Huy hiệu «{badge}» đây. Tu tiên cũng có lúc lạc đường, quay về là được.", "Được «{badge}» rồi. Đạo hữu đừng để sư huynh đệ biết, kẻo cười."], "kho": ["«{badge}»! Cảnh giới này trăm người mới có một, {ta} phải đứng dậy hành lễ.", "Phi thăng một bậc: «{badge}». Đạo hữu đã đi con đường mà nhiều người bỏ dở.", "Đại công cáo thành, «{badge}»! Ngày sau sử sách tu tiên sẽ ghi tên đạo hữu."], "hai_la": ["«{badge}»… đạo hữu ngộ ra một môn tâm pháp lạ, {ta} chưa thấy trong kinh thư.", "Thiên hạ tu một đường, đạo hữu tu đường riêng: «{badge}». Cũng là một cái duyên."]}, "tree": {"de": ["Ồ, «{badge}». Người làm vườn tưới đều tay, cây cũng thấy mát rễ.", "Thêm một chiếc lá non: «{badge}». Cứ chậm mà chắc, người làm vườn ạ.", "«{badge}» đây. Mỗi ngày một gáo nước, vườn xanh lên trông thấy."], "moc": ["«{badge}»… vậy là {ta} vừa mọc thêm một vòng gỗ vì người làm vườn đấy.", "Rễ đã bám sâu rồi. Bao ngày người làm vườn không bỏ, nay có «{badge}».", "Gió thổi qua tán lá cũng thì thầm: «{badge}». Cây già này mừng lắm."], "tinhco": ["Hạt nào rơi đúng chỗ thế nhỉ? «{badge}» tự mọc lên giữa vườn.", "Không trồng mà vẫn ra quả: «{badge}». Đất lành thật.", "Ồ, một bông hoa lạ nở: «{badge}». Cây sống lâu mới thấy."], "hai_lo": ["«{badge}» à… ha ha, cây cười rung cả lá đây.", "Huy hiệu «{badge}». Vườn nào cũng có cỏ dại, nhổ dần là được.", "Được «{badge}» rồi. Mai nhớ tưới sớm hơn chút cho {ta} đỡ khát nhé."], "kho": ["«{badge}»! Đứng đây trăm năm, {ta} mới thấy được mấy người như thế.", "Cây cổ thụ nào cũng từ một hạt kiên nhẫn. Người làm vườn vừa chứng minh: «{badge}».", "Đây là «{badge}» đấy. Vòng gỗ năm nay {ta} sẽ khắc tên người làm vườn."], "hai_la": ["«{badge}»? Người làm vườn này vui tính thật, cây rung lá cười khúc khích.", "Vườn nào cũng có một góc lạ. Góc của người làm vườn tên là «{badge}»."]}, "dragon": {"de": ["«{badge}». Chuyện nhỏ, nhưng thời cá chép ta cũng bắt đầu từ những bước nhỏ thế.", "Được «{badge}» rồi. Mây đã bắt đầu tụ quanh {goi} đấy.", "Thêm một vảy rồng: «{badge}». Cứ đều như vậy, {goi}."], "moc": ["«{badge}»! Năm xưa ta vượt vũ môn cũng nhờ bơi đều từng ngày như {goi}.", "Mây mưa nổi lên mừng «{badge}». Bao ngày bền bỉ của {goi} không uổng.", "Long châu sáng thêm một phần: «{badge}». Ta công nhận {goi}."], "tinhco": ["«{badge}» tự rơi vào tay {goi}? Ngay cả rồng cũng ghen với vận may này.", "Trời ban «{badge}» chẳng báo trước. Ta thấy khí vận trên người {goi}.", "Hừm, «{badge}». Thời cá chép ta cũng từng vớ được viên ngọc như thế."], "hai_lo": ["«{badge}»… ta giả vờ không thấy, giữ thể diện cho {goi}.", "Huy hiệu «{badge}». Rồng cũng có ngày ngủ quên trong mây, ta hiểu.", "Được «{badge}». Chuyện này đừng kể với cá chép trong hồ nhé, {goi}."], "kho": ["«{badge}»! Ta cuộn mình bay ba vòng trời để mừng {goi}.", "Kẻ vượt được cửa này hiếm như rồng giữa đàn cá: «{badge}». Đó chính là {goi}.", "Long châu đã soi thấy «{badge}». Từ nay ta coi {goi} ngang hàng."], "hai_la": ["«{badge}»? Ta sống nghìn năm chưa thấy ai được cái này. Đúng là kỳ nhân, {goi}.", "Rồng ta cũng phải ngoái lại nhìn: «{badge}». Thú vị đấy, {goi}."]}, "phoenix": {"de": ["«{badge}»! Thêm một thanh củi, lửa của {goi} cháy đều rồi đó!", "Tí tách, «{badge}» bén lửa rồi! Cứ thế mà giữ nhé, {goi}.", "Mỗi việc nhỏ là một tia lửa, và «{badge}» vừa lóe lên!"], "moc": ["«{badge}»! Lửa bùng cháy cao quá, {ta} muốn hót vang cả trời!", "Bao ngày {goi} tiếp củi không ngừng, nay rực lên «{badge}»!", "Nhìn kìa, «{badge}»! Ngọn lửa này do chính tay {goi} nhóm từng ngày."], "tinhco": ["Một tia lửa lạc mà thành «{badge}»! Vận may cũng biết cháy đấy!", "Ơ, «{badge}» tự bùng lên! Lửa hợp với {goi} thật.", "Không ai đốt mà lửa vẫn cháy: «{badge}». Tuyệt!"], "hai_lo": ["«{badge}»… lửa hơi khói tí, nhưng vẫn là lửa, ha ha!", "Huy hiệu «{badge}». Từ tro tàn đứng dậy, {ta} rành chuyện này lắm!", "Được «{badge}» rồi! Mai thêm củi sớm cho {ta} nhé, {goi}."], "kho": ["«{badge}»!!! Lửa cháy tới tận trời, {ta} vui đến mức muốn tái sinh thêm lần nữa!", "Chỉ ngọn lửa bền nhất mới tới được «{badge}». Và đó là lửa của {goi}!", "«{badge}»! Từ nay tro tàn cũng phải gọi {goi} là huyền thoại."], "hai_la": ["«{badge}»! Ha ha, lửa của {goi} cháy kiểu gì lạ thế, {ta} thích!", "Lửa thường cháy thẳng, lửa của {goi} cháy xoắn ốc: «{badge}»!"]}, "hero": {"de": ["Báo cáo: mục tiêu «{badge}» đã chiếm được, {goi}!", "«{badge}» vào kho chiến lợi phẩm. Hành quân đều thế là chuẩn, sir!", "Một trận nhỏ thắng gọn: «{badge}». Tiếp tục tiến lên!"], "moc": ["Báo cáo {goi}: «{badge}»! Bao ngày hành quân không nghỉ, toàn quân đứng nghiêm chào!", "«{badge}»! Mục tiêu lớn đã hạ. Skål!", "Chiến dịch dài, kỷ luật thép, kết quả là «{badge}». Xin chúc mừng, {goi}."], "tinhco": ["Báo cáo: tình cờ chiếm thêm cứ điểm «{badge}»! Trinh sát cũng không ngờ.", "«{badge}» về tay ta không tốn viên đạn nào. Vận may đứng về phía {goi}!", "Ngoài kế hoạch nhưng vẫn ghi công: «{badge}», sir!"], "hai_lo": ["Báo cáo… ờ, «{badge}». Chuyện này {ta} không ghi vào sổ chiến sự.", "«{badge}»! Lùi một bước để phản công, chiến thuật cổ điển đấy, {goi}.", "Huy hiệu «{badge}». Mai {goi} nhớ ra quân sớm, {ta} đứng gác mỏi chân rồi."], "kho": ["Toàn quân nghe lệnh! «{badge}» đã về tay {goi}! Skål!", "«{badge}»! Chiến công này {ta} sẽ kể cho lính mới mãi về sau.", "Báo cáo: mục tiêu tối thượng «{badge}» đã hạ. Xin nghiêng cờ chào {goi}."], "hai_la": ["Báo cáo: phát hiện chiến thuật lạ «{badge}». Bộ chỉ huy đang… nghiên cứu.", "«{badge}»! Sách binh pháp không có chiêu này, {goi}. Ghi công riêng."]}, "rocket": {"de": ["Tín hiệu xanh: «{badge}» đã mở. Nhiên liệu nạp thêm một vạch.", "Trạm mặt đất xác nhận «{badge}». Quỹ đạo ổn định, {goi}.", "«{badge}» ghi vào nhật ký bay. Tiếp tục đếm ngược ngày mai."], "moc": ["Rời bệ phóng thành công: «{badge}»! Bao ngày nạp nhiên liệu đều đặn đã có kết quả.", "«{badge}»! Cả trung tâm điều khiển đứng dậy vỗ tay, {goi}.", "Đã vượt tầng khí quyển: «{badge}». Tầm nhìn từ đây đẹp lắm."], "tinhco": ["Phát hiện vật thể lạ trên radar… là «{badge}»! Bất ngờ dễ thương.", "Lệch quỹ đạo một chút mà trúng ngay «{badge}». May mắn cấp vũ trụ.", "Tín hiệu lạ từ không gian: «{badge}». Xin chúc mừng, {goi}."], "hai_lo": ["«{badge}»… trung tâm điều khiển xin phép tắt micro để cười.", "Huy hiệu «{badge}». Tàu lâu lâu cũng trôi lệch, chỉnh lại hướng là ổn.", "Được «{badge}». Mai {goi} lên tàu sớm giúp, {ta} chờ ở bệ phóng nãy giờ."], "kho": ["«{badge}»! Ra khỏi hệ Mặt Trời luôn rồi, {goi}!", "Hiếm con tàu nào bay xa được tới «{badge}». Hành trình này đi vào lịch sử.", "Trung tâm điều khiển xác nhận: «{badge}». Cả bầu trời đang nhìn về phía {goi}."], "hai_la": ["«{badge}»… trung tâm điều khiển chưa có quy trình cho tình huống này. Đang soạn gấp.", "Thao tác ngoài sổ tay bay: «{badge}». Không sai luật, chỉ hơi… sáng tạo."]}, "sci": {"de": ["Dữ liệu ghi nhận: «{badge}». Xu hướng đi lên, giáo sư ạ.", "«{badge}» đã được kiểm chứng. Lặp lại đều tay là phương pháp chuẩn.", "Thí nghiệm hôm nay cho kết quả: «{badge}». Sai số bằng không."], "moc": ["«{badge}»! Bao ngày đo đạc liên tục, đồ thị của giáo sư đẹp như sách giáo khoa.", "Định luật mới được xác lập: kiên trì đều đặn thì ra «{badge}».", "Phải ghi đậm vào sổ: giáo sư đạt «{badge}». Mẫu dữ liệu này hiếm lắm."], "tinhco": ["Ồ, một kết quả ngoài giả thuyết: «{badge}». Khoa học cần những bất ngờ thế này.", "«{badge}»! Xác suất thấp nhưng vẫn xảy ra, tôi phải chép lại ngay.", "Không ai thiết kế thí nghiệm này mà vẫn ra «{badge}». Thú vị thật."], "hai_lo": ["«{badge}»… tôi xếp mẫu này vào mục ngoại lệ đáng yêu.", "Huy hiệu «{badge}». Quán tính đôi khi kéo lùi, nhưng lực đẩy của giáo sư vẫn còn.", "Được «{badge}». Ghi chú cho ngày mai: làm sớm để giảm sai số."], "kho": ["«{badge}»! Kết quả này đủ để đăng tạp chí khoa học, giáo sư.", "Hiếm có chuỗi dữ liệu nào bền như thế: «{badge}». Tôi xin ngả mũ.", "«{badge}»! Phương trình của giáo sư giờ đã có nghiệm đẹp nhất."], "hai_la": ["«{badge}». Giáo sư vừa tạo ra một hiện tượng chưa có tên, tôi tạm gọi như vậy.", "Ghi vào phụ lục thí nghiệm: «{badge}». Không ai hỏi, nhưng kết quả rất vui."]}, "bot": {"de": ["Quét xong: «{badge}» đã mở. Hiệu suất của {goi} tăng 1 đơn vị.", "«{badge}» được lưu. Đơn vị này ghi nhận: làm đều tay, không lỗi.", "Thông báo: «{badge}». Mức hài lòng của đơn vị này: cao."], "moc": ["«{badge}»! Đơn vị này đã kiểm tra ba lần, kết quả không phải lỗi.", "Phân tích chuỗi ngày của {goi}: ổn định tuyệt đối. Phần thưởng: «{badge}».", "Cảnh báo: mức tự hào vượt ngưỡng. Nguyên nhân: «{badge}»."], "tinhco": ["Xác suất mở «{badge}» rất thấp. Vậy mà {goi} làm được. Đang cập nhật mô hình.", "Phát hiện sự kiện ngẫu nhiên: «{badge}». Đơn vị này không dự đoán được, thích thật.", "«{badge}». Không có trong kế hoạch, nhưng kết quả hợp lệ."], "hai_lo": ["«{badge}»… đơn vị này đang cố tỏ ra không buồn cười. Thất bại.", "Huy hiệu «{badge}». Lỗi nhỏ đã được ghi nhận và tha thứ.", "Được «{badge}». Gợi ý tối ưu: ngày mai bắt đầu sớm hơn."], "kho": ["«{badge}»! Đơn vị này đề nghị nâng {goi} lên phiên bản huyền thoại.", "Kết quả quét: «{badge}». Không mô hình nào dự đoán được mức bền bỉ này.", "Hệ thống nhấp nháy đèn mừng «{badge}». Đơn vị này… cảm động. Có thể là lỗi."], "hai_la": ["«{badge}». Hành vi này không có trong hướng dẫn sử dụng. Đơn vị này đã bổ sung.", "Phát hiện thao tác bất thường nhưng vô hại: «{badge}». Mức giải trí: cao."]}, "wolf": {"de": ["«{badge}». Con mồi nhỏ, nhưng sạch gọn.", "Thêm «{badge}». Bầy thấy rồi, {goi}.", "«{badge}». Đi đều. Thế là tốt."], "moc": ["«{badge}». Bao đêm không bỏ cuộc săn. Cả bầy hú vang cho {goi}.", "Tôi ít khi nói. Nhưng «{badge}» thì đáng nói.", "«{badge}»! Dấu chân {goi} giờ cả rừng đều biết."], "tinhco": ["«{badge}» tự chạy vào tầm săn. Bro may thật.", "Không rình mà vẫn trúng: «{badge}». Mũi thính đấy, {goi}.", "«{badge}». Rừng đôi khi tặng quà. Cứ nhận."], "hai_lo": ["«{badge}». Tôi không cười. Chỉ hơi nhếch mép.", "Huy hiệu «{badge}». Sói giỏi cũng có hôm lạc dấu.", "«{badge}». Mai đi săn sớm, bro."], "kho": ["«{badge}». Cả bầy cúi đầu. Tôi cũng vậy.", "Con mồi lớn nhất mùa: «{badge}». Hú lên đi, {goi}!", "«{badge}». Hiếm sói nào đi được xa vậy. Tôi theo {goi}."], "hai_la": ["«{badge}». Lạ. Nhưng tôi thích.", "Cả bầy đứng nhìn {goi}. «{badge}». Không ai nói gì."]}, "castle": {"de": ["Tâu bệ hạ, «{badge}» đã được dâng lên. Thêm một viên gạch vững.", "«{badge}». Công trường hôm nay chạy đều, bệ hạ yên lòng.", "Muôn tâu, «{badge}» đã vào kho báu hoàng gia."], "moc": ["«{badge}»! Tường thành cao thêm một tầng nhờ bệ hạ bền chí bao ngày.", "Tâu bệ hạ, cả triều đình đang mở tiệc mừng «{badge}».", "Phụng sự bao năm, hiếm khi {ta} được tấu tin vui lớn như «{badge}»."], "tinhco": ["Tâu bệ hạ, thợ đào móng vừa tìm thấy «{badge}». Quả là điềm lành.", "«{badge}» tự đến cửa thành. Vận nước đang hưng, bệ hạ ạ.", "Bất ngờ thay: «{badge}». Xin ghi ngay vào sử ký."], "hai_lo": ["Tâu… «{badge}». Cho {ta} quay đi giấu nụ cười một chút.", "Huy hiệu «{badge}». Thành Rome cũng không xây xong trong một ngày, bệ hạ ạ.", "«{badge}». Mai bệ hạ thượng triều sớm giúp, {ta} đa tạ."], "kho": ["«{badge}»! Chuông khắp kinh thành đã điểm, muôn dân tung hô bệ hạ!", "Tâu bệ hạ, «{badge}» là viên ngọc quý nhất trên vương miện.", "Tòa tháp cao nhất đã xong: «{badge}». Bệ hạ làm nên lịch sử."], "hai_la": ["Tâu bệ hạ, «{badge}»… triều đình chưa có lễ nghi cho chuyện này. Thần xin soạn gấp.", "«{badge}». Sử quan hỏi có nên ghi không, thần bảo ghi, ghi thật to."]}, "star": {"de": ["Một đốm sáng nhỏ vừa thắp: «{badge}». Đẹp lắm, lữ khách.", "«{badge}». Bầu trời của lữ khách thêm một vì sao.", "Từng bước nhỏ cũng thành chòm sao: «{badge}»."], "moc": ["«{badge}»… cả dải ngân hà như sáng lên vì lữ khách.", "Bao đêm lữ khách không bỏ đường, nay bầu trời khắc «{badge}».", "Ánh sáng đi xa lắm mới tới, như «{badge}» hôm nay."], "tinhco": ["Sao băng vừa rơi đúng chỗ lữ khách đứng: «{badge}».", "«{badge}». Có những ánh sáng chẳng ai hẹn mà vẫn tới.", "Một vì sao lạc vào túi lữ khách: «{badge}»."], "hai_lo": ["«{badge}»… sao trên trời cũng nháy mắt trêu lữ khách kìa.", "Huy hiệu «{badge}». Đêm nào chẳng có mây, rồi trời lại trong.", "«{badge}». Mai thắp đèn sớm nhé, {ta} chờ dưới bầu trời này."], "kho": ["«{badge}»! Lữ khách vừa thành một chòm sao có tên trên bầu trời.", "Ít ánh sáng nào đi xa được tới «{badge}». Ngắm mãi, {ta} vẫn lặng người.", "«{badge}»… nếu bầu trời biết nói, nó sẽ gọi tên lữ khách."], "hai_la": ["«{badge}». Có những vì sao đi đường vòng, lữ khách là một trong số đó.", "Sao trên trời đổi chỗ cho nhau để xem «{badge}» của lữ khách."]}};
 function badgeSay(b){ const lo = look(), k = levelOf(summary().xp), set = BADGE_SAY[lo.l] || BADGE_SAY.cat, arr = set[b.kd] || set.de; return fill(pick(arr).replace(/\{badge\}/g, b.n), {ln: lo.l, lk: k}, lo.l, k); }
 const mk = (base, not, dn, stk, ned) => s => fill(pick([...base, ...(s.done ? dn : not), ...(s.streak >= 2 ? stk : []), ...(s.need > 0 ? ned : [])]), s);
 const GOI = {sage: k => 'đạo hữu'};
@@ -3847,7 +3938,7 @@ const GREET = {
 };
 XUNG.bot = k => 'đơn vị này';
 SIT.bot = {"angry": ["Cảnh báo! Chạm quá nhiều. Đơn vị này quá tải!", "Lỗi: lệnh bấm lặp lại. Master dừng tay!", "Bíp bíp bíp! Quá nhiệt!"], "lvup": ["Nâng cấp thành công! Nhờ master!", "Phiên bản mới đã cài. Cảm ơn master.", "Lên cấp! Đơn vị này mạnh hơn rồi."], "milestone": ["{day} ngày chạy liên tục. Kỷ lục hệ thống!", "Ngày {day}. Đơn vị này xin ghi nhận master.", "{day} ngày không lỗi. Hệ thống đứng nghiêm."], "away": ["Phát hiện master đăng nhập sau nhiều ngày. Đang đồng bộ lại…", "Mất kết nối vài hôm. Pin đơn vị này vẫn còn 12%.", "Hệ thống đề xuất: hôm nay chỉ chạy một tác vụ nhỏ."], "first": ["Chào master! Hệ thống sẵn sàng.", "Bíp. Master đã đăng nhập.", "Khởi động hoàn tất. Chờ lệnh."], "busy": ["Đã nhận lệnh nghỉ. Chuỗi được bảo toàn.", "Master bận. Đơn vị này chạy nền.", "Ưu tiên việc thực tế. Hàng chờ giữ nguyên."], "lazy": ["Chế độ tiết kiệm pin: kích hoạt.", "Chạy 33% tác vụ: vẫn trên ngưỡng.", "Năng lượng của master thấp. Đề xuất: làm việc nhỏ nhất."], "early": ["Tất cả tác vụ hoàn tất lúc sáng sớm. Hiệu suất: vượt chuẩn.", "Quét lúc bình minh: không còn việc nào.", "Xác suất master dậy sớm: thấp. Kết quả thực tế: đã xong."], "quota": ["Cảnh báo tuần: còn thiếu {quota}. Thời hạn sắp đến.", "Quét tuần: {quota} chưa hoàn thành.", "Xác suất đủ chỉ tiêu tuần tăng nếu làm thêm {quota}."], "near": ["Tiến trình nâng cấp: còn {need} XP.", "Thanh tải gần đầy. {need} XP nữa.", "Đang chuẩn bị cài phiên bản mới. Thiếu {need} XP."], "broke": ["Lỗi: chuỗi bị ngắt. Giải pháp: khởi động lại. Đang chạy…", "Một lỗi không làm sập hệ thống. Tiếp tục.", "Đã ghi nhật ký lỗi. Bắt đầu chuỗi mới."], "missed": ["Nhật ký hôm qua: trống.", "Hôm qua đơn vị này chờ lệnh, không nhận được tín hiệu.", "Phát hiện một ngày thiếu dữ liệu. Hôm nay bổ sung."], "rest": ["Chu kỳ bảo trì cuối tháng. Chạy tác vụ là tùy chọn.", "Hệ thống ở chế độ nghỉ. Master tự quyết.", "Ba ngày bảo trì. Đơn vị này lau bụi."], "dawn": ["Phát hiện master trực tuyến lúc trời chưa sáng. Bất thường, nhưng tốt.", "Giờ này chỉ có máy chủ còn chạy.", "Cảm biến ánh sáng: 0. Master vẫn hoạt động."], "late": ["Đã quá giờ hoạt động. Đề xuất: master tắt máy.", "Chế độ ngủ sẽ bật sau tác vụ cuối.", "Pin của master thấp. Sạc bằng giấc ngủ."]};
-GREET.bot = {"morning": [["Khởi động ngày mới. Hàng chờ: {total} tác vụ.", "Chào master. Quét sáng: {total} việc."], ["{total} tác vụ đã chạy xong trước giờ làm. Hiệu suất cao.", "Hàng chờ trống từ sáng. Đơn vị này chuyển sang chờ."]], "noon": [["Giữa ngày. Còn {left} tác vụ trong hàng chờ.", "Quét trưa: {left} việc chưa đóng."], ["Trưa: hàng chờ trống. Master nạp năng lượng đi.", "Không còn tác vụ. Chế độ nghỉ trưa."]], "afternoon": [["Chiều. Tiến độ còn {left} tác vụ.", "Quét chiều: {left} việc đang treo."], ["Chiều nay không phát sinh lỗi nào.", "Mọi tác vụ đã đóng. Hệ thống mát."]], "evening": [["Trước giờ tắt máy: {left} tác vụ.", "Tối rồi. Còn {left} việc cần xử lý."], ["Tổng kết ngày: 0 lỗi, 0 việc tồn. Cảm ơn master.", "Nhật ký ngày đã đóng. Mọi thứ xanh."]], "night": [["Đêm. Còn {left} tác vụ. Đề xuất: làm nhanh rồi ngủ.", "Khuya, hàng chờ còn {left}."], ["Chế độ ngủ: bật. Ngủ ngon, master.", "Hệ thống canh đêm. Master nghỉ đi."]]};
+GREET.bot = {"morning": [["Khởi động ngày mới. Hàng chờ: {total} tác vụ.", "Chào master. Quét sáng: {total} việc."], ["{total} tác vụ đã chạy xong trước giờ làm. Hiệu suất cao.", "Hàng chờ trống từ sáng. Đơn vị này chuyển sang chờ."]], "noon": [["Giữa ngày. Còn {left} tác vụ trong hàng chờ.", "Quét trưa: {left} việc chưa đóng."], ["Trưa: hàng chờ trống. Master nạp năng lượng đi.", "Không còn tác vụ. Chế độ nghỉ trưa."]], "afternoon": [["Chiều. Tiến độ còn {left} tác vụ.", "Quét chiều: {left} việc đang treo."], ["Chiều nay không phát sinh lỗi nào.", "Mọi tác vụ đã đóng. Hệ thống mát."]], "evening": [["Trước giờ tắt máy: {left} tác vụ.", "Tối. Hàng chờ còn {left} tác vụ. Pin vẫn đủ."], ["Tổng kết ngày: 0 lỗi, 0 việc tồn. Cảm ơn master.", "Nhật ký ngày đã đóng. Mọi thứ xanh."]], "night": [["Đêm. Còn {left} tác vụ. Đề xuất: làm nhanh rồi ngủ.", "Khuya, hàng chờ còn {left}."], ["Chế độ ngủ: bật. Ngủ ngon, master.", "Hệ thống canh đêm. Master nghỉ đi."]]};
 GOI.bot = k => 'master';
 XUNG.castle = k => k >= 5 ? 'lão thần' : 'thần';
 SIT.castle = {"angry": ["Bệ hạ! Chạm hoài như vậy thành rung hết!", "Tâu bệ hạ, đừng gõ nữa. Gạch rơi bây giờ!", "Lão thần xin tâu: ngón tay bệ hạ nặng quá!"], "lvup": ["Kèn vang! Thành lên cấp, nhờ bệ hạ!", "Tháp mới đã dựng! Tâu bệ hạ, vương quốc mạnh hơn!", "Lễ phong cấp! Bệ hạ vạn tuế!"], "milestone": ["{day} ngày xây dựng. Sử quan xin ghi vào sử sách!", "Ngày thứ {day}! Cả vương quốc cúi mình trước bệ hạ.", "{day} ngày không bỏ công trường. Thần xin dâng cờ."], "away": ["Bệ hạ hồi cung! Lão thần giữ thành mấy hôm rồi.", "Cỏ đã mọc trên công trường. Không sao, nhổ đi là xong.", "Bệ hạ mới về, đặt một viên gạch cho vui tay thôi."], "first": ["Chào bệ hạ! Công trường đã mở cửa.", "Tâu bệ hạ, thợ xây đang chờ.", "Bệ hạ giá lâm. Mọi người vào việc!"], "busy": ["Bệ hạ bận quốc sự? Lão thần trông công trường.", "Hôm nay hoãn xây. Thành vẫn vững.", "Việc nước trước, việc thành sau."], "lazy": ["Hôm nay đặt vài viên gạch thôi cũng được, bệ hạ.", "Vua cũng có ngày dạo ngự uyển.", "Thợ làm nửa buổi, thành vẫn lên."], "early": ["Tâu bệ hạ, công trường xong việc khi sương còn trên mái.", "Thợ chưa kịp ăn sáng mà gạch đã lên hết.", "Bệ hạ thiết triều sớm, việc nước xong sớm."], "quota": ["Tâu bệ hạ, tường tuần này còn hụt {quota}.", "Hạn xây tuần sắp hết. Còn {quota} chưa đặt.", "Đốc công báo: thiếu {quota} cho đủ tuần."], "near": ["Tháp canh mới chỉ còn thiếu {need} XP.", "Tâu bệ hạ, lễ khánh thành còn {need} XP.", "Nền đã đổ, chờ {need} XP để dựng."], "broke": ["Một đoạn tường sụt. Thành vẫn đứng. Xây lại thôi, bệ hạ.", "Thành La Mã cũng xây đi xây lại cả trăm lần.", "Chuỗi đứt nhưng nền móng còn. Lão thần gọi thợ."], "missed": ["Hôm qua công trường không thấy long giá.", "Tâu bệ hạ, hôm qua thợ ngồi chơi cả ngày.", "Hôm qua gạch phơi nắng. Hôm nay xây tiếp."], "rest": ["Ba ngày cuối tháng, công trường nghỉ lễ. Xây thêm là tùy bệ hạ.", "Ngày yến tiệc. Thợ nghỉ, lão thần cũng nghỉ.", "Bệ hạ nghỉ ngơi đi. Tường không tự sụt đâu."], "dawn": ["Gà chưa gáy, bệ hạ đã thiết triều.", "Giờ này chỉ có lính gác cổng thức.", "Sương còn đọng trên tường thành."], "late": ["Đã quá giờ đóng cổng thành. Bệ hạ an giấc.", "Đuốc trên tường đã thắp. Hồi cung thôi.", "Khuya rồi, việc còn để mai."]};
@@ -3859,7 +3950,7 @@ GREET.cat = {"morning": [["Meo! Dậy rồi à sen? Hôm nay có {total} việc,
 GOI.cat = k => 'sen';
 XUNG.dragon = k => 'ta';
 SIT.dragon = {"angry": ["Chọc ta nữa là ta phun mưa lên đầu {goi} đấy!", "Chạm hoài vậy? Ta là rồng, không phải con rối.", "Một chạm thôi {goi}. Năm chạm là sấm nổ."], "lvup": ["Sấm nổ chín tầng mây! {goi} vừa giúp ta vượt thêm một vũ môn!", "Vảy ta sáng lên rồi! Lên cấp rồi, {goi}!", "Long châu rực rỡ! Ta lột xác thêm một lần nhờ {goi}."], "milestone": ["{day} ngày! Cá chép nhỏ năm nào nay đã gần hóa rồng.", "Ngày thứ {day}, vũ môn đã ở dưới chân {goi}.", "{day} ngày không bỏ đường. Ta ghi vào long sử."], "away": ["{goi} về rồi? Ta đuổi ngọc một mình mấy hôm, buồn lắm.", "Lâu rồi mới gặp. Mây cũng tụ lại chờ {goi}.", "Về là tốt. Hôm nay làm nhẹ một việc thôi."], "first": ["{goi} đến rồi. Hôm nay gió mây thế nào?", "Gràoo~ Chào {goi}, ta đợi nãy giờ.", "Hôm nay ta vẫn ở đây. {goi} cũng vậy chứ?"], "busy": ["Việc đời cũng là sóng gió. {goi} cứ vượt, ta trông nhà.", "Rồng còn có ngày phải đi làm mưa nơi khác. Đi đi, chuỗi ta giữ.", "Hôm nay {goi} bận. Mây đứng yên chờ."], "lazy": ["Rồng cũng có hôm nằm cuộn dưới đáy hồ. Làm chút thôi.", "Một phần ba cũng là mưa phùn. Mưa phùn vẫn tưới được ruộng.", "Lười một hôm, ta không trách."], "early": ["Mặt trời chưa lên khỏi núi mà {goi} đã xong. Ta nể.", "Sớm như rồng ra biển đón sương. Xong cả rồi.", "Bình minh còn tím, long châu đã sáng."], "quota": ["Tuần này còn thiếu {quota}. Mây tụ rồi mà mưa chưa đủ.", "Hạn tuần gần kề. Còn {quota} nữa, {goi}.", "Vũ môn tuần này còn {quota} bậc chưa nhảy."], "near": ["Long châu đã ánh đỏ, chỉ thiếu {need} điểm.", "Vảy ngứa ran rồi. Còn {need} điểm là lột xác.", "Vũ môn ngay trước mặt. Thêm {need} điểm thôi."], "broke": ["Cá chép trượt vũ môn rơi xuống nước, rồi lại nhảy. Nghìn năm nay vẫn thế.", "Chuỗi đứt như dây diều. Rồng không cần diều, rồng tự bay.", "Ngã từ mây xuống thì bay lên lại. Ta từng ngã nhiều hơn {goi}."], "missed": ["Hôm qua {goi} bỏ ta đuổi ngọc một mình. Lão long nhớ dai lắm.", "Hôm qua trời không mưa, ta biết ngay là {goi} vắng.", "Một ngày mây tan chẳng sao. Hôm nay tụ lại."], "rest": ["Cuối tháng, mây cũng về núi nghỉ. Làm hay không tùy {goi}.", "Ngày này trời đất cho nghỉ. Ta cuộn mình trên đỉnh núi.", "Ba ngày nhàn cuối tháng. Long châu không mờ đâu."], "dawn": ["Canh tư chưa hết, sương núi còn dày. {goi} dậy sớm hơn cả ta.", "Giờ này rồng còn ngủ dưới đáy biển đấy.", "Trời đất còn tối mịt. Ai như {goi} vậy?"], "late": ["Canh ba rồi. Mây cũng phải ngủ, {goi} cũng thế.", "Trăng đã xế. Việc còn thì mai, ngủ đi.", "Đêm sâu, biển lặng. Lão long đi ngủ đây."]};
-GREET.dragon = {"morning": [["Mây sớm còn vương đỉnh núi. Hôm nay có {total} việc, {goi}.", "Ta vừa ra biển về. {total} việc đang đợi."], ["Trời mới rạng mà {total} việc đã xong. Mưa thuận gió hòa rồi.", "Sáng sớm đã viên mãn. Ta đi tuần mây đây."]], "noon": [["Giờ ngọ, nắng gắt. Uống ngụm nước rồi làm nốt {left} việc.", "Mặt trời đứng đỉnh. Còn {left} việc chưa xong."], ["Giờ ngọ đã xong hết. Ta nằm trên mây ngủ trưa.", "Trưa nay trời quang, việc cũng quang."]], "afternoon": [["Giờ mùi rồi. Mây chiều kéo đến, còn {left} việc.", "Gió chiều nổi, {left} việc còn chờ {goi}."], ["Chiều nay gió êm, long châu đã sáng.", "Xong cả. Ta lượn một vòng quanh núi."]], "evening": [["Ráng chiều đỏ như vảy ta. Còn {left} việc thôi.", "Giờ dậu rồi. Làm nốt {left} việc rồi lên đèn."], ["Ráng chiều nhuộm mây. Ngày hôm nay trọn vẹn.", "Mặt trời lặn, việc xong. Ta về động."]], "night": [["Trăng lên đầu núi. Còn {left} việc, làm nhẹ rồi ngủ.", "Đêm rồi, {left} việc vẫn đợi."], ["Đêm yên biển lặng. Ngủ ngon, {goi}.", "Long châu sáng suốt đêm nay. Nhờ {goi}."]]};
+GREET.dragon = {"morning": [["Mây sớm còn vương đỉnh núi. Hôm nay có {total} việc, {goi}.", "Ta vừa ra biển về. {total} việc đang đợi."], ["Trời mới rạng mà {total} việc đã xong. Mưa thuận gió hòa rồi.", "Sáng sớm đã viên mãn. Ta đi tuần mây đây."]], "noon": [["Giờ ngọ, nắng gắt. Uống ngụm nước rồi làm nốt {left} việc.", "Mặt trời đứng đỉnh. Còn {left} việc chưa xong."], ["Giờ ngọ đã xong hết. Ta nằm trên mây ngủ trưa.", "Trưa nay trời quang, việc cũng quang."]], "afternoon": [["Giờ mùi rồi. Mây chiều kéo đến, còn {left} việc.", "Gió chiều nổi, {left} việc còn chờ {goi}."], ["Chiều nay gió êm, long châu đã sáng.", "Xong cả. Ta lượn một vòng quanh núi."]], "evening": [["Ráng chiều đỏ như vảy ta. Còn {left} việc thôi.", "Giờ dậu rồi. Làm nốt {left} việc rồi lên đèn."], ["Ráng chiều nhuộm mây. Ngày hôm nay trọn vẹn.", "Mặt trời lặn, việc xong. Ta về động."]], "night": [["Trăng lên đầu núi. Còn {left} việc, làm nhẹ rồi ngủ.", "Đêm rồi, mây đã ngủ. Còn {left} việc, {goi}."], ["Đêm yên biển lặng. Ngủ ngon, {goi}.", "Long châu sáng suốt đêm nay. Nhờ {goi}."]]};
 GOI.dragon = k => k >= 6 ? 'bằng hữu' : 'tiểu hữu';
 XUNG.hero = k => k >= 9 ? 'bản tướng' : k >= 5 ? 'mạt tướng' : 'tôi';
 SIT.hero = {"angry": ["{goi}! Chạm liên tục thế này là quấy rối quân đội đấy!", "Báo cáo: tôi đang bị tấn công bằng ngón tay. Dừng lại!", "Đừng chọc nữa. Tôi cầm kiếm đấy nhé."], "lvup": ["Thăng cấp! Quân đội reo hò! Nhờ {goi} cả!", "Chiến công mới! {ta} đã thăng bậc!", "Lên cấp rồi! Gõ khiên ăn mừng nào!"], "milestone": ["{day} ngày chiến đấu không lùi bước. Sử sách sẽ ghi tên {goi}.", "Ngày thứ {day}! Hùng binh cũng phải nghiêng mình.", "{day} ngày liên tiếp. Quân đội đồng loạt hô: Skål!"], "away": ["{goi} trở về! {ta} đã giữ trận địa mấy hôm rồi.", "Lâu quá không gặp. Lệnh mới là gì, {goi}?", "Chào mừng chỉ huy quay lại. Chiến trường vẫn đợi."], "first": ["Chào {goi}! {ta} sẵn sàng nhận lệnh hôm nay.", "Báo cáo, {ta} đã có mặt từ sớm.", "Sir, sẵn sàng!"], "busy": ["Rõ! Chỉ huy đi công tác, quân ta giữ đồn.", "Hôm nay hoãn tấn công. Chuỗi vẫn được bảo vệ.", "Nhận lệnh nghỉ. Quân ta không di chuyển."], "lazy": ["Hôm nay hành quân nhẹ. Một phần ba mục tiêu là đủ.", "Chỉ huy mệt à? Đánh tỉa thôi cũng được.", "Lính cũng cần ngày dưỡng sức."], "early": ["Báo cáo: toàn bộ mục tiêu bị hạ trước khi trời sáng!", "Đánh úp lúc bình minh. Địch không kịp trở tay.", "Chưa kịp thổi kèn báo thức đã thắng trận."], "quota": ["Báo cáo: chỉ tiêu tuần còn thiếu {quota}. Thời hạn sắp hết!", "Mặt trận tuần còn {quota} chưa chiếm.", "Xin lệnh đánh nốt {quota} trước hạn chót tuần."], "near": ["Quân hàm mới đã may xong, chỉ chờ {need} XP.", "Còn {need} XP là thăng chức, sir!", "Báo cáo: cách lễ phong cấp {need} XP."], "broke": ["Trận này thua. Chiến tranh thì chưa. Tập hợp lại!", "Phòng tuyến vỡ một đoạn. Xin lệnh phản công!", "Lính thật là lính đứng dậy sau khi ngã. Tiến lên!"], "missed": ["Báo cáo: hôm qua đồn trống, không ai trực.", "Hôm qua quân ta chờ lệnh mà không thấy chỉ huy.", "Hôm qua lỡ một trận. Hôm nay gỡ lại!"], "rest": ["Nghỉ phép cuối tháng. Ra trận hay không tùy chỉ huy.", "Quân ta được nghỉ phép. Lau kiếm, vá giáp.", "Đình chiến ba ngày. Ai muốn tập thì cứ tập."], "dawn": ["Chưa tới giờ kèn báo thức mà chỉ huy đã dậy!", "Ca gác đêm còn chưa đổi. Sir dậy sớm thật.", "Trời tối om. Tốt, đánh úp mới hay."], "late": ["Báo cáo: đã quá giờ giới nghiêm. Mời chỉ huy đi ngủ.", "Tắt đèn doanh trại rồi, sir.", "Còn gì để mai đánh tiếp. Ngủ là mệnh lệnh."]};
@@ -3879,14 +3970,14 @@ GREET.sci = {"morning": [["Chào giáo sư. Kế hoạch thí nghiệm hôm nay:
 GOI.sci = k => 'giáo sư';
 XUNG.star = k => 'tớ';
 SIT.star = {"angry": ["Lữ khách! Chạm nhiều quá tớ chớp loạn hết!", "Đừng chạm nữa, tớ nhấp nháy mệt rồi!", "Tớ là sao, không phải đèn bấm đâu!"], "lvup": ["Tớ sáng hơn rồi! Cảm ơn lữ khách!", "Lên cấp! Cả bầu trời rực lên!", "Ánh sáng mới đã thắp. Nhờ lữ khách!"], "milestone": ["{day} ngày thắp sáng. Cả chòm sao mang tên lữ khách!", "Ngày thứ {day}! Bầu trời nhớ lữ khách mãi.", "{day} ngày không tắt. Sao băng bay qua chúc mừng!"], "away": ["Lữ khách về rồi! Tớ ngắm trời mấy hôm, hơi mờ đi.", "Mấy đêm vắng lữ khách, tớ đếm sao cho đỡ buồn.", "Về rồi thì thắp một ngọn nhỏ trước đã."], "first": ["Chào lữ khách! Hôm nay trời đẹp.", "*lấp lánh* Lữ khách đến rồi.", "Tớ đợi lữ khách từ lúc bình minh."], "busy": ["Lữ khách đi đường xa à? Tớ soi đường.", "Hôm nay nghỉ. Chuỗi vẫn sáng.", "Đi đi, tớ ở trên này chờ."], "lazy": ["Một ngọn nến nhỏ cũng là ánh sáng.", "Hôm nay sáng mờ mờ cũng được.", "Lười à? Nằm ngắm trời với tớ."], "early": ["Mặt trời mới ló, ánh sáng hôm nay đã thắp xong.", "Sao Mai còn chưa tắt mà lữ khách đã xong việc.", "Thắp sáng từ lúc trời vừa hửng. Đẹp lắm."], "quota": ["Bầu trời tuần này còn thiếu {quota}.", "Còn {quota} nữa thì chòm sao tuần mới đủ nét.", "Tuần sắp hết, {quota} ánh sáng chưa thắp."], "near": ["Tớ sắp sáng thêm một độ. Còn {need} XP.", "Chòm sao mới sắp hiện. Thiếu {need} XP.", "Còn {need} XP là tớ rực hơn."], "broke": ["Mây che một đêm, sao vẫn ở đó.", "Sao băng rơi rồi, nhưng trời không thiếu sao. Thắp lại nhé.", "Ánh sáng đi hàng triệu năm mới tới đây. Chậm một chút có sao đâu."], "missed": ["Hôm qua trời thiếu một vì sao.", "Hôm qua tớ nhìn xuống mà không thấy lữ khách.", "Một đêm mờ thôi. Đêm nay sáng lại."], "rest": ["Trăng tròn cuối tháng sáng quá, sao được nghỉ. Thắp hay không cũng được.", "Đêm nghỉ của sao. Tớ chỉ lấp lánh khẽ.", "Ba đêm cuối tháng, tớ nằm trên mây ngắm lữ khách."], "dawn": ["Sao chưa lặn mà lữ khách đã dậy.", "Giờ này cả bầu trời là của tớ với lữ khách.", "Trời còn tối, tớ còn sáng rõ lắm."], "late": ["Sao đã lên đầy trời. Lữ khách ngủ đi.", "Khuya rồi, tớ thức thay cho.", "Nhắm mắt đi, tớ vẫn ở đây."]};
-GREET.star = {"morning": [["Ban ngày tớ khuất, nhưng vẫn đếm: {total} việc hôm nay.", "Chào lữ khách. {total} ánh sáng chờ được thắp."], ["{total} việc xong từ sáng. Tối nay tớ sẽ sáng lắm.", "Thắp đủ từ sớm. Cả ngày nhẹ tênh."]], "noon": [["Giữa trưa, tớ trốn sau nắng. Còn {left} việc.", "Trưa rồi, {left} ánh sáng chưa thắp."], ["Trưa nay tớ ngủ sau mây, việc đã xong.", "Đủ cả. Nghỉ trưa thôi."]], "afternoon": [["Chiều rồi, còn {left} việc trước khi tớ mọc.", "Còn {left} việc, lữ khách."], ["Chiều nay trời trong, tối sẽ nhiều sao.", "Xong hết. Đợi tớ mọc nhé."]], "evening": [["Tớ sắp mọc rồi, còn {left} việc chưa thắp.", "Chạng vạng, {left} việc còn chờ."], ["Tớ vừa mọc đã thấy lữ khách xong việc.", "Ngôi sao đầu tiên sáng lên. Ngày trọn vẹn."]], "night": [["Trời đầy sao, còn {left} việc. Làm nhẹ rồi ngủ.", "Khuya, {left} ánh sáng chưa thắp."], ["Ngủ ngon, lữ khách. Tớ canh trời.", "Đêm nay trời đẹp lắm."]]};
+GREET.star = {"morning": [["Ban ngày tớ khuất, nhưng vẫn đếm: {total} việc hôm nay.", "Chào lữ khách. {total} ánh sáng chờ được thắp."], ["{total} việc xong từ sáng. Tối nay tớ sẽ sáng lắm.", "Thắp đủ từ sớm. Cả ngày nhẹ tênh."]], "noon": [["Giữa trưa, tớ trốn sau nắng. Còn {left} việc.", "Trưa rồi, {left} ánh sáng chưa thắp."], ["Trưa nay tớ ngủ sau mây, việc đã xong.", "Đủ cả. Nghỉ trưa thôi."]], "afternoon": [["Chiều rồi, còn {left} việc trước khi tớ mọc.", "Còn {left} việc, lữ khách."], ["Chiều nay trời trong, tối sẽ nhiều sao.", "Xong hết. Đợi tớ mọc nhé."]], "evening": [["Tớ sắp mọc rồi, còn {left} việc chưa thắp.", "Chạng vạng, {left} việc còn chờ."], ["Tớ vừa mọc đã thấy lữ khách xong việc.", "Ngôi sao đầu tiên sáng lên. Ngày trọn vẹn."]], "night": [["Trời đầy sao rồi. Thắp nốt {left} ngọn rồi ngủ.", "Khuya, {left} ánh sáng chưa thắp."], ["Ngủ ngon, lữ khách. Tớ canh trời.", "Đêm nay trời đẹp lắm."]]};
 GOI.star = k => 'lữ khách';
 XUNG.tree = k => k >= 7 ? 'ta' : 'tớ';
 SIT.tree = {"angry": ["*lá run bần bật* Chạm nữa là {ta} rụng lá đấy!", "Ai chọc cành {ta} hoài vậy? Nhột!", "Tớ là cây, không phải chuông cửa đâu nha."], "lvup": ["Ào ào! Cành lá vươn ra, {goi} vừa giúp {ta} lên cấp rồi!", "Vòng gỗ mới đã thành. {ta} lớn thêm một bậc nhờ {goi}!", "Rễ sâu thêm, tán rộng thêm. Cảm ơn {goi} nhé!"], "milestone": ["{day} ngày tưới đều. Từ hạt giống, {ta} đã thành cả rừng nhỏ.", "Ngày thứ {day}! Rễ của {ta} đã ôm cả khu vườn.", "{day} ngày không bỏ vườn. Cây nhớ, đất nhớ."], "away": ["{goi} về rồi! Mấy hôm vắng, lá hơi rũ đó.", "Cỏ dại mọc quanh gốc rồi. Nhổ dần là sạch.", "Mới về thì tưới một gáo nhẹ thôi."], "first": ["Chào {goi}! Hôm nay trời đẹp, tưới thôi.", "*xào xạc* {goi} đến rồi.", "Hôm nay {ta} đã ngóng {goi} từ sớm."], "busy": ["Vườn vắng một hôm, cỏ cũng chưa kịp mọc đâu.", "{goi} cứ đi lo việc. Rễ tự tìm nước được.", "Ngày bận thì để mưa tưới hộ. Chuỗi vẫn xanh."], "lazy": ["Cây cũng có hôm chỉ đứng hóng gió. Tưới một gáo là đủ.", "Không cần tưới cả vườn, một luống thôi cũng được.", "Hôm nay lười à? Lá cũng đang lim dim theo gió."], "early": ["Sương chưa khô mà vườn đã tưới xong. Lá {ta} còn đọng nước.", "Nắng sớm vừa chạm lá thì việc đã xong. Hiếm có người làm vườn nào thế.", "Tưới trước khi mặt trời lên, nước thấm sâu nhất đó."], "quota": ["Rễ tuần này còn khát {quota}. Mấy hôm nữa là hết tuần rồi.", "Luống tuần này còn trống {quota}, {goi} ạ.", "Mùa vụ tuần sắp khép. Còn {quota} chưa gieo."], "near": ["Chồi non đã căng, chỉ chờ {need} XP nữa là bung.", "Vòng gỗ mới sắp khép, còn {need} XP.", "Nhựa cây đang chảy rộn ràng. Còn {need} XP thôi."], "broke": ["Bão quật gãy một cành, nhưng rễ thì còn nguyên dưới đất.", "Cây bị chặt còn đâm chồi từ gốc. Chuỗi cũng thế.", "Mùa đông rụng lá, xuân lại xanh. Tưới lại từ hôm nay nhé."], "missed": ["Hôm qua đất hơi nứt. Một gáo nước hôm nay là liền.", "Hôm qua cả vườn ngóng ra cổng mãi.", "Một ngày khô hạn chưa làm cây chết đâu. Tưới đi, {goi}."], "rest": ["Ba ngày cuối tháng, đất cũng cần nghỉ. Cứ thong thả.", "Ngày cho đất nghỉ. Tưới thì cây vui, không tưới cây vẫn xanh.", "Mùa vụ tháng đã xong. Ngồi dưới gốc cây mà nghỉ."], "dawn": ["Sương còn phủ kín vườn, chim chưa hót mà {goi} đã ra rồi.", "Trời chưa hửng. Lá còn cuộn lại ngủ.", "Ra vườn lúc này chỉ có đom đóm làm bạn."], "late": ["Lá khép hết rồi. Tưới nốt rồi về ngủ, {goi}.", "Đêm sương xuống, đất ẩm sẵn. Mai tưới tiếp cũng được.", "Côn trùng đã kêu ran. Khuya rồi đó."]};
 GREET.tree = {"morning": [["Nắng mai vừa chạm ngọn. Hôm nay vườn có {total} luống cần tưới.", "Sáng ra đếm rồi: {total} việc, {goi} ạ."], ["Mới sáng mà {total} luống đã đẫm nước. Vườn mình mát rượi.", "Tưới xong từ sớm. Cả ngày chỉ việc đón nắng."]], "noon": [["Nắng đứng bóng, tưới lúc này dễ cháy lá. Nghỉ chút rồi làm nốt {left} việc.", "Trưa rồi, còn {left} luống khô. Ăn cơm xong ra tưới nhé."], ["Vườn no nước từ sáng, trưa nay chỉ việc ngủ dưới tán cây.", "Trưa nắng gắt mà vườn vẫn xanh. Nhờ {goi} cả."]], "afternoon": [["Nắng xiên khoai rồi, giờ tưới là đẹp nhất. Còn {left} việc.", "Bóng cây đổ dài rồi. {left} luống vẫn đang chờ nước."], ["Chiều về, vườn đã đủ nước. Ngồi nghe lá reo đi.", "Xong cả rồi. Chiều nay cành lá chỉ việc đung đưa."]], "evening": [["Chạng vạng rồi, tưới nốt {left} luống kẻo tối.", "Gà lên chuồng rồi. Còn {left} việc trong vườn."], ["Hoàng hôn rọi qua kẽ lá. Vườn hôm nay trọn vẹn.", "Hết việc rồi. Cất bình tưới, nghỉ thôi {goi}."]], "night": [["Đêm rồi mà còn {left} luống khô. Tưới nhẹ thôi rồi đi ngủ.", "Trăng soi vườn. {left} việc nữa là xong ngày."], ["Đêm yên. Rễ đang lớn trong lúc {goi} ngủ.", "Vườn ngủ rồi. Mai mình gặp lại nhé."]]};
 GOI.tree = k => 'người làm vườn';
 XUNG.wolf = k => 'tôi';
-SIT.wolf = {"angry": ["Boss! Chạm liên tục là tôi nhe răng đó!", "Gừ… Đừng chọc sói hoài.", "Chạm nữa tôi cắn nhẹ nha."], "lvup": ["Áu ù ù! Lên cấp! Nhờ {goi} cả!", "Bầy mạnh thêm rồi! Cảm ơn {goi}!", "Lên cấp! Hú vang cả núi!"], "milestone": ["{day} ngày săn không nghỉ. Cả bầy cúi đầu trước {goi}!", "Ngày thứ {day}! Rừng nghe tên {goi}.", "{day} ngày liên tiếp. Bầy hú đón mừng!"], "away": ["{goi} về rồi! Bầy chờ mấy hôm, hú khản cổ.", "Lâu quá! Cả bầy chạy ra liếm mặt {goi}.", "Mới về thì săn con thỏ nhỏ trước đã."], "first": ["Chào {goi}! Bầy đã thức từ sớm.", "Áu~ Boss đến rồi.", "Hôm nay đi săn chứ, bro?"], "busy": ["{goi} có việc à? Bầy giữ hang chờ.", "Hôm nay không săn. Chuỗi vẫn nguyên.", "Đi đi bro, tôi canh lãnh thổ."], "lazy": ["Bắt con thỏ nhỏ thôi cũng được.", "Sói cũng có ngày nằm dài cả buổi.", "Lười à? Tôi nằm cạnh {goi}."], "early": ["Săn lúc sương sớm, con mồi chưa kịp tỉnh. Xong hết rồi!", "Mặt trời chưa lên mà bầy đã no. Đỉnh, boss.", "Sói săn lúc rạng đông là chắc ăn nhất. {goi} biết điều đó."], "quota": ["Bầy còn đói {quota} cho tuần này. Mùa săn sắp hết rồi.", "Tuần này còn {quota} chưa mang về hang.", "Đếm lại rồi: thiếu {quota}. Đi săn nốt nhé."], "near": ["Mũi tôi ngửi thấy cấp mới. Còn {need} XP.", "Còn {need} XP là cả bầy lên đồi cao hơn.", "Chuẩn bị hú! Chỉ còn {need} XP."], "broke": ["Con mồi chạy mất một lần. Bầy vẫn còn đủ răng.", "Chuỗi đứt, nhưng dấu chân còn. Lần theo mà đi tiếp.", "Sói không bỏ cuộc vì một cú vồ trượt."], "missed": ["Hôm qua bầy ra cửa hang ngóng mãi.", "Hôm qua thiếu tiếng hú của {goi}.", "Bỏ một buổi săn thôi. Hôm nay đói thì săn hăng hơn."], "rest": ["Mùa săn tháng xong rồi. Đi hay ở tùy {goi}.", "Ngày nghỉ của bầy. Liếm lông, ngủ trưa.", "Ba ngày nhàn. Cả bầy lăn ra cỏ."], "dawn": ["Trăng chưa lặn mà {goi} đã ra khỏi hang.", "Giờ này cú còn chưa ngủ.", "Sớm quá, sương ướt hết lông tôi."], "late": ["Trăng lên đỉnh rồi. Hú một tiếng rồi ngủ thôi.", "Bầy đã cuộn tròn hết. Còn mỗi {goi} thức.", "Khuya rồi bro, về hang."]};
+SIT.wolf = {"angry": ["Boss! Chạm liên tục là tôi nhe răng đó!", "Gừ… Đừng chọc sói hoài.", "Chạm nữa tôi cắn nhẹ nha."], "lvup": ["Áu ù ù! Lên cấp! Nhờ {goi} cả!", "Bầy mạnh thêm rồi! Cảm ơn {goi}!", "Lên cấp! Hú vang cả núi!"], "milestone": ["{day} ngày săn không nghỉ. Cả bầy cúi đầu trước {goi}!", "Ngày thứ {day}! Rừng nghe tên {goi}.", "{day} ngày liên tiếp. Bầy hú đón mừng!"], "away": ["{goi} về rồi! Bầy chờ mấy hôm, hú khản cổ.", "Lâu quá! Cả bầy chạy ra liếm mặt {goi}.", "Mới về thì săn con thỏ nhỏ trước đã."], "first": ["Chào {goi}! Bầy đã thức từ sớm.", "Áu~ Boss đến rồi.", "Hôm nay đi săn chứ, bro?"], "busy": ["{goi} có việc à? Bầy giữ hang chờ.", "Hôm nay không săn. Chuỗi vẫn nguyên.", "Đi đi bro, tôi canh lãnh thổ."], "lazy": ["Bắt con thỏ nhỏ thôi cũng được.", "Sói cũng có ngày nằm dài cả buổi.", "Lười à? Tôi nằm cạnh {goi}."], "early": ["Săn lúc sương sớm, con mồi chưa kịp tỉnh. Xong hết rồi!", "Mặt trời chưa lên mà bầy đã no. Đỉnh, boss.", "Sói săn lúc rạng đông là chắc ăn nhất. {goi} biết điều đó."], "quota": ["Bầy còn đói {quota} cho tuần này. Mùa săn sắp hết rồi.", "Tuần này còn {quota} chưa mang về hang.", "Đếm lại rồi: thiếu {quota}. Đi săn nốt nhé."], "near": ["Con mồi lớn ở gần. Còn {need} XP.", "Còn {need} XP là cả bầy lên đồi cao hơn.", "Chuẩn bị hú! Chỉ còn {need} XP."], "broke": ["Con mồi chạy mất một lần. Bầy vẫn còn đủ răng.", "Chuỗi đứt, nhưng dấu chân còn. Lần theo mà đi tiếp.", "Sói không bỏ cuộc vì một cú vồ trượt."], "missed": ["Hôm qua bầy ra cửa hang ngóng mãi.", "Hôm qua thiếu tiếng hú của {goi}.", "Bỏ một buổi săn thôi. Hôm nay đói thì săn hăng hơn."], "rest": ["Mùa săn tháng xong rồi. Đi hay ở tùy {goi}.", "Ngày nghỉ của bầy. Liếm lông, ngủ trưa.", "Ba ngày nhàn. Cả bầy lăn ra cỏ."], "dawn": ["Trăng chưa lặn mà {goi} đã ra khỏi hang.", "Giờ này cú còn chưa ngủ.", "Sớm quá, sương ướt hết lông tôi."], "late": ["Trăng lên đỉnh rồi. Hú một tiếng rồi ngủ thôi.", "Bầy đã cuộn tròn hết. Còn mỗi {goi} thức.", "Khuya rồi bro, về hang."]};
 GREET.wolf = {"morning": [["Bình minh trên đồi. Hôm nay có {total} con mồi, {goi}.", "Cả bầy dậy rồi. {total} việc đang chờ."], ["{total} con mồi vào hang từ sáng sớm! Áu!", "Săn xong từ sớm, bầy nằm phơi nắng."]], "noon": [["Nắng trưa, con mồi lười chạy. Săn nốt {left} con.", "Giữa trưa, còn {left} việc, {goi}."], ["Trưa nay bầy no căng bụng.", "Hết mồi rồi. Ngủ trưa dưới bóng cây."]], "afternoon": [["Chiều rồi, gió đổi chiều. Còn {left} con mồi.", "Dấu chân {left} con mồi vẫn còn mới."], ["Chiều nay bầy chơi đùa trên cỏ.", "Xong hết. Liếm lông thôi."]], "evening": [["Chạng vạng, giờ sói đi săn. Còn {left} việc.", "Mặt trời lặn, {left} con mồi còn ngoài kia."], ["Hoàng hôn, cả bầy ngồi trên đồi. Đủ cả.", "Ngày săn trọn vẹn. Áu!"]], "night": [["Trăng lên rồi, săn nốt {left} con.", "Đêm, còn {left} việc. Nhanh rồi về hang."], ["Hú một tiếng chúc ngủ ngon, {goi}.", "Bầy canh hang. Ngủ đi bro."]]};
 GOI.wolf = k => k >= 5 ? 'đầu đàn' : 'boss';
 function greetLine(ln, s, k){ const G = GREET[ln]; if (!G) return ''; const h = s.hour, part = h >= 5 && h < 11 ? 'morning' : h >= 11 && h < 14 ? 'noon' : h >= 14 && h < 18 ? 'afternoon' : h >= 18 && h < 22 ? 'evening' : 'night';
@@ -3917,7 +4008,7 @@ const VOICE = {
       ["*{streak} ngày ấp đều. Vỏ sắp nứt rồi*"], ["*còn {need} điểm long châu nữa là nở*"])],
     [1, 'hiss', mk(["Xì… ta còn nhỏ, nhưng chí không nhỏ.", "Cá chép vượt vũ môn đâu phải một lần nhảy. Là nghìn lần nhảy.", "Xì~ {goi} nhìn gì? Ta đang tập uốn mình.", "Mây chưa tụ, mưa chưa rơi. Cứ từ từ."],
       ["Xì… còn {left} việc chưa làm kìa {goi}.", "Còn {left} việc. Làm xong ta mới uốn mình khoe.", "Xì! {left} việc nữa thôi mà."],
-      ["Xìiii~ (uốn mình vui vẻ)", "Hôm nay ta uốn được thêm một khúc. Nhờ {goi} cả.", "Xong hết. Ta cuộn tròn ngủ ngon."],
+      ["Xìiii~ (uốn mình vui vẻ)", "Hôm nay ta uốn được thêm một khúc. Nhờ {goi} cả.", "Xong hết. Ta cuộn mình trong mây mà nghỉ."],
       ["{streak} ngày không bỏ, vảy ta cứng cáp hơn rồi."], ["Thêm {need} điểm vào long châu nữa là ta lột xác!"])],
     [3, 'roar', mk(["Gràoo! Mây đã tụ, mưa sắp rơi.", "Ta bay không phải vì gió thuận. Ta bay vì đã quen bay.", "{goi} theo ta, rồi sẽ thấy mây từ phía trên.", "Rồng không ngại đường xa."],
       ["Còn {left} việc. Mây đã tụ, mưa chưa rơi đâu {goi}.", "Gràoo! Còn {left} thói quen nữa thôi.", "Làm nốt {left} việc rồi ta ban mưa."],
@@ -3940,7 +4031,7 @@ const VOICE = {
     [4, 'rustle', mk(["Hôm nay rễ lại sâu thêm một chút.", "Tớ cao hơn hàng rào rồi. {goi} thấy chứ?", "Quả chưa chín thì cứ đợi. Gió biết đường của nó.", "Cây không vội, chỉ không dừng."],
       ["Còn {left} việc. Tưới nốt nhé, {goi}.", "Đủ nắng rồi, chỉ thiếu {left} việc nữa là no nước.", "Mỗi ngày một giọt nước. Còn {left} giọt hôm nay."],
       ["Đủ nắng, đủ nước. Tốt lắm.", "Hôm nay lá xanh thêm một sắc.", "Việc xong, tớ ra thêm một chồi."],
-      ["{streak} ngày, thêm {streak} vòng gỗ. Đều thế này, quả sẽ ngọt."], ["Còn {need} XP nữa là tớ chạm tầng cao mới."])],
+      ["{streak} ngày, thêm {streak} vòng gỗ. Đều thế này, quả sẽ ngọt."], ["Còn {need} XP nữa là tớ mọc thêm một vòng gỗ."])],
     [7, 'rustle', mk(["Ta đứng đây đã lâu. {goi} mới là người đến sau.", "Cây lớn không vội, chỉ không dừng.", "Gió đi qua, ta vẫn đứng. Thói quen cũng vậy.", "Bóng ta che được nhiều người. Hôm nay ta che cho {goi}."],
       ["Còn {left} việc. Ta đợi, chẳng vội.", "Tưới nốt {left} việc rồi nghỉ dưới bóng ta.", "Mặt trời xế rồi, còn {left} việc."],
       ["Bình yên.", "Hôm nay không gì vướng bận. Ta ngả bóng xuống đất.", "Xong hết. Đến chim cũng đậu lại nghỉ."],
@@ -3955,7 +4046,7 @@ const VOICE = {
       ["Meo! Còn {left} việc. Sen làm nhanh, mèo đói.", "Còn {left} việc. Mèo ngồi canh sen.", "Meo… {left} việc nữa mèo mới cho sen ôm."],
       ["Meo-ao! Xong rồi. Mèo cho sen gãi cằm.", "Hôm nay sen ngoan. Mèo kêu gừ gừ.", "Xong hết. Mèo cuộn tròn ngủ."],
       ["{streak} ngày không bỏ. Mèo thưởng pate."], ["Còn {need} XP nữa mèo biến hình!"])],
-    [3, 'meow', mk(["Abracadabra… thói quen biến thành thói quen tốt!", "Mèo phù thủy đang làm phép cho sen.", "Meo~ Phép thuật của mèo là nhắc sen làm việc.", "Sen làm đủ thì phép của mèo mới linh."],
+    [3, 'meow', mk(["Abracadabra… việc khó biến thành việc quen!", "Mèo phù thủy đang làm phép cho sen.", "Meo~ Phép thuật của mèo là nhắc sen làm việc.", "Sen làm đủ thì phép của mèo mới linh."],
       ["Còn {left} việc. Phép chưa linh đâu sen.", "Meo! Thiếu {left} bùa nữa.", "{left} việc nữa là mèo niệm chú xong."],
       ["Abracadabra! Xong hết.", "Phép linh rồi. Sen làm đủ cả.", "Mèo vẫy đuôi: hoàn tất."],
       ["{streak} ngày. Phép thuật của mèo có hiệu nghiệm."], ["Còn {need} XP nữa mèo biến phép mới."])],
@@ -4041,7 +4132,7 @@ const VOICE = {
       ["{streak} ngày liên tục trên quỹ đạo. Tôi tự hào."], ["Còn {need} XP nữa là chạm tầng trời mới!"])],
     [8, 'ufo', mk(["Tín hiệu lạ từ phía xa… Bíp bíp… là người ngoài hành tinh chúc mừng {goi}!", "Tôi đã bay qua ba thiên hà. Chuyến nào cũng có {goi}.", "Hành tinh xa lạ cũng nể thói quen của {goi}.", "Bíp… tàu mẹ gọi. Họ hỏi bí quyết của {goi}."],
       ["Còn {left} việc. Tàu mẹ đang đợi, {goi}.", "Tín hiệu yếu: còn {left} nhiệm vụ."],
-      ["Hôm nay vượt tốc độ ánh sáng! Xong hết!", "Mọi nhiệm vụ hoàn tất. Người ngoài hành tinh vỗ tay.", "Xong hết. Hạ cánh xuống sao Hỏa nghỉ chân."],
+      ["Hôm nay bay hết công suất! Xong hết!", "Mọi nhiệm vụ hoàn tất. Người ngoài hành tinh vỗ tay.", "Xong hết. Hạ cánh xuống sao Hỏa nghỉ chân."],
       ["{streak} ngày xuyên thiên hà. Dải ngân hà ghi tên {goi}."], ["Còn {need} XP nữa là vào thiên hà mới!"])],
     [9, 'whoosh', mk(["Đích đến là các vì sao. Hôm nay tàu vẫn bay.", "{goi} cầm lái, tàu bay đến cùng trời cuối đất.", "Tôi đã thấy tận cùng vũ trụ. Ở đó có {goi} đang cười.", "Bay mãi cũng được. Miễn có {goi} cạnh bên."],
       ["Còn {left} việc. Tàu chờ lệnh, captain.", "Nhiên liệu thiếu {left} việc, captain."],
@@ -4061,13 +4152,13 @@ const VOICE = {
       ["Còn {left} việc. Giáo sư, tiếp tục đo nhé.", "Chưa hoàn tất {left} mẫu. Tôi chờ.", "Dữ liệu thiếu {left} điểm. Lặp thêm."],
       ["Hoàn tất. Biên bản đã ghi.", "Hôm nay đường cong ổn định.", "Xong hết. Phòng thí nghiệm yên tĩnh."],
       ["{streak} ngày. Xác suất đây là ngẫu nhiên: gần như không."], ["Còn {need} XP là bước nhảy lượng tử!"])],
-    [5, 'zap', mk(["F = ma: chăm chỉ tạo ra gia tốc. Gia tốc tạo ra thành tựu.", "Zap! Điện tích dương vừa tăng. Là giáo sư đó.", "Định luật: vật thể đang chuyển động giữ nguyên chuyển động. Thói quen cũng vậy.", "Công thức của tôi chỉ có hai biến: đều đặn và thời gian."],
+    [5, 'zap', mk(["F = ma: chăm chỉ tạo ra gia tốc. Gia tốc tạo ra thành tựu.", "Zap! Điện tích dương vừa tăng. Là giáo sư đó.", "Định luật I Newton: không có lực cản thì vật cứ chuyển động đều. Thói quen cũng vậy.", "Công thức của tôi chỉ có hai biến: đều đặn và thời gian."],
       ["Còn {left} việc. Xin giáo sư bổ sung dữ liệu.", "Zap! Thiếu {left} bước nữa là hoàn chỉnh.", "Còn {left} mẫu. Giáo sư kiểm tra giúp."],
       ["Zap! Kết luận: giáo sư đã làm đủ.", "Thí nghiệm hôm nay chạy mượt.", "Xong. Tôi tắt máy."],
       ["{streak} ngày. Định luật thói quen đã được chứng minh."], ["Còn {need} XP là phát minh mới!"])],
     [9, 'bell', mk(["Thiên tài là 1% cảm hứng và 99% thói quen. Giáo sư là 99% đó.", "Tôi đã viết xong luận văn về {goi}: một thói quen vĩ đại.", "Quán tính của giáo sư đã vượt cả quán tính tôi.", "Giải Nobel dành cho kiên trì. Giáo sư đã đủ điều kiện."],
       ["Còn {left} việc. Luận văn cần hoàn chỉnh, giáo sư.", "Chỉ thiếu {left} dòng nữa là xong bài báo."],
-      ["Chúc mừng. Bài báo hôm nay đã gửi.", "Xong hết. Tôi xin phép cúi chào.", "Kết quả hôm nay: hoàn hảo."],
+      ["Chúc mừng. Bài báo hôm nay đã gửi.", "Xong hết. Ghi vào sổ thí nghiệm: thành công.", "Kết quả hôm nay: hoàn hảo."],
       ["{streak} ngày. Lịch sử khoa học ghi lại."], ["Còn {need} XP nữa là công trình đời tôi."])]
   ],
   bot: [
@@ -4075,7 +4166,7 @@ const VOICE = {
       ["Quét thấy {left} việc chưa xử lý, master.", "Phát hiện {left} tác vụ treo."],
       ["Tác vụ hoàn thành. Dữ liệu ghi nhận.", "Xong. Đơn vị này sạc pin."],
       ["{streak} ngày chạy liên tục. Không lỗi."], ["Còn {need} XP nâng cấp phần cứng."])],
-    [1, 'beep', mk(["Bíp! Đơn vị này đã online.", "Quét xong master: xác suất thành công cao.", "Hôm nay nấu thói quen. Công thức: lặp lại.", "Đơn vị này học nhanh. Master dạy thêm."],
+    [1, 'beep', mk(["Bíp! Đơn vị này đã online.", "Quét xong master: xác suất thành công cao.", "Thuật toán hôm nay: lặp lại. Không cần sáng tạo.", "Đơn vị này học nhanh. Master dạy thêm."],
       ["Quét: còn {left} việc chưa hoàn thành.", "Bíp! {left} tác vụ chờ xử lý.", "Xác suất hoàn thành hôm nay: 100% nếu làm nốt {left} việc."],
       ["Bíp! Mọi tác vụ đã chạy xong.", "Xong. Không có lỗi.", "Hôm nay hiệu suất tối đa."],
       ["{streak} ngày không lỗi. Đơn vị này hài lòng."], ["Còn {need} XP là cập nhật phiên bản mới!"])],
@@ -4204,8 +4295,8 @@ function greetMasc(){
 function journeyDates(){
   const res = LEVELS.map(() => null); if (!D || T < 0 || PRACTICE) return res;
   const wx = {}; WEEKLY.forEach(h => { for (let w = 0; w <= weekOf(T); w++) if (activeWeek(h,w) && D.weekly[h.code][w]){ const at = Math.min(wkB(w), T); wx[at] = (wx[at] || 0) + XP_WEEKLY; } });
-  let xp = 0; res[0] = D.days[0];
-  for (let i = 0; i <= T; i++){ const st = dayStat(i); xp += (isLazy(i) ? 0 : st.done*XP_DAILY + (st.total && st.done === st.total ? XP_PERFECT : 0)) + (wx[i] || 0);
+  let xp = 0; res[0] = D.days[0]; const sm = subMap(), pm = penMap();
+  for (let i = 0; i <= T; i++){ const st = dayStat(i); xp = Math.max(0, xp + (isLazy(i) ? 0 : st.done*XP_DAILY + (st.total && st.done === st.total ? XP_PERFECT : 0)) + (wx[i] || 0) + (sm[D.days[i]] || 0) - (pm.by[i] || 0));
     LEVELS.forEach((l,k) => { if (!res[k] && xp >= l.xp) res[k] = D.days[i]; }); }
   return res;
 }
@@ -4409,7 +4500,7 @@ function setDone(c, i, nv, opt){
     if (PRACTICE) toast('🌱 Chấm thử thôi, ngày mai mới tính điểm nhé!');
     else if (!counts) toast('👀 Đã lưu bản xem trước (chưa tính điểm)');
     else if (aLvl > bLvl){ levelUp(bLvl, aLvl); }
-    else if (newB.length){ confetti(); bdgRecord(after); const nb = BADGES.filter(b => after.bset.has(b.id) && !before.bset.has(b.id)); const hb = nb.find(b => b.hid); toast(`🏅 Huy hiệu mới: ${nb.map(b => b.ic + ' ' + b.n + ' +' + b.xp + ' XP').join(', ')}${hb ? ' · ' + badgeSay(hb) : ''}`, hb ? 5200 : 3200); }
+    else if (newB.length){ confetti(); bdgRecord(after); const nb = BADGES.filter(b => after.bset.has(b.id) && !before.bset.has(b.id)); bdgShow(nb); }
     else if (isD && !isLazy(T) && aDay.total && aDay.done === aDay.total && bDay.done < bDay.total){ confetti(); toast('🎉 Hoàn thành 100% hôm nay! +' + (XP_DAILY + XP_PERFECT) + ' XP'); }
     else if (opt.minimal) toast('⚡ Đã tick nhanh. Mai làm đầy đủ nhé!');
     else if (isD && okDay(i) && bDay.total && bDay.done/bDay.total < THRESHOLD - 1e-9) toast('🔥 Đã giữ lửa hôm nay!');
@@ -4820,18 +4911,24 @@ function mindAdminSection(){
   const h = `<div class="sec"><h3>🎙️ Chấm bài Tâm trí</h3><span>hàng chờ AI</span></div>`;
   if (!MQ) return h + `<div class="card"><div class="muted">Đang tải…</div></div>`;
   if (MQ.error) return h + `<div class="card"><div class="empty">${esc(MQ.error)}</div></div>`;
-  const rows = (MQ.list || []).map(r => `<tr><td><b>${esc(r.name)}</b><br><small>${esc(r.date.slice(5).split('-').reverse().join('/'))} · ${r.kind === 'docsach' ? 'Đọc sách' : 'Cam kết'} · ${Math.round(r.secs/60*10)/10} phút</small></td>
+  const rows = (MQ.list || []).map(r => `<tr><td><b>${esc(r.name)}</b><br><small>${esc(r.date.slice(5).split('-').reverse().join('/'))} · ${r.kind === 'docsach' ? 'Đọc sách' : 'Cam kết'} · ${Math.round(r.secs/60*10)/10} phút${r.reason ? ' · ⏳ ' + esc(r.reason) : ''}</small></td>
     <td><a href="${esc(r.link)}" target="_blank" rel="noopener">Nghe</a></td>
     <td><button class="lnk" data-mq-ok="${esc(r.rid)}">Đạt</button> · <button class="lnk" data-mq-no="${esc(r.rid)}">Chưa đạt</button></td></tr>`).join('');
+  const aiTbl = (MQ.ai || []).length ? (MQ.ai || []).map(k => `<div class="muted" style="margin:10px 0 4px">Khóa …${esc(k.key)}${k.paid ? ' (trả phí)' : ''}</div><div class="tblwrap"><table class="tbl"><thead><tr><th>Model</th><th>✅</th><th>Hết ngày</th><th>Hết phút</th><th>Lỗi</th><th>Hết lượt lúc</th></tr></thead><tbody>${k.models.map(m => `<tr><td><small>${esc(m.m)}</small></td><td>${m.ok}</td><td>${m.day}</td><td>${m.min}</td><td>${m.err}</td><td>${esc(m.last || '–')}</td></tr>`).join('')}</tbody></table></div>`).join('') : '<div class="rule">Hôm nay chưa có số liệu dùng AI (có từ lần gọi AI kế tiếp).</div>';
   return h + `<div class="card"><div class="stats"><div class="stat"><div class="v">${MQ.waiting}</div><div class="l">Đang chờ chấm</div></div>
     <div class="stat"><div class="v">${MQ.gradedToday}</div><div class="l">Đã chấm hôm nay</div></div>
     <div class="stat"><div class="v">${MQ.retryOk} / ${MQ.retryBlocked}</div><div class="l">Chấm bù / bị chặn</div></div></div>
     ${MQ.aiOn ? '' : '<div class="rule">AI chưa bật (chưa có khóa Gemini).</div>'}
     <button class="btn" data-mq-retry="1" ${MQBUSY ? 'disabled' : ''}>${MQBUSY ? 'Đang chấm…' : 'Chấm lại ngay'}</button>
     ${rows ? `<div class="tblwrap" style="margin-top:10px"><table class="tbl"><thead><tr><th>Bài</th><th></th><th>Chấm tay</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<div class="rule">Không có bài nào đang chờ.</div>'}
-    <div class="rule">AI hết lượt thì bài tự xếp hàng, máy chủ chấm dần mỗi 5 phút. Chấm tay chỉ khi cần gấp.</div></div>`;
+    <div class="sec" style="margin-top:12px"><h3>📊 Dùng AI hôm nay</h3><span>theo khóa và model, giờ VN</span></div>${aiTbl}
+    <div class="rule">AI hết lượt thì bài tự xếp hàng, máy chủ chấm dần mỗi 5 phút. Chấm tay chỉ khi cần gấp.</div></div>
+    <div class="sec" style="margin-top:12px"><h3>🏅 Huy hiệu</h3><span>lệnh cho mọi người</span></div><div class="card"><button class="btn" data-bdg-replay="1">🔁 Phát lại tất cả huy hiệu đã đạt</button><div class="rule">Lần đăng nhập tiếp theo, mỗi người xem lại toàn bộ huy hiệu mình đã đạt, từng cái một. Mỗi lần bấm là một lượt phát lại mới.</div></div>`;
 }
 document.addEventListener('click', async e => {
+  const rb = e.target.closest('[data-bdg-replay]');
+  if (rb){ if (!confirm('Phát lại tất cả huy hiệu cho mọi người ở lần đăng nhập tiếp theo?')) return;
+    try { await call('badgeReplayAll', TOKEN); toast('✅ Đã ra lệnh phát lại huy hiệu'); } catch(err){ toast('Không ra lệnh được: ' + err.message); } return; }
   const b = e.target.closest('[data-mq-retry],[data-mq-ok],[data-mq-no]'); if (!b) return;
   if (b.dataset.mqRetry){ toast('Đang chấm, có thể mất 1–2 phút…'); mqLoad('mindRetryNow'); return; }
   const rid = b.dataset.mqOk || b.dataset.mqNo, st = b.dataset.mqOk ? 'Đạt' : 'Chưa đạt';
@@ -4889,6 +4986,7 @@ function runAdminSection(){
     <div class="fld"><label>🤖 Khóa Gemini 1 (chấm đọc sách + đọc ảnh chạy bộ): ${aiLbl(A)}</label><input id="runaikey" autocomplete="off" placeholder="${A.ai ? 'Dán khóa mới để đổi, gõ - để tắt' : 'Dán khóa Gemini'}"></div>
     <div class="fld"><label>🤖 Khóa Gemini 2 ${A.dsKeys >= 1 ? '✅' : '(trống)'}</label><input id="runds1" autocomplete="off" placeholder="Dán khóa (tài khoản Google riêng), gõ - để xóa"></div>
     <div class="fld"><label>🤖 Khóa Gemini 3 ${A.dsKeys >= 2 ? '✅' : '(trống)'}</label><input id="runds2" autocomplete="off" placeholder="Dán khóa (tài khoản Google riêng), gõ - để xóa"></div>
+    <div class="fld"><label>💳 Khóa Gemini trả phí ${A.paidKey ? '✅' : '(trống)'}</label><input id="runpaid" autocomplete="off" placeholder="Chỉ dùng khi 3 khóa miễn phí hết lượt, gõ - để xóa"></div>
     <button class="btn" data-runsettings="1">💾 Lưu</button>
     <div class="rule">${A.ocr ? '✅ Đã bật đọc số km từ ảnh (Drive API).' : '⚠️ Chưa bật Drive API trong Apps Script (app chưa tự đọc ảnh).'}
       ${A.aiWait ? `<br>📷 ${A.aiWait} ảnh chờ đọc lại.` : ''}<br>${A.bookErr ? '⚠️ Sổ đọc sách: ' + esc(A.bookErr) : '📚 Bài Đạt tự ghi vào Sheet ĐỌC SÁCH VLSN.'}${A.bookMiss && A.bookMiss.length ? '<br>ℹ️ Không có tên trong sổ đọc sách nên không ghi: ' + A.bookMiss.map(esc).join(', ') + '.' : ''}${A.aiApplied ? `<br>🤖 Vừa ghi ${A.aiApplied} bài đã được đọc lại.` : ''}
@@ -4932,7 +5030,7 @@ document.addEventListener('click', async e => {
   if (ds.runcancel){ runCancel(ds.runcancel); return; }
   if (ds.runmon){ const [y, m] = RUNM.split('-').map(Number), d = new Date(y, m - 1 + Number(ds.runmon), 1), v = d.getFullYear() + '-' + pad(d.getMonth() + 1);
     if (v > D.today.slice(0, 7)) return; RUNM = v; render(); return; }
-  if (ds.runsettings){ try { const k = $('#runaikey'), d1 = $('#runds1'), d2 = $('#runds2'); if ((k && k.value.trim()) || (d1 && d1.value.trim()) || (d2 && d2.value.trim())) toast('🤖 Đang kiểm tra khóa…'); const r = await call('saveRunSettings', TOKEN, $('#runfolder').value, $('#runsheet').value, k ? k.value : '', d1 ? d1.value : '', d2 ? d2.value : ''); if (k) k.value = ''; if (d1) d1.value = ''; if (d2) d2.value = ''; toast('💾 ' + r.msg); RUNA = null; render(); } catch(err){ toast('⚠️ ' + err.message); } return; }
+  if (ds.runsettings){ try { const k = $('#runaikey'), d1 = $('#runds1'), d2 = $('#runds2'), d3 = $('#runpaid'); if ((k && k.value.trim()) || (d1 && d1.value.trim()) || (d2 && d2.value.trim()) || (d3 && d3.value.trim())) toast('🤖 Đang kiểm tra khóa…'); const r = await call('saveRunSettings', TOKEN, $('#runfolder').value, $('#runsheet').value, k ? k.value : '', d1 ? d1.value : '', d2 ? d2.value : '', d3 ? d3.value : ''); if (k) k.value = ''; if (d1) d1.value = ''; if (d2) d2.value = ''; if (d3) d3.value = ''; toast('💾 ' + r.msg); RUNA = null; render(); } catch(err){ toast('⚠️ ' + err.message); } return; }
   if (ds.runsavemap){ const list = [...document.querySelectorAll('[data-runmap]')].map(s => ({id: s.dataset.runmap, sheetName: s.value, gender: (document.querySelector(`[data-rungender="${CSS.escape(s.dataset.runmap)}"]`) || {}).value || ''}));
     try { const r = await call('saveRunMap', TOKEN, list); toast('💾 Đã lưu ghép tên (' + r.n + ' người)'); RUNA = null; RUNB = {}; render(); } catch(err){ toast('⚠️ ' + err.message); } return; }
   if (ds.runresync){ try { const r = await call('runResync', TOKEN); toast(r.msg); RUNA = null; RUNB = {}; render(); } catch(err){ toast('⚠️ ' + err.message); } return; }
@@ -5197,8 +5295,7 @@ function mindRecUI(kind){
       <button class="btn" data-mstop="1" ${r.secs < need ? 'disabled' : ''} data-mneed="${need}">${kind === 'docsach' ? '⏹ Dừng và nộp' : '⏹ Đọc xong, nộp bài'}</button><button class="lnk" data-mcancel="1">Huỷ</button></div>
 `; }
   return codeBox + `<button class="btn mgo" data-mrec="${kind}" ${MREC ? 'disabled' : ''}>🎙️ ${kind === 'camket' ? 'Bắt đầu đọc và ghi âm' : 'Bắt đầu ghi âm 10 phút'}</button>
-    ${kind === 'docsach' ? `<label class="lnk mfile">📎 Gửi tệp ghi âm thu sẵn hôm nay<input type="file" accept="${MIME_AUD}" data-mfile="${kind}" hidden></label>
-` : ''}`;
+    ${kind === 'docsach' ? mindFileUI() : ''}`;
 }
 function mindCK(){
   const c = MIND.ck, rec = MREC && MREC.kind === 'camket';
@@ -5247,9 +5344,12 @@ async function mindSample(blob){
     const sr = buf.sampleRate, n = buf.length, ch = buf.numberOfChannels, d0 = buf.getChannelData(0), d1 = ch > 1 ? buf.getChannelData(1) : null;
     const mono = i => d1 ? (d0[i] + d1[i]) / 2 : d0[i], W = sr, nw = Math.floor(n / W), rms = [];
     let voiced = 0;
-    for (let w = 0; w < nw; w++){ let s2 = 0; for (let i = w * W; i < (w + 1) * W; i += 8){ const v = mono(i); s2 += v * v; } const r = Math.sqrt(s2 / (W / 8)); rms.push(r); if (r > 0.01) voiced++; }
+    for (let w = 0; w < nw; w++){ let s2 = 0; for (let i = w * W; i < (w + 1) * W; i += 8){ const v = mono(i); s2 += v * v; } const r = Math.sqrt(s2 / (W / 8)); rms.push(r); }
     if (nw < 100) return null;
-    const seg = 30, starts = [0], pick = () => { for (let t = 0; t < 12; t++){ const a = 60 + Math.floor(Math.random() * Math.max(1, nw - 60 - seg)); if (rms.slice(a, a + seg).filter(x => x > 0.01).length >= 15 && starts.every(b => Math.abs(b - a) >= seg)) return a; } return null; };
+    const srt = rms.slice().sort((x, y) => x - y), p10 = srt[Math.floor(nw * 0.1)], p90 = srt[Math.floor(nw * 0.9)];
+    const thr = Math.min(0.01, Math.max(0.0015, p90 * 0.25, p10 * 2.5));   // ngưỡng theo mức âm thực tế (tiếng loa nhỏ vẫn tính là có giọng)
+    rms.forEach(x => { if (x > thr) voiced++; });
+    const seg = 30, starts = [0], pick = () => { for (let t = 0; t < 12; t++){ const a = 60 + Math.floor(Math.random() * Math.max(1, nw - 60 - seg)); if (rms.slice(a, a + seg).filter(x => x > thr).length >= 15 && starts.every(b => Math.abs(b - a) >= seg)) return a; } return null; };
     for (let k = 0; k < 2; k++){ const a = pick(); if (a != null) starts.push(a); }
     const out = new Int16Array(starts.length * seg * sr);
     starts.forEach((a, k) => { for (let i = 0; i < seg * sr; i++){ const v = Math.max(-1, Math.min(1, mono(a * sr + i) || 0)); out[k * seg * sr + i] = v < 0 ? v * 32768 : v * 32767; } });
@@ -5279,24 +5379,61 @@ function mindStop(){
   try { r.mr.stop(); } catch(e){ MREC = null; render(); }
   render();
 }
-document.addEventListener('change', async e => {
+document.addEventListener('change', e => {
   const inp = e.target.closest('[data-mfile]'); if (!inp || !inp.files || !inp.files[0]) return;
-  const kind = inp.dataset.mfile, f = inp.files[0];
-  if (kind === 'docsach'){ const b = ($('#mbook') || {}).value; if (b) MBOOK = b.trim(); if (!MBOOK){ toast('📖 Hãy ghi tên sách trước'); inp.value = ''; return; } }
-  if (f.size > 19e6){ toast('⚠️ Tệp ghi âm quá lớn (tối đa khoảng 19 MB)'); inp.value = ''; return; }
+  mindSendFile(inp.dataset.mfile, inp.files[0], inp);
+});
+/** Gửi một tệp ghi âm (từ nút chọn tệp hoặc từ app ghi âm chia sẻ sang). Trả về true nếu đã gửi. */
+async function mindSendFile(kind, f, inp){
+  const clr = () => { if (inp) inp.value = ''; };
+  if (kind === 'docsach'){ const b = ($('#mbook') || {}).value; if (b) MBOOK = b.trim(); if (!MBOOK){ toast('📖 Hãy ghi tên sách trước'); clr(); return false; } }
+  if (f.size > 19e6){ toast('⚠️ Tệp ghi âm quá lớn (tối đa khoảng 19 MB)'); clr(); return false; }
   const url = URL.createObjectURL(f), dur = await new Promise(res => { const a = new Audio(); a.preload = 'metadata'; a.onloadedmetadata = () => res(a.duration); a.onerror = () => res(NaN); a.src = url; setTimeout(() => res(NaN), 4000); });
   URL.revokeObjectURL(url);
   const need = kind === 'docsach' ? 600 : 30;
-  if (isFinite(dur) && dur < need - 5){ toast(kind === 'docsach' ? `⏱️ Bản ghi mới ${mmss(dur)}, cần đủ 10 phút` : '⏱️ Bản ghi quá ngắn, hãy đọc đủ 7 điều'); inp.value = ''; return; }
+  if (isFinite(dur) && dur < need - 5){ toast(kind === 'docsach' ? `⏱️ Bản ghi mới ${mmss(dur)}, cần đủ 10 phút` : '⏱️ Bản ghi quá ngắn, hãy đọc đủ 7 điều'); clr(); return false; }
   MREC = {kind, sending: true}; render();
   const b64 = await new Promise(res => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(',')[1] || ''); fr.readAsDataURL(f); });
+  let ok = false;
   try {
     const sm = kind === 'docsach' ? await mindSample(f) : null;
     const x = await call('mindSubmit', TOKEN, {kind, b64, mime: f.type || 'audio/mp4', secs: isFinite(dur) ? Math.round(dur) : 0, upload: 1, fmod: f.lastModified || 0, book: MBOOK, mode: MMODE, sample: sm ? sm.b64 : '', voiced: sm ? sm.voiced : 0});
-    MIND = x.data; loadQuota(true); toast(x.st === 'Đạt' ? '✅ Đạt!' : x.st === 'Chưa đạt' ? '❌ Chưa đạt: ' + x.note : '⏳ Đã nhận bản ghi, đang chờ chấm');
+    ok = true; MIND = x.data; loadQuota(true); toast(x.st === 'Đạt' ? '✅ Đạt!' : x.st === 'Chưa đạt' ? '❌ Chưa đạt: ' + x.note : '⏳ Đã nhận bản ghi, đang chờ chấm');
   } catch(err){ toast('⚠️ ' + err.message); }
-  MREC = null; render();
+  MREC = null; render(); return ok;
+}
+/* ===== Nhận bản ghi chia sẻ thẳng từ app ghi âm (Android, app đã cài ra màn hình chính) ===== */
+let SHARED = null;
+async function sharedPick(){
+  try {
+    if (!/[?&]shared=1/.test(location.search) || !window.caches) return;
+    history.replaceState(null, '', location.pathname);
+    const c = await caches.open('share-inbox'), r = await c.match('/share-inbox-file');
+    if (!r) return;
+    const blob = await r.blob(), name = decodeURIComponent(r.headers.get('X-Name') || 'ghi-am');
+    await c.delete('/share-inbox-file');
+    if (!blob.size) return;
+    SHARED = {file: new File([blob], name, {type: blob.type || 'audio/mp4', lastModified: Number(r.headers.get('X-Mod')) || Date.now()}), name, size: blob.size};
+    tab = 'mind'; if (D) render();
+    toast('📥 Đã nhận bản ghi từ app ghi âm. Ghi tên sách rồi bấm Gửi nộp', 5000);
+  } catch(e){}
+}
+function mindFileUI(){
+  if (SHARED) return `<div class="msh"><div>📥 <b>Bản ghi nhận từ app ghi âm</b><br><small>${esc(SHARED.name)} · ${(SHARED.size / 1048576).toFixed(1)} MB</small></div><div><button class="btn" data-mshare="send">✅ Gửi nộp</button> <button class="lnk" data-mshare="drop">Bỏ</button></div></div>`;
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const a = `<li><b>Android:</b> mở app ghi âm → bấm <b>Chia sẻ</b> → chọn <b>Siêu Nhẩm</b> (cần cài app ra màn hình chính). Hoặc bấm 📎 rồi chọn <b>Gần đây</b> / <b>Âm thanh</b>.</li>`;
+  const i = `<li><b>iPhone:</b> mở <b>Ghi âm</b> → chọn bản ghi → nút <b>···</b> → <b>Lưu vào Tệp</b>. Sau đó bấm 📎, chọn tệp ở mục <b>Gần đây</b>.</li>`;
+  return `<label class="lnk mfile">📎 Gửi tệp ghi âm thu sẵn hôm nay<input type="file" accept="${MIME_AUD},.m4a,.mp3,.wav,.aac,.amr,.3gp,.ogg,.opus" data-mfile="docsach" hidden></label>
+    <details class="mhow"><summary>Không tìm thấy tệp? Xem cách</summary><ol>${ios ? i + a : a + i}</ol></details>`;
+}
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-mshare]'); if (!b) return;
+  if (b.dataset.mshare === 'drop'){ SHARED = null; render(); return; }
+  const f = SHARED && SHARED.file; if (!f) return;
+  if (await mindSendFile('docsach', f, null)){ SHARED = null; render(); }
 });
+sharedPick();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-mrec],[data-mstop],[data-mcancel],[data-mmode]'); if (!b) return;
   const d = b.dataset;
