@@ -787,7 +787,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v13.11.13';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v13.11.14';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -3474,7 +3474,7 @@ function itemStats(){
       const p = d ? n/d : null, col = p == null ? '#55655B' : p >= .7 ? 'var(--mint)' : p >= .5 ? 'var(--gold)' : 'var(--peach)';
       return `<div class="hrow"><div style="font-size:13px;color:var(--muted)">${j+1}.</div><div><div class="n">${esc(v)}</div><div class="tr"><i style="width:${Math.round((p||0)*100)}%;background:${col}"></i></div></div><div class="p">${pctTxt(p)}</div></div>`;
     }).join('');
-    return fold('it' + c, esc(SPEC[c].list.pin), 'tỷ lệ', `<div class="card">${rows}</div>`);
+    return fold('it' + c, esc(SPEC[c].list.pin), '', `<div class="card">${rows}</div>`);
   }).join('');
 }
 function progTabs(){ return `<div class="seg ptabs"><button class="${tab==='prog'?'on':''}" data-tab="prog">📊 Thống kê</button><button class="${tab==='badge'?'on':''}" data-tab="badge">🏅 Huy hiệu</button></div>`; }
@@ -3656,7 +3656,7 @@ function profBody(){
     const plHtml = pl ? splitLines(pl).map((t,j) => `<span class="pl s${pc[j] | 0}">${(pc[j] | 0) ? STC[pc[j]][0] + ' ' : ''}${esc(t)}</span>`).join('') : '';
     return `<div class="hrow"><div style="font-size:18px">${ICON[h.code]||'⭐'}</div><div><div class="n">${NO(h.code)} · ${esc(h.name)}</div>
       ${pl ? `<div class="pplan">Cách rèn:${plHtml}</div>` : ''}<div class="tr"><i style="width:${Math.round((pv||0)*100)}%;background:${c}"></i></div></div><div class="p">${pctTxt(pv)}</div></div>`; }).join('');
-  return head + stats + heat + `<div class="sec"><h3>Từng thói quen</h3><span>${PROFSEL ? 'ngày ' + dm(PROFSEL) : ''}</span></div><div class="rule" style="margin:0 0 8px"><span class="s1">xanh: Đạt</span> · <span class="s2">đỏ: Không đạt</span> · <span class="s3">vàng: Chưa có sự kiện</span></div><div class="card">${rows || '<div class="muted">Chưa có dữ liệu.</div>'}</div>
+  return head + stats + heat + `<div class="sec"><h3>Từng thói quen</h3><span></span></div><div class="rule" style="margin:0 0 8px"><span class="s1">xanh: Đạt</span> · <span class="s2">đỏ: Không đạt</span> · <span class="s3">vàng: Chưa có sự kiện</span></div><div class="card">${rows || '<div class="muted">Chưa có dữ liệu.</div>'}</div>
     <div class="rule" style="margin-top:10px">🔒 Danh sách riêng không hiển thị.</div>`;
 }
 
