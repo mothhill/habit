@@ -816,7 +816,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.20';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.21';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -4671,14 +4671,23 @@ const rpDay = s => s.slice(8) + '/' + s.slice(5, 7);
 const RPF = {d:'Đã làm', g:'Đang làm', n:'Ngày mai', v:'Vướng / cần hỏi'};
 async function rpInit(){
   if (RP.ready || RP.busy) return; RP.busy = true;
-  try { RP.info = await call('reportInfo', TOKEN); RP.on = !!(RP.info.teacher || RP.info.reviewer); RP.sec = RP.on ? 'rp' : 'bai'; } catch(e){ RP.on = false; RP.sec = 'bai'; }
+  try {
+    const o = await call('reportStart', TOKEN); RP.info = o.info; RP.on = !!(RP.info.teacher || RP.info.reviewer); RP.sec = RP.on ? 'rp' : 'bai';
+    if (RP.on) {
+      if (o.err) { if (RP.info.reviewer) RV.err = o.err; else RP.err = o.err; }
+      else if (o.list) { RV.list = o.list; RV.day = o.list.day; }
+      else if (o.mine) { RP.d = o.mine; RP.dr = Object.assign({d:'', g:'', n:'', v:'', x:'', p:{}, im:[]}, o.mine.draft); }
+    }
+    if (o.ms) console.log('reportStart ms', o.ms);
+  } catch(e){ RP.on = false; RP.sec = 'bai'; }
   RP.ready = true; RP.busy = false; rpNav(); if (tab === 'work') render();
+  if (RP.on && RP.info.reviewer && RV.list) rvBookLoad();
 }
 function rpNav(){ const b = $('#bnav'), t = document.querySelector('.tabs'); if (b) b.innerHTML = tabBtns(true); if (t) t.innerHTML = tabBtns(); }
-async function rpLoad(keep){
+async function rpLoad(keep, fresh){
   if (RP.loading) return; RP.loading = true; RP.err = '';
   try {
-    const d = await call('reportMine', TOKEN); RP.d = d;
+    const d = await call('reportMine', TOKEN, !!fresh); RP.d = d;
     if (!keep || !RP.dr) RP.dr = Object.assign({d:'', g:'', n:'', v:'', x:'', p:{}, im:[]}, d.draft); else { RP.dr.p = d.draft.p || {}; RP.dr.im = d.draft.im || []; }
   } catch(e){ RP.err = e.message; }
   RP.loading = false; if (tab === 'work') render();
@@ -4730,7 +4739,7 @@ async function rpSend(){
     await call('reportSaveDraft', TOKEN, {d:RP.dr.d, g:RP.dr.g, n:RP.dr.n, v:RP.dr.v, x:RP.dr.x});
     const r = await call('reportSubmit', TOKEN);
     toast(r.res === 'khong_doi' ? 'Không có gì mới so với báo cáo đã nộp' : r.res === 'moi' ? '✅ Đã nộp báo cáo' : '✅ Đã cập nhật báo cáo');
-    RP.loading = false; await rpLoad(true);
+    RP.loading = false; await rpLoad(true, true);
   } catch(e){ toast(e.message); }
   RP.sending = false; if (tab === 'work') render();
 }
@@ -4743,7 +4752,7 @@ document.addEventListener('click', async e => {
   const [a, v] = t.dataset.rp.split('|');
   if (a === 'sec') { RP.sec = v; render(); }
   else if (a === 'retry') { RP.err = ''; RP.d = null; render(); }
-  else if (a === 'reload') { rpLoad(true); render(); }
+  else if (a === 'reload') { rpLoad(true, true); render(); }
   else if (a === 'paste') rpPaste();
   else if (a === 'zoom') { RP.zoom = v || ''; if (v && RPIMG[v] === undefined) rpThumb(v); render(); }
   else if (a === 'imdrop') { try { const r = await call('reportImgDrop', TOKEN, v); RP.dr.im = r.im; render(); } catch(er){ toast(er.message); } }
@@ -4759,7 +4768,15 @@ document.addEventListener('input', e => {
 
 
 /* --- thầy Quý: duyệt báo cáo các thầy --- */
-let RV = {day:'', list:null, d:null, screen:'list', busy:false, err:'', form:null, sending:false, imBusy:''};
+let RV = {day:'', list:null, d:null, screen:'list', busy:false, err:'', form:null, sending:false, imBusy:'', bookBusy:false};
+async function rvBookLoad(){
+  if (RV.bookBusy) return; RV.bookBusy = true;
+  try {
+    const b = await call('reportBook', TOKEN);
+    if (RV.list) { RV.list.book = b; RV.list.counts.book = b.n; if (RP.info) RP.info.dot = RV.list.counts.wait + b.n; rpNav(); }
+  } catch(e){ if (RV.list) RV.list.book = {on:true, err:'Không đọc được sổ việc', n:0, groups:[]}; }
+  RV.bookBusy = false; if (tab === 'work') render();
+}
 async function rvAddImg(file){
   RV.imBusy = 'Đang gửi ảnh…'; render();
   try { const p = await wPrep(file), r = await call('reportFbImgAdd', TOKEN, RV.d.code, RV.d.day, p); RV.form.img = r.id; } catch(e){ toast(e.message); }
@@ -4769,7 +4786,12 @@ const RV_RATES = ['⭐ Hoàn thành xuất sắc', '👍 Duyệt', '🤔 Chưa �
 const rvShift = (day, k) => { const d = new Date(day + 'T00:00:00'); d.setDate(d.getDate() + k); return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2) + '-' + ('0'+d.getDate()).slice(-2); };
 async function rvLoad(day){
   RV.busy = true; RV.err = '';
-  try { RV.list = await call('reportList', TOKEN, day || RV.day || undefined); RV.day = RV.list.day; if (RP.info) RP.info.dot = RV.list.counts.wait; rpNav(); } catch(e){ RV.err = e.message; }
+  try {
+    const bk = RV.list && RV.list.book;
+    RV.list = await call('reportList', TOKEN, day || RV.day || undefined); RV.day = RV.list.day;
+    if (bk) { RV.list.book = bk; RV.list.counts.book = bk.n; } else rvBookLoad();
+    if (RP.info) RP.info.dot = RV.list.counts.wait + (RV.list.counts.book || 0); rpNav();
+  } catch(e){ RV.err = e.message; }
   RV.busy = false; if (tab === 'work') render();
 }
 function rvParse(md){
@@ -4814,6 +4836,22 @@ function rvDetailView(){
       <button class="wbtn" data-rv="send" style="width:100%;margin-top:12px" ${RV.sending ? 'disabled' : ''}>${RV.sending ? 'Đang gửi…' : 'Gửi phản hồi'}</button></div>
     <div class="wcard"><details><summary><b>Xem nguyên văn</b></summary><pre class="rppre">${esc(r.md)}</pre></details></div>`;
 }
+const RV_BK = {new:['➕','Việc mới'], done:['✅','Vừa xong'], drop:['➖','Bỏ'], late:['⏰','Quá 5 ngày']};
+function rvBookView(){
+  const B = RV.list && RV.list.book;
+  if (!B) return RV.bookBusy ? '<div class="muted" style="text-align:center">Đang tải cập nhật mới…</div>' : '';
+  if (!B.on) return '';
+  const gs = B.groups.filter(g => g.ch.length);
+  const news = gs.length
+    ? `<div class="sec"><h3>🆕 Cập nhật mới</h3><button class="wbtn" data-rv="bookread|">Đã đọc tất cả</button></div>` + gs.map(g => `<div class="wcard"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><b>${esc(g.name)} · ${esc(g.project)}</b><button class="wbtn" data-rv="bookread|${esc(g.code)}|${esc(g.file)}">Đã đọc</button></div>` +
+        g.ch.map(c => `<div style="margin-top:6px">${RV_BK[c.k][0]} ${esc(c.t)}${c.ev ? ` <small class="muted">— ${esc(c.ev)}</small>` : ''}</div>`).join('') + `</div>`).join('')
+    : '';
+  const all = B.groups.length
+    ? `<div class="wcard"><details><summary><b>Sổ việc đầy đủ</b></summary>` + B.groups.map(g => `<div style="margin-top:10px"><b>${esc(g.name)} · ${esc(g.project)}</b>` + g.items.map(i => `<div style="margin-top:4px">${i.s === 'x' ? '☑' : i.s === '-' ? '➖' : i.late ? '⏰' : '☐'} ${esc(i.t)}</div>`).join('') + `</div>`).join('') + `</details></div>`
+    : '';
+  const er = B.err ? `<div class="muted" style="text-align:center">Sổ việc: ${esc(B.err)}</div>` : '';
+  return news + all + er;
+}
 function rvView(){
   if (RV.screen === 'detail') return rvDetailView();
   if (RV.err) return `<div class="sec"><h3>🗂️ Báo cáo các thầy</h3></div><div class="wcard">${esc(RV.err)}<br><button class="wbtn" data-rv="retry" style="margin-top:10px">Thử lại</button></div>`;
@@ -4826,7 +4864,7 @@ function rvView(){
   return `<div class="sec"><h3>🗂️ Báo cáo các thầy</h3><span>${rpDay(L.day)}</span></div>
     <div class="wmo"><button data-rv="day|-1" aria-label="Ngày trước">‹</button><b>${L.day === L.today ? 'Hôm nay' : rpDay(L.day) + '/' + L.day.slice(0, 4)}</b><button data-rv="day|1" ${L.day >= L.today ? 'disabled' : ''} aria-label="Ngày sau">›</button></div>
     <div class="wst"><div><b>${c.done}</b><small>Đã nộp</small></div><div><b>${c.wait}</b><small>Chờ duyệt</small></div><div><b>${c.none}</b><small>Chưa nộp</small></div></div>
-    <div class="wcard wlist">${rows}</div>${RV.busy ? '<div class="muted" style="text-align:center">Đang tải…</div>' : ''}`;
+    ${rvBookView()}<div class="wcard wlist">${rows}</div>${RV.busy ? '<div class="muted" style="text-align:center">Đang tải…</div>' : ''}`;
 }
 async function rvSend(){
   if (RV.sending) return; const f = RV.form;
@@ -4851,7 +4889,16 @@ document.addEventListener('click', e => {
   else if (k === 'imdrop' && f) { f.img = ''; render(); }
   else if (k === 'pri' && f) { const key = v; if (f.pri.has(key)) f.pri.delete(key); else f.pri.add(key); render(); }
   else if (k === 'send') rvSend();
+  else if (k === 'bookread') rvBookRead(v);
 });
+async function rvBookRead(v){
+  const [code, file] = v ? v.split('|') : ['', ''];
+  try {
+    const b = await call('reportBookRead', TOKEN, code || '', file || '');
+    if (RV.list) { RV.list.book = b; RV.list.counts.book = b.n; if (RP.info) RP.info.dot = RV.list.counts.wait + b.n; rpNav(); }
+    toast('Đã đọc'); render();
+  } catch(er){ toast(er.message); }
+}
 document.addEventListener('input', e => {
   const k = e.target.dataset && e.target.dataset.rvf; if (!k || !RV.form) return;
   RV.form[k] = e.target.value;
