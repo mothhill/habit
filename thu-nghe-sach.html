@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Thử nghe sách + ghi âm</title>
+<style>
+body{font:16px/1.5 system-ui,sans-serif;margin:0;background:#10201a;color:#e8f2ec;padding:14px}
+h1{font-size:19px;margin:4px 0 10px}.card{background:#183026;border:1px solid #2c5040;border-radius:12px;padding:12px;margin:10px 0}
+input,select{width:100%;box-sizing:border-box;padding:10px;border-radius:8px;border:1px solid #3d6a55;background:#0d1a15;color:#fff;font-size:15px}
+button{background:#7cc242;color:#10201a;border:0;border-radius:10px;padding:12px 16px;font-size:16px;font-weight:700;margin:6px 6px 0 0}
+button.gray{background:#3a4a43;color:#eee}button:disabled{opacity:.4}
+#yt{width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;margin-top:10px}
+#bar{height:14px;background:#0d1a15;border-radius:7px;overflow:hidden}#lv{height:100%;width:0;background:#7cc242;transition:width .1s}
+.big{font-size:28px;font-weight:800}.muted{color:#9fb8ab;font-size:14px}
+#log{font:13px ui-monospace,monospace;white-space:pre-wrap;max-height:220px;overflow:auto}
+.ok{color:#7cc242}.bad{color:#ff7b7b}
+</style></head><body>
+<h1>🎧 Thử: phát sách trong trang + ghi âm cùng lúc</h1>
+<div class="card">
+  <div class="muted">1. Dán link YouTube sách nói </div>
+  <input id="url" placeholder="https://www.youtube.com/watch?v=...">
+  <div class="muted" style="margin-top:8px">Khử tiếng vọng (app đang để TẮT khi đọc sách)</div>
+  <select id="ec"><option value="0">Tắt (như app)</option><option value="1">Bật (để so sánh)</option></select>
+  <div class="muted" style="margin-top:8px">Thời gian thử</div>
+  <select id="dur"><option value="60">1 phút</option><option value="180">3 phút</option><option value="600">10 phút</option></select>
+  <button id="go">▶️ Bắt đầu thử</button><button id="stop" class="gray" disabled>⏹ Dừng</button>
+  <div class="muted" style="margin-top:6px">Trong lúc thử: thử khóa màn hình, chuyển app, chuyển tab vài giây rồi quay lại để xem bản ghi có bị ngắt không.</div>
+</div>
+<div id="yt"></div>
+<div class="card">
+  <div class="big" id="t">00:00</div>
+  <div class="muted">Mức âm micro đang thu</div><div id="bar"><div id="lv"></div></div>
+  <div class="muted" id="st" style="margin-top:6px">Chưa bắt đầu</div>
+</div>
+<div class="card" id="res" style="display:none">
+  <b>Kết quả</b><div id="sum"></div>
+  <audio id="play" controls style="width:100%;margin-top:8px"></audio>
+  <a id="dl" class="muted" download>⬇️ Tải bản ghi</a>
+</div>
+<div class="card"><b>Nhật ký sự kiện</b> <span class="muted">(chụp màn hình gửi lại)</span><div id="log"></div></div>
+<script>
+const $=s=>document.querySelector(s), T0={v:0}, L=[];
+const log=m=>{const s=T0.v?((Date.now()-T0.v)/1000).toFixed(1)+'s':'--';L.push(s+'  '+m);$('#log').textContent=L.join('\n');};
+log('Trình duyệt: '+navigator.userAgent);
+let player=null, ready=false;
+function vid(u){const m=/(?:v=|youtu\.be\/|shorts\/|embed\/)([\w-]{11})/.exec(u||'');return m?m[1]:'';}
+window.onYouTubeIframeAPIReady=()=>{player=new YT.Player('yt',{playerVars:{playsinline:1,rel:0},
+  events:{onReady:()=>{ready=true;log('Trình phát YouTube sẵn sàng');},onStateChange:e=>log('YouTube trạng thái: '+({'-1':'chưa phát',0:'hết',1:'đang phát',2:'tạm dừng',3:'đang tải',5:'đã nạp'}[e.data]??e.data))}});};
+const sc=document.createElement('script');sc.src='https://www.youtube.com/iframe_api';document.head.appendChild(sc);
+let R=null;
+document.addEventListener('visibilitychange',()=>log('Trang '+(document.hidden?'BỊ ẨN (chuyển app/tab/khóa màn hình)':'hiện lại')));
+window.addEventListener('pagehide',()=>log('pagehide'));
+$('#go').onclick=async()=>{
+  const id=vid($('#url').value.trim());
+  if(!id){alert('Hãy dán link YouTube sách nói');return;}
+  if(ready)player.loadVideoById(id);else log('⚠️ Trình phát YouTube chưa sẵn sàng');
+  const ec=$('#ec').value==='1';
+  let st;try{st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:ec,noiseSuppression:ec,autoGainControl:true}});}
+  catch(e){log('❌ Không mở được micro: '+e.message);return;}
+  const tr=st.getAudioTracks()[0];log('Micro: '+tr.label+' · khử vọng '+(ec?'BẬT':'TẮT'));
+  tr.onmute=()=>log('⚠️ MICRO BỊ TẮT (mute)');tr.onunmute=()=>log('Micro bật lại (unmute)');tr.onended=()=>log('❌ MICRO KẾT THÚC (ended)');
+  const mime=['audio/webm;codecs=opus','audio/mp4','audio/webm'].find(m=>window.MediaRecorder&&MediaRecorder.isTypeSupported(m))||'';
+  const mr=new MediaRecorder(st,mime?{mimeType:mime}:{}), chunks=[];
+  mr.ondataavailable=e=>{if(e.data&&e.data.size)chunks.push(e.data);};
+  mr.onerror=e=>log('❌ Lỗi ghi: '+(e.error&&e.error.message));
+  const AC=window.AudioContext||window.webkitAudioContext, ac=new AC(), an=ac.createAnalyser();an.fftSize=1024;ac.createMediaStreamSource(st).connect(an);
+  const buf=new Float32Array(an.fftSize), secs=[]; let acc=[], wake=null;
+  try{wake=await navigator.wakeLock.request('screen');log('Giữ màn hình sáng: có');}catch(e){log('Giữ màn hình sáng: không');}
+  T0.v=Date.now();mr.start(10000);log('Bắt đầu ghi ('+(mime||'mặc định')+')');
+  const iv=setInterval(()=>{an.getFloatTimeDomainData(buf);let s=0;for(const v of buf)s+=v*v;const r=Math.sqrt(s/buf.length);acc.push(r);
+    $('#lv').style.width=Math.min(100,r*800)+'%';const el=(Date.now()-T0.v)/1000;$('#t').textContent=new Date(el*1000).toISOString().slice(14,19);
+    $('#st').textContent='Ghi: '+mr.state+' · micro: '+(tr.muted?'BỊ TẮT':tr.readyState)+' · âm thanh trang: '+ac.state+(ready?' · YouTube âm lượng '+player.getVolume()+(player.isMuted()?' (tắt tiếng)':''):'');
+    if(acc.length>=10){secs.push(Math.max(...acc));acc=[];}
+    if(el>=+$('#dur').value)stop();},100);
+  R={mr,st,ac,iv,chunks,secs,wake,mime};$('#go').disabled=true;$('#stop').disabled=false;
+};
+function stop(){if(!R)return;const r=R;R=null;clearInterval(r.iv);
+  r.mr.onstop=()=>{r.st.getTracks().forEach(t=>t.stop());r.ac.close();try{r.wake&&r.wake.release();}catch(e){}
+    const el=(Date.now()-T0.v)/1000, blob=new Blob(r.chunks,{type:r.mime||'audio/webm'}), url=URL.createObjectURL(blob);
+    const thr=0.004, voiced=r.secs.filter(x=>x>thr).length, gaps=[];let g=0;r.secs.forEach((x,i)=>{if(x<=thr)g++;else{if(g>=5)gaps.push((i-g)+'–'+i+'s');g=0;}});if(g>=5)gaps.push((r.secs.length-g)+'–'+r.secs.length+'s');
+    $('#res').style.display='';$('#play').src=url;$('#dl').href=url;$('#dl').download='thu-nghe-sach.'+((r.mime||'').includes('mp4')?'m4a':'webm');
+    const pct=r.secs.length?Math.round(voiced/r.secs.length*100):0;
+    $('#sum').innerHTML=`Thời gian: ${el.toFixed(0)} giây · tệp ${(blob.size/1024).toFixed(0)} KB<br>Giây có tiếng: <b class="${pct>=80?'ok':'bad'}">${voiced}/${r.secs.length} (${pct}%)</b><br>Khoảng im lặng ≥5 giây: ${gaps.length?gaps.join(', '):'không có'}`;
+    log('Dừng. Có tiếng '+pct+'%; im lặng: '+(gaps.join(', ')||'không'));};
+  r.mr.stop();if(player&&ready)player.pauseVideo();$('#go').disabled=false;$('#stop').disabled=true;}
+$('#stop').onclick=stop;
+</script></body></html>
