@@ -816,7 +816,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.24';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.31';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -3270,7 +3270,7 @@ function sleepChart(bare){
   const vs = ok.flatMap(p => [p.yb, p.yw]).concat([gyb, gyw].filter(v => v != null));
   const lo = Math.floor(Math.min(...vs) / 60) * 60, hi = Math.max(lo + 360, Math.ceil(Math.max(...vs) / 60) * 60);
   const W = 340, H = 200, L = 38, R = 8, T = 10, B = 34, cw = (W - L - R) / N;
-  const Y = v => T + (v - lo) / (hi - lo) * (H - T - B), tm = v => { const m = ((v + 1080) % 1440 + 1440) % 1440; return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); };
+  const Y = v => T + (v - lo) / (hi - lo) * (H - T - B), tm = v => { const m = ((Math.round(v) + 1080) % 1440 + 1440) % 1440; return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); };
   const step = (hi - lo) > 600 ? 120 : 60;
   let grid = ''; for (let v = lo; v <= hi; v += step) grid += `<line x1="${L}" x2="${W - R}" y1="${Y(v).toFixed(1)}" y2="${Y(v).toFixed(1)}" class="gc-g"/><text x="${L - 5}" y="${(Y(v) + 3.5).toFixed(1)}" text-anchor="end" class="gc-t">${tm(v)}</text>`;
   const goal = [[gyb, '🌙'], [gyw, '☀️']].map(x => x[0] == null ? '' : `<line x1="${L}" x2="${W - R}" y1="${Y(x[0]).toFixed(1)}" y2="${Y(x[0]).toFixed(1)}" class="sc-goal"/>`).join('');
@@ -4496,6 +4496,7 @@ function workMainView(){
       const st = r ? `✅ Đã nộp${k === 'vd' ? '' : ' · ' + its.length + ' tệp'} · ${wtime(Math.max(...its.map(x => x.t)))}` : '⬜ Chưa nộp';
       return `<div class="wrow"><div class="n"><b>${WKL[k]}</b><small>${st}</small>${r ? wFlags(r.flag) : ''}</div>
         ${r ? `<a class="wbtn ghost" style="display:inline-flex;align-items:center" href="${esc(r.link)}" target="_blank" rel="noopener">Xem</a>` : ''}
+        ${r ? `<button class="wbtn ghost" data-wrm="${s}|${k}">Gỡ</button>` : ''}
         <button class="wbtn ${r ? 'ghost' : ''}" data-wopen="${s}|${k}">${r ? 'Nộp lại' : 'Nộp'}</button></div>`; }).join('');
     return `<div class="wcard"><b>Bài ${s}</b><div class="muted" style="font-size:13px;margin-top:2px">${any ? esc(any.lesson) : 'Chưa chọn bài'}</div>${rows}</div>`;
   };
@@ -4513,6 +4514,21 @@ function wLessonSelect(id, val, kind){
     chs.map(c => `<optgroup label="${esc(c)}">${L.filter(x => x.ch === c).map(x => `<option value="${esc(x.name)}" ${x.name === val ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</optgroup>`).join('') +
     `<option value="__own" ${val && !inList ? 'selected' : ''}>✍️ Tự ghi tên bài…</option></select>` +
     (val && !inList ? `<input class="winp" id="${id}o" data-wown="${id}" placeholder="Ghi tên bài" value="${esc(val === '__own' ? '' : val)}">` : '');
+}
+async function workRemoveCell(slot, kind){
+  if (WORK.busy || !confirm('Gỡ bài ' + WKL[kind] + ' · Tuần ' + WORK.wk + ' · Bài ' + slot + ' đã nộp?\nBạn có thể nộp lại sau.')) return;
+  WORK.busy = true; render();
+  try { const r = await call('workRemove', TOKEN, {mo: WORK.mo, wk: WORK.wk, slot, kind}); WORK.d = r.data; }
+  catch(e){ alert(e.message || 'Không gỡ được, hãy thử lại.'); }
+  WORK.busy = false; render();
+}
+async function workRemoveFor(slot, kind){
+  const d = WORK.detail; if (!d || WORK.busy) return;
+  if (!confirm('Gỡ ' + WKL[kind] + ' · Tuần ' + WORK.wk + ' · Bài ' + slot + ' của ' + d.me.name + '?\nTrợ giảng có thể nộp lại.')) return;
+  WORK.busy = true;
+  try { const r = await call('workRemoveFor', TOKEN, d.me.id, {mo: d.mo, wk: WORK.wk, slot, kind}); WORK.detail = r.data; toast('Đã gỡ'); }
+  catch(e){ toast(e.message || 'Không gỡ được'); }
+  WORK.busy = false; render();
 }
 function workOpen(slot, kind){
   const d = WORK.d, g = wGrp(kind), inG = r => wGrp(WKK[r.kind]) === g, prev = d.items.filter(r => r.wk === WORK.wk && r.slot === slot && inG(r))[0], other = d.items.filter(r => r.wk === WORK.wk && r.slot === 3 - slot && inG(r))[0];
@@ -4641,7 +4657,7 @@ function workDetailView(){
     const here = its.filter(r => r.wk === WORK.wk && r.slot === s), name = here[0] ? here[0].lesson : 'Chưa chọn bài';
     const rows = d.kinds.map(k => { const fs = here.filter(r => WKK[r.kind] === k);
       return `<div class="wrow"><div class="n"><b>${WKL[k]}</b>${fs.length ? fs.map((r, i) => `<small><a href="${esc(r.link)}" target="_blank" rel="noopener" style="color:var(--primary)">${k === 'vd' ? '▶ ' + esc(r.fname) : (r.size ? 'Tệp ' + (i + 1) + ' · ' + wmb(r.size) : 'Tệp ' + (i + 1) + ' · rỗng')}</a> · ${wtime(r.t)}</small>`).join('') + wFlags(fs[0].flag) : '<small>⬜ Chưa nộp</small>'}
-        <small>Điểm: — / 100 · chưa chấm</small></div></div>`; }).join('');
+        <small>Điểm: — / 100 · chưa chấm</small></div>${fs.length ? `<button class="wbtn ghost" data-wrmf="${s}|${k}">Gỡ</button>` : ''}</div>`; }).join('');
     return `<div class="wcard"><b>Bài ${s}</b><div class="muted" style="font-size:13px;margin-top:2px">${esc(name)}</div>${rows}</div>`; };
   return `<div class="wtop"><button class="wbtn ghost" data-wback="1">‹ Danh sách</button><h3>${esc(d.me.name)} · Tầng ${d.me.tier}</h3></div>
     <div class="wcard">Tháng ${wmo(d.mo)} · ${done}/${d.expected} ô<div class="wbar"><i style="width:${Math.round(100 * done / Math.max(1, d.expected))}%"></i></div></div>
@@ -4934,11 +4950,13 @@ function workTierCard(){
 }
 /* --- sự kiện --- */
 document.addEventListener('click', async e => {
-  const t = e.target.closest('[data-wwk],[data-wmo],[data-wopen],[data-wback],[data-wsend],[data-wdel],[data-wdet],[data-wfil],[data-wreload],[data-wtsel],[data-wtsave]'); if (!t) return;
+  const t = e.target.closest('[data-wwk],[data-wmo],[data-wopen],[data-wrm],[data-wrmf],[data-wback],[data-wsend],[data-wdel],[data-wdet],[data-wfil],[data-wreload],[data-wtsel],[data-wtsave]'); if (!t) return;
   const ds = t.dataset;
   if (ds.wwk) { WORK.wk = +ds.wwk; render(); }
   else if (ds.wmo) { const m = wmoShift(WORK.mo, +ds.wmo); WORK.mo = m; WORK.screen = 'main'; WORK.loaded = false; render(); workLoad(m); }
   else if (ds.wopen) { const [s, k] = ds.wopen.split('|'); workOpen(+s, k); }
+  else if (ds.wrmf) { const [s, k] = ds.wrmf.split('|'); workRemoveFor(+s, k); }
+  else if (ds.wrm) { const [s, k] = ds.wrm.split('|'); workRemoveCell(+s, k); }
   else if (ds.wback) { WORK.screen = 'main'; WORK.form = null; render(); }
   else if (ds.wsend) workSend();
   else if (ds.wdel != null && ds.wdel !== '') { WORK.form.files.splice(+ds.wdel, 1); render(); }
@@ -5495,16 +5513,21 @@ function mindAdminSection(){
   const h = `<div class="sec"><h3>🎙️ Chấm bài Tâm trí</h3><span>hàng chờ AI</span></div>`;
   if (!MQ) return h + `<div class="card"><div class="muted">Đang tải…</div></div>`;
   if (MQ.error) return h + `<div class="card"><div class="empty">${esc(MQ.error)}</div></div>`;
-  const rows = (MQ.list || []).map(r => `<tr><td><b>${esc(r.name)}</b><br><small>${esc(r.date.slice(5).split('-').reverse().join('/'))} · ${r.kind === 'docsach' ? 'Đọc sách' : 'Cam kết'} · ${Math.round(r.secs/60*10)/10} phút${r.reason ? ' · ⏳ ' + esc(r.reason) : ''}</small></td>
+  const mqRow = (r, showNo, why) => `<tr><td><b>${esc(r.name)}</b><br><small>${esc(r.date.slice(5).split('-').reverse().join('/'))} · ${r.kind === 'docsach' ? 'Đọc sách' : 'Cam kết'} · ${Math.round(r.secs/60*10)/10} phút${why ? ' · ' + esc(why) : ''}</small></td>
     <td><a href="${esc(r.link)}" target="_blank" rel="noopener">Nghe</a></td>
-    <td><button class="lnk" data-mq-ok="${esc(r.rid)}">Đạt</button> · <button class="lnk" data-mq-no="${esc(r.rid)}">Chưa đạt</button></td></tr>`).join('');
+    <td><button class="lnk" data-mq-ok="${esc(r.rid)}">Đạt</button>${showNo ? ` · <button class="lnk" data-mq-no="${esc(r.rid)}">Chưa đạt</button>` : ''}</td></tr>`;
+  const mqTbl = (L, showNo, whyOf, ttl, hint) => `<div class="muted" style="margin:12px 0 4px"><b>${ttl}</b> (${L.length})</div>` + (L.length ? `<div class="tblwrap"><table class="tbl"><thead><tr><th>Bài</th><th></th><th>Chấm tay</th></tr></thead><tbody>${L.map(r => mqRow(r, showNo, whyOf(r))).join('')}</tbody></table></div>` : `<div class="rule">${hint}</div>`);
+  const rows = mqTbl(MQ.list || [], true, r => r.reason ? '⏳ ' + r.reason : '⏳', '⏳ Chờ AI chấm (nghẽn AI, máy chủ tự chấm lại)', 'Không có bài nào đang chờ AI.')
+    + mqTbl(MQ.revList || [], true, r => '✋ ' + r.note, '✋ Cần duyệt tay (bài có điểm lạ, bấm Đạt mới tính điểm)', 'Không có bài nào cần duyệt tay.')
+    + mqTbl(MQ.noList || [], false, r => '❌ ' + r.note, '❌ AI chấm Chưa đạt (hôm nay, hôm qua; bấm Đạt để chấm lại)', 'Không có bài AI chấm chưa đạt.');
   const aiTbl = (MQ.ai || []).length ? (MQ.ai || []).map(k => `<div class="muted" style="margin:10px 0 4px">Khóa …${esc(k.key)}${k.paid ? ' (trả phí)' : ''}</div><div class="tblwrap"><table class="tbl"><thead><tr><th>Model</th><th>✅</th><th>Hết ngày</th><th>Hết phút</th><th>Lỗi</th><th>Hết lượt lúc</th></tr></thead><tbody>${k.models.map(m => `<tr><td><small>${esc(m.m)}</small></td><td>${m.ok}</td><td>${m.day}</td><td>${m.min}</td><td>${m.err}</td><td>${esc(m.last || '–')}</td></tr>`).join('')}</tbody></table></div>`).join('') : '<div class="rule">Hôm nay chưa có số liệu dùng AI (có từ lần gọi AI kế tiếp).</div>';
   return h + `<div class="card"><div class="stats"><div class="stat"><div class="v">${MQ.waiting}</div><div class="l">Đang chờ chấm</div></div>
+    <div class="stat"><div class="v">${MQ.review || 0}</div><div class="l">Cần duyệt tay</div></div>
     <div class="stat"><div class="v">${MQ.gradedToday}</div><div class="l">Đã chấm hôm nay</div></div>
     <div class="stat"><div class="v">${MQ.retryOk} / ${MQ.retryBlocked}</div><div class="l">Chấm bù / bị chặn</div></div></div>
     ${MQ.aiOn ? '' : '<div class="rule">AI chưa bật (chưa có khóa Gemini).</div>'}
     <button class="btn" data-mq-retry="1" ${MQBUSY ? 'disabled' : ''}>${MQBUSY ? 'Đang chấm…' : 'Chấm lại ngay'}</button>
-    ${rows ? `<div class="tblwrap" style="margin-top:10px"><table class="tbl"><thead><tr><th>Bài</th><th></th><th>Chấm tay</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<div class="rule">Không có bài nào đang chờ.</div>'}
+    ${rows}
     <div class="sec" style="margin-top:12px"><h3>📊 Dùng AI hôm nay</h3><span>theo khóa và model, giờ VN</span></div>${aiTbl}
     <div class="rule">AI hết lượt thì bài tự xếp hàng, máy chủ chấm dần mỗi 5 phút. Chấm tay chỉ khi cần gấp.</div></div>
     <div class="sec" style="margin-top:12px"><h3>📈 Hướng tiến hóa</h3><span>ai đang dùng hướng nào</span></div><div class="card"><button class="btn" data-line-stats="1">📊 Xem thống kê hướng</button>${LSTAT ? (LSTAT.error ? '<div class="rule">'+LSTAT.error+'</div>' : '<div class="rule">'+LSTAT.people+' người, ghi từ '+(LSTAT.since||'—')+'. "Đang chọn" = hướng hiện tại; "Lượt chọn" = tổng lần chọn/đổi.</div><table style="width:100%;font-size:13px"><tr><th align="left">Hướng</th><th>Đang chọn</th><th>Lượt chọn</th></tr>'+LSTAT.rows.slice().sort((a,b)=>a.cur-b.cur||a.tot-b.tot).map(r => '<tr><td>'+((LINES[r.l]&&LINES[r.l].ic)||'')+' '+((LINES[r.l]&&LINES[r.l].n)||r.l)+'</td><td align="center">'+r.cur+'</td><td align="center">'+r.tot+'</td></tr>').join('')+'</table>') : ''}<div class="rule">Xếp từ ít đến nhiều để xét bỏ bớt hướng. Dữ liệu ở tab "Nhật ký hướng" trong Sheet.</div></div>
