@@ -98,6 +98,31 @@ h1,h2,h3{margin:0}
 .pill{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--mint-soft);color:var(--mint);vertical-align:middle}
 .pill.go{background:var(--primary-soft);color:var(--primary);cursor:pointer}
 
+/* ---- Công việc ---- */
+.wcard{background:var(--card);border-radius:var(--r);padding:14px;border:1px solid rgba(184,240,97,.13);margin-bottom:12px}
+.wdead{border-color:rgba(245,196,68,.4);background:linear-gradient(135deg,var(--card),rgba(245,196,68,.08))}
+.wdead.late{border-color:rgba(255,111,145,.5)}
+.wbar{height:8px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:8px}.wbar i{display:block;height:100%;background:var(--primary)}
+.wmo{display:flex;align-items:center;justify-content:space-between;margin:6px 0 10px}.wmo b{font-size:17px}
+.wmo button{width:44px;height:44px;border-radius:12px;background:var(--card);color:var(--ink);font-size:18px}.wmo button:disabled{opacity:.3}
+.wwk{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.wwk button{min-height:44px;border-radius:12px;background:var(--card);color:var(--muted);font-weight:700}.wwk button.on{background:var(--primary-soft);color:var(--primary);outline:1.5px solid var(--primary)}
+.wwk small{display:block;font-size:10.5px;font-weight:600}
+.wrow{display:flex;align-items:center;gap:10px;min-height:48px;padding:8px 0;border-top:1px solid var(--line)}
+.wrow .n{flex:1;min-width:0}.wrow .n b{display:block;font-size:14px}.wrow .n small{color:var(--muted);font-size:12px}
+.wbtn{min-height:44px;padding:0 16px;border-radius:12px;background:var(--primary);color:#10200f;font-weight:800;font-size:14px}
+a.wbtn{text-decoration:none}.wrow .n small{display:block}
+.wbtn.ghost{background:var(--bg);color:var(--ink);border:1px solid var(--line)}.wbtn:disabled{opacity:.4}
+.wfl{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;margin:2px 4px 0 0;background:var(--gold-soft);color:var(--gold)}
+.wfl.red{background:rgba(255,111,145,.15);color:var(--pink)}.wfl.ok{background:var(--mint-soft);color:var(--mint)}
+.wsel,.winp{width:100%;min-height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:14px;padding:8px 12px;margin-top:6px}
+.wfile{display:flex;align-items:center;gap:8px;padding:8px 10px;margin-top:6px;border-radius:10px;background:var(--bg);font-size:13px}.wfile span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wfile button{width:36px;height:36px;color:var(--pink);font-size:18px}
+.wtop{display:flex;gap:8px;align-items:center;margin-bottom:12px}.wtop h3{flex:1;font-size:16px}
+.wst{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.wst div{background:var(--card);border-radius:12px;padding:10px;text-align:center}.wst b{display:block;font-size:20px}.wst small{color:var(--muted);font-size:11.5px}
+.wfil{display:flex;gap:8px;overflow-x:auto;margin-bottom:10px}.wfil button{min-height:40px;padding:0 14px;border-radius:99px;background:var(--card);color:var(--muted);font-weight:700;white-space:nowrap}.wfil button.on{background:var(--primary-soft);color:var(--primary)}
+.wlist .wrow{cursor:pointer}
+.wtier label{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 10px;border-radius:12px;margin-top:6px;background:var(--bg);border:1.5px solid var(--line)}
 .sec{display:flex;align-items:baseline;justify-content:space-between;margin:20px 2px 10px}
 .sec h3{font-size:16px;font-weight:700}
 .sec span{font-size:13px;color:var(--muted)}
@@ -787,7 +812,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v13.11.14';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.14';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -3041,16 +3066,18 @@ function render(){ if (typeof loadBS === 'function') loadBS(); if (typeof bdAsk 
   const s = summary();
   $('#root').innerHTML = `<div class="layout tab-${tab}"><aside class="side">${side(s)}</aside><main>
     <div class="tabs">${tabBtns()}</div>
-    ${tab === 'today' ? today() : tab === 'health' ? (typeof healthView === 'function' ? healthView() : '') : tab === 'mind' ? (typeof mindView === 'function' ? mindView() : '') : tab === 'help' ? helpView() : tab === 'prog' ? progTabs() + progress(s) : tab === 'rank' ? rankView() : tab === 'admin' ? adminView() : progTabs() + badges(s)}</main></div>`;
+    ${tab === 'today' ? today() : tab === 'health' ? (typeof healthView === 'function' ? healthView() : '') : tab === 'mind' ? (typeof mindView === 'function' ? mindView() : '') : tab === 'work' ? workView() : tab === 'help' ? helpView() : tab === 'prog' ? progTabs() + progress(s) : tab === 'rank' ? rankView() : tab === 'admin' ? adminView() : progTabs() + badges(s)}</main></div>`;
   $('#bnav').innerHTML = tabBtns(true);
   const cur = document.querySelector('.ladder .cur'); if (cur) cur.parentNode.scrollLeft = cur.offsetLeft - cur.parentNode.offsetLeft - 70;
   if (tab === 'today') greetMasc();
   if (focusLeft() && !FOCUST) focusTick();
   if (tab === 'rank' && !BOARD) loadBoard();
   if (tab === 'admin' && !ADMIN) loadAdmin();
+  if (tab === 'work') workInit();
 }
 function tabBtns(mobile){
   const t = [['today','✅','Hôm nay'],['health','💚','Sức khỏe'],['mind','🧠','Tâm Trí'],['prog','📊','Tiến độ'],['rank','🏆','Xếp hạng']];   // Huy hiệu nằm trong Tiến độ
+  if (ME && ME.work) t.splice(4, 0, ['work','🗂️','Công việc']);
   if (ME && ME.role === 'Quản lý') t.push(['admin','🛠️','Quản lý']);
   return t.map(([k,e,n]) => `<button class="${tab===k || (k==='prog' && tab==='badge')?'on':''}" data-tab="${k}">${mobile?`<span>${e}</span>`:e+' '}${n}</button>`).join('');
 }
@@ -3700,7 +3727,7 @@ function adminView0(){
     <div class="fld"><label>Ngày bắt đầu 90 ngày</label><input id="as" type="date" value="${ADMIN.today}"></div>
     <div class="fld"><label>Vai trò</label><select id="ar"><option>Thành viên</option><option>Quản lý</option></select></div></div>
     <button class="btn" type="submit">+ Thêm và tạo PIN</button>
-    <div class="rule">Sửa thành viên ở tab "Thành viên" trong Sheet.</div></form>` + mindAdminSection() + teamSection() + (typeof runAdminSection === 'function' ? runAdminSection() : '');
+    <div class="rule">Sửa thành viên ở tab "Thành viên" trong Sheet.</div></form>` + mindAdminSection() + workTierCard() + teamSection() + (typeof runAdminSection === 'function' ? runAdminSection() : '');
 }
 
 /* ---- Huy hiệu ---- */
@@ -4401,6 +4428,199 @@ document.addEventListener('pointerdown', e => {
   if (e.pointerType !== 'mouse') mv(e);
 });
 
+
+/* ================== Công việc: nộp bài chuyên môn ================== */
+const WKL = {lt:'Lý thuyết', bt:'Bài tập', vd:'Video'}, WKK = {'Lý thuyết':'lt','Bài tập':'bt','Video':'vd'};
+let WORK = {mo:'', d:null, wk:1, screen:'main', busy:false, err:'', list:null, detail:null, filter:'all', form:null, sending:'', loaded:false};
+const wmo = mo => mo.slice(5) + '/' + mo.slice(0,4);
+const wtime = t => { const d = new Date(t); return ('0'+d.getDate()).slice(-2) + '/' + ('0'+(d.getMonth()+1)).slice(-2) + ' ' + ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2); };
+const wmb = b => b >= 1048576 ? (b/1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b/1024)) + ' KB';
+const wmoShift = (mo, k) => { const y = +mo.slice(0,4), m = +mo.slice(5) - 1 + k, d = new Date(y, m, 1); return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2); };
+const wIsTA = () => ME && ME.tier >= 2;
+function workInit(){ if (!WORK.loaded && !WORK.busy) workLoad(); }
+async function workLoad(mo){
+  WORK.busy = true; WORK.err = '';
+  try {
+    if (wIsTA()) { WORK.d = await call('workMine', TOKEN, mo || WORK.mo || undefined); WORK.mo = WORK.d.mo; }
+    else { WORK.list = await call('workList', TOKEN, mo || WORK.mo || undefined); WORK.mo = WORK.list.mo; }
+    WORK.loaded = true;
+  } catch(e){ WORK.err = e.message; }
+  WORK.busy = false; if (tab === 'work') render();
+}
+function wFlags(f){ return String(f || '').split(', ').filter(Boolean).map(x => `<span class="wfl ${x === 'Quá hạn' ? 'red' : ''}">${esc(x)}</span>`).join(''); }
+function workView(){
+  if (WORK.err && !WORK.busy) return `<div class="sec"><h3>🗂️ Công việc</h3></div><div class="wcard">${esc(WORK.err)}<br><button class="wbtn" data-wreload="1" style="margin-top:10px">Thử lại</button></div>`;
+  if (!WORK.loaded) return `<div class="loading" style="min-height:40vh"><div class="spin"></div>Đang tải…</div>`;
+  if (!wIsTA()) return WORK.screen === 'detail' ? workDetailView() : workListView();
+  return WORK.screen === 'form' ? workFormView() : workMainView();
+}
+function wMonthNav(mo, cur){
+  return `<div class="wmo"><button data-wmo="-1" aria-label="Tháng trước">‹</button><b>Tháng ${wmo(mo)}</b><button data-wmo="1" ${mo >= cur ? 'disabled' : ''} aria-label="Tháng sau">›</button></div>`;
+}
+function workMainView(){
+  const d = WORK.d, kinds = d.kinds, fl = d.flagNow, mm = d.mo.slice(5);
+  const cells = {}; d.items.forEach(r => cells[r.wk + '|' + r.slot + '|' + WKK[r.kind]] = r);
+  const done = Object.keys(cells).length, pc = Math.round(100 * done / Math.max(1, d.expected));
+  const past = d.mo < d.cur;
+  const dead = past ? `<b>Tháng ${wmo(d.mo)} đã đóng.</b><br><small>Bài nộp thêm sẽ bị đánh dấu quá hạn.</small>`
+    : fl === '' ? `<b>Hạn nộp: hết ngày 28/${mm}</b><br><small>Nộp bù đến 12:00 trưa ngày 29/${mm}.</small>`
+    : fl === 'Nộp bù' ? `<b>Đang trong giờ nộp bù</b><br><small>Đến 12:00 trưa ngày 29/${mm}, sau đó tính là quá hạn.</small>`
+    : `<b>Đã quá hạn</b><br><small>Bài nộp thêm sẽ bị đánh dấu quá hạn.</small>`;
+  const wkDone = w => Object.keys(cells).filter(k => k.startsWith(w + '|')).length, wkExp = 2 * kinds.length;
+  const chips = [1,2,3,4].map(w => `<button class="${WORK.wk === w ? 'on' : ''}" data-wwk="${w}">Tuần ${w}<small>${wkDone(w)}/${wkExp}</small></button>`).join('');
+  const slotCard = s => {
+    const any = kinds.map(k => cells[WORK.wk + '|' + s + '|' + k]).filter(Boolean)[0];
+    const rows = kinds.map(k => {
+      const its = d.items.filter(r => r.wk === WORK.wk && r.slot === s && WKK[r.kind] === k), r = its[0];
+      const st = r ? `✅ Đã nộp${k === 'vd' ? '' : ' · ' + its.length + ' tệp'} · ${wtime(Math.max(...its.map(x => x.t)))}` : '⬜ Chưa nộp';
+      return `<div class="wrow"><div class="n"><b>${WKL[k]}</b><small>${st}</small>${r ? wFlags(r.flag) : ''}</div>
+        ${r ? `<a class="wbtn ghost" style="display:inline-flex;align-items:center" href="${esc(r.link)}" target="_blank" rel="noopener">Xem</a>` : ''}
+        <button class="wbtn ${r ? 'ghost' : ''}" data-wopen="${s}|${k}">${r ? 'Nộp lại' : 'Nộp'}</button></div>`; }).join('');
+    return `<div class="wcard"><b>Bài ${s}</b><div class="muted" style="font-size:13px;margin-top:2px">${any ? esc(any.lesson) : 'Chưa chọn bài'}</div>${rows}</div>`;
+  };
+  if (!kinds.length) return `<div class="sec"><h3>🗂️ Công việc</h3></div><div class="wcard">Tầng của bạn hiện không phải nộp bài soạn.</div>`;
+  return `<div class="sec"><h3>🗂️ Công việc</h3><span>Trợ giảng tầng ${ME.tier}</span></div>
+    <div class="wcard wdead ${(past || fl === 'Quá hạn') ? 'late' : ''}">${dead}<div class="wbar"><i style="width:${pc}%"></i></div><small class="muted">${done} / ${d.expected} ô</small></div>
+    ${wMonthNav(d.mo, d.cur)}<div class="wwk">${chips}</div>${slotCard(1)}${slotCard(2)}${WORK.busy ? '<div class="muted" style="text-align:center">Đang tải…</div>' : ''}`;
+}
+function wLessonSelect(id, val){
+  const L = WORK.d.lessons, inList = L.some(x => x.name === val), chs = [...new Set(L.map(x => x.ch))];
+  return `<select class="wsel" id="${id}" data-wlesson="${id}"><option value="">— Chọn bài —</option>` +
+    chs.map(c => `<optgroup label="${esc(c)}">${L.filter(x => x.ch === c).map(x => `<option value="${esc(x.name)}" ${x.name === val ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</optgroup>`).join('') +
+    `<option value="__own" ${val && !inList ? 'selected' : ''}>✍️ Tự ghi tên bài…</option></select>` +
+    (val && !inList ? `<input class="winp" id="${id}o" data-wown="${id}" placeholder="Ghi tên bài" value="${esc(val === '__own' ? '' : val)}">` : '');
+}
+function workOpen(slot, kind){
+  const d = WORK.d, prev = d.items.filter(r => r.wk === WORK.wk && r.slot === slot)[0], other = d.items.filter(r => r.wk === WORK.wk && r.slot === 3 - slot)[0];
+  WORK.form = {slot, kind, lesson: {[slot]: prev ? prev.lesson : '', [3-slot]: other ? other.lesson : ''}, both: false, link: '', files: [], err: '', sending: ''};
+  WORK.screen = 'form'; render(); scrollTo(0, 0);
+}
+function workFormView(){
+  const f = WORK.form, d = WORK.d, s = f.slot, o = 3 - s, vd = f.kind === 'vd';
+  const ready = vd ? /youtu/.test(f.link) : f.files.length > 0, lessonOk = x => String(f.lesson[x] || '').trim() && f.lesson[x] !== '__own';
+  const ok = ready && lessonOk(s) && (!f.both || lessonOk(o)) && !f.sending;
+  const files = f.files.map((x, i) => `<div class="wfile">${x.type === 'application/pdf' ? '📄' : '🖼️'}<span>${esc(x.name)}</span><small class="muted">${wmb(x.size)}</small><button data-wdel="${i}" aria-label="Bỏ tệp">×</button></div>`).join('');
+  return `<div class="wtop"><button class="wbtn ghost" data-wback="1">‹ Quay lại</button><h3>${WKL[f.kind]} · Tuần ${WORK.wk} · Bài ${s}</h3></div>
+    <div class="wcard"><label class="muted" style="font-size:13px">Tên bài (Bài ${s})</label>${wLessonSelect('wl' + s, f.lesson[s])}
+      ${vd ? `<label class="muted" style="font-size:13px;display:block;margin-top:12px">Link YouTube</label><input class="winp" id="wlink" inputmode="url" placeholder="https://youtu.be/…" value="${esc(f.link)}">
+        <label class="wfile" style="margin-top:10px"><input type="checkbox" id="wboth" ${f.both ? 'checked' : ''}> <span>Dùng chung link này cho cả bài 1 và bài 2</span></label>
+        ${f.both ? `<label class="muted" style="font-size:13px;display:block;margin-top:10px">Tên bài (Bài ${o})</label>${wLessonSelect('wl' + o, f.lesson[o])}` : ''}`
+      : `<div style="display:flex;gap:8px;margin-top:12px"><label class="wbtn" style="display:inline-flex;align-items:center;flex:1;justify-content:center">📷 Chụp ảnh<input type="file" id="wcam" accept="image/*" capture="environment" hidden></label>
+        <label class="wbtn ghost" style="display:inline-flex;align-items:center;flex:1;justify-content:center">📎 Chọn tệp<input type="file" id="wpick" accept="image/*,application/pdf" multiple hidden></label></div>${files}`}
+      ${f.err ? `<div class="wfl red" style="margin-top:10px;white-space:normal">${esc(f.err)}</div>` : ''}
+      <button class="wbtn" id="wsend" data-wsend="1" style="width:100%;margin-top:14px" ${ok ? '' : 'disabled'}>${f.sending ? esc(f.sending) : 'Gửi bài'}</button></div>`;
+}
+const wRead = (blob) => new Promise((ok, bad) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1] || ''); r.onerror = () => bad(new Error('Không đọc được tệp')); r.readAsDataURL(blob); });
+async function wPrep(file){
+  if (!file.size) throw new Error('Tệp "' + file.name + '" trống (0 byte), hãy chọn lại.');
+  if (file.type === 'application/pdf') { if (file.size > 9.5e6) throw new Error('PDF "' + file.name + '" quá lớn (tối đa khoảng 9 MB).'); return {name: file.name, mime: file.type, b64: await wRead(file)}; }
+  try {
+    const bmp = await (window.createImageBitmap ? createImageBitmap(file) : new Promise((ok, bad) => { const im = new Image(); im.onload = () => ok(im); im.onerror = bad; im.src = URL.createObjectURL(file); }));
+    const w = bmp.width || bmp.naturalWidth, h = bmp.height || bmp.naturalHeight, k = Math.min(1, 1800 / Math.max(w, h)), c = document.createElement('canvas');
+    c.width = Math.round(w * k); c.height = Math.round(h * k); c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    const blob = await new Promise(ok => c.toBlob(ok, 'image/jpeg', .82));
+    if (blob && blob.size) return {name: file.name.replace(/\.\w+$/, '') + '.jpg', mime: 'image/jpeg', b64: await wRead(blob)};
+  } catch(e){}
+  if (file.size > 9.5e6) throw new Error('Ảnh "' + file.name + '" quá lớn.');
+  return {name: file.name, mime: file.type || 'image/jpeg', b64: await wRead(file)};
+}
+async function workSend(){
+  const f = WORK.form; if (!f || f.sending) return;
+  const s = f.slot, slots = f.kind === 'vd' && f.both ? [1, 2] : [s], lessons = {};
+  slots.forEach(x => lessons[x] = f.lesson[x]);
+  const replace = WORK.d.items.some(r => r.wk === WORK.wk && slots.includes(r.slot) && WKK[r.kind] === f.kind), rid = Math.random().toString(36).slice(2, 10);
+  f.err = '';
+  try {
+    if (f.kind === 'vd') {
+      f.sending = 'Đang kiểm tra link…'; render();
+      const r = await call('workSubmit', TOKEN, {mo: WORK.mo, wk: WORK.wk, slots, lessons, kind: 'vd', link: f.link, fresh: replace, rid}); WORK.d = r.data;
+    } else {
+      for (let i = 0; i < f.files.length; i++) {
+        f.sending = 'Đang gửi ' + (i + 1) + '/' + f.files.length + '…'; render();
+        const p = await wPrep(f.files[i].file), r = await call('workSubmit', TOKEN, {mo: WORK.mo, wk: WORK.wk, slots, lessons, kind: f.kind, file: p, fresh: replace && i === 0, rid});
+        WORK.d = r.data;
+      }
+    }
+    WORK.screen = 'main'; WORK.form = null; render(); toast('✅ Đã nộp bài');
+  } catch(e){ f.sending = ''; f.err = e.message; render(); }
+}
+/* --- giáo viên --- */
+function workListView(){
+  const L = WORK.list, F = WORK.filter, c = L.counts;
+  const flt = x => F === 'all' ? 1 : F === 'full' ? x.status === 'full' : F === 'part' ? x.status === 'part' : F === 'none' ? x.status === 'none' : (x.flags.late + x.flags.make + x.flags.empty + x.flags.shared) > 0;
+  const rows = L.list.filter(flt).map(x => {
+    const fl = x.flags, pc = Math.round(100 * x.done / Math.max(1, x.exp));
+    return `<div class="wrow" data-wdet="${esc(x.id)}"><div class="n"><b>${esc(x.name)} <span class="wfl ok">Tầng ${x.tier}</span></b><small>${x.done}/${x.exp} ô${x.last ? ' · nộp ' + wtime(x.last) : ' · chưa nộp'}</small>
+      <div class="wbar"><i style="width:${pc}%"></i></div>${fl.late ? `<span class="wfl red">${fl.late} quá hạn</span>` : ''}${fl.make ? `<span class="wfl">${fl.make} nộp bù</span>` : ''}${fl.shared ? `<span class="wfl">${fl.shared} link dùng chung</span>` : ''}${fl.empty ? `<span class="wfl red">${fl.empty} tệp rỗng</span>` : ''}</div><span class="muted">›</span></div>`; }).join('');
+  const fb = (k, n) => `<button class="${F === k ? 'on' : ''}" data-wfil="${k}">${n}</button>`;
+  return `<div class="sec"><h3>🗂️ Công việc</h3><span>Bài soạn của trợ giảng</span></div>${wMonthNav(L.mo, L.cur)}
+    <div class="wst"><div><b>${c.full}</b><small>Đã đủ</small></div><div><b>${c.part}</b><small>Chưa đủ</small></div><div><b>${c.none}</b><small>Chưa nộp</small></div></div>
+    <div class="wfil">${fb('all', 'Tất cả ' + c.all)}${fb('full', 'Đã đủ')}${fb('part', 'Chưa đủ')}${fb('none', 'Chưa nộp')}${fb('flag', 'Có cờ')}</div>
+    <div class="wcard wlist">${rows || '<div class="muted">Không có ai.</div>'}</div>${WORK.busy ? '<div class="muted" style="text-align:center">Đang tải…</div>' : ''}`;
+}
+async function workOpenDetail(id){
+  WORK.busy = true; WORK.screen = 'detail'; WORK.detail = null; render();
+  try { WORK.detail = await call('workDetail', TOKEN, id, WORK.mo); WORK.wk = WORK.wk || 1; } catch(e){ toast(e.message); WORK.screen = 'main'; }
+  WORK.busy = false; render(); scrollTo(0, 0);
+}
+function workDetailView(){
+  const d = WORK.detail; if (!d) return `<div class="loading" style="min-height:40vh"><div class="spin"></div>Đang tải…</div>`;
+  const its = d.items.filter(r => r.st === 'Đã nộp'), done = new Set(its.map(r => r.wk + '|' + r.slot + '|' + r.kind)).size;
+  const chips = [1,2,3,4].map(w => `<button class="${WORK.wk === w ? 'on' : ''}" data-wwk="${w}">Tuần ${w}<small>${new Set(its.filter(r => r.wk === w).map(r => r.slot + r.kind)).size}/${2 * d.kinds.length}</small></button>`).join('');
+  const card = s => {
+    const here = its.filter(r => r.wk === WORK.wk && r.slot === s), name = here[0] ? here[0].lesson : 'Chưa chọn bài';
+    const rows = d.kinds.map(k => { const fs = here.filter(r => WKK[r.kind] === k);
+      return `<div class="wrow"><div class="n"><b>${WKL[k]}</b>${fs.length ? fs.map((r, i) => `<small><a href="${esc(r.link)}" target="_blank" rel="noopener" style="color:var(--primary)">${k === 'vd' ? '▶ ' + esc(r.fname) : (r.size ? 'Tệp ' + (i + 1) + ' · ' + wmb(r.size) : 'Tệp ' + (i + 1) + ' · rỗng')}</a> · ${wtime(r.t)}</small>`).join('') + wFlags(fs[0].flag) : '<small>⬜ Chưa nộp</small>'}
+        <small>Điểm: — / 100 · chưa chấm</small></div></div>`; }).join('');
+    return `<div class="wcard"><b>Bài ${s}</b><div class="muted" style="font-size:13px;margin-top:2px">${esc(name)}</div>${rows}</div>`; };
+  return `<div class="wtop"><button class="wbtn ghost" data-wback="1">‹ Danh sách</button><h3>${esc(d.me.name)} · Tầng ${d.me.tier}</h3></div>
+    <div class="wcard">Tháng ${wmo(d.mo)} · ${done}/${d.expected} ô<div class="wbar"><i style="width:${Math.round(100 * done / Math.max(1, d.expected))}%"></i></div></div>
+    <div class="wwk">${chips}</div>${card(1)}${card(2)}`;
+}
+/* --- quản lý: đổi tầng --- */
+let WTIER = {list:null, log:null, sel:null, busy:false, err:''};
+async function workTierLoad(){ if (WTIER.busy) return; WTIER.busy = true; try { WTIER.list = await call('workMembers', TOKEN); WTIER.log = await call('workTierLog', TOKEN, ''); } catch(e){ WTIER.err = e.message; } WTIER.busy = false; if (tab === 'admin') render(); }
+function workTierCard(){
+  if (!WTIER.list && !WTIER.busy && !WTIER.err) workTierLoad();
+  const head = `<div class="sec"><h3>Phân tầng trợ giảng</h3><span>chạm vào tên để đổi tầng</span></div>`;
+  if (!WTIER.list) return head + `<div class="wcard">${WTIER.err ? esc(WTIER.err) : 'Đang tải…'}</div>`;
+  const tas = WTIER.list.filter(x => !x.teacher && x.dept === 'Phòng chuyên môn'), sel = WTIER.sel && tas.find(x => x.id === WTIER.sel);
+  const rows = tas.map(x => `<div class="wrow" data-wtsel="${esc(x.id)}" style="cursor:pointer"><div class="n"><b>${esc(x.name)}</b></div><span class="wfl ${x.tier ? 'ok' : ''}">${x.tier ? 'Tầng ' + x.tier : 'Chưa xếp'}</span></div>`).join('');
+  const pick = sel ? `<div class="wcard wtier"><b>${esc(sel.name)}</b>${[1,2,3].map(t => `<label><input type="radio" name="wtier" value="${t}" ${sel.tier === t ? 'checked' : ''}> <span><b>Tầng ${t}</b><br><small class="muted">${t === 1 ? 'Không soạn bài' : t === 2 ? 'Bài tập + Video' : 'Lý thuyết + Bài tập + Video'}</small></span></label>`).join('')}
+    <div style="display:flex;gap:8px;margin-top:12px"><button class="wbtn ghost" data-wtsel="">Huỷ</button><button class="wbtn" data-wtsave="1" style="flex:1">Lưu</button></div></div>` : '';
+  const log = (WTIER.log || []).slice(0, 8).map(x => `<small class="muted" style="display:block">${wtime(x.t)} · ${esc(x.name)}: tầng ${x.from || '?'} → ${x.to} (${esc(x.by)})</small>`).join('');
+  return head + `<div class="wcard">${rows}</div>${pick}${log ? `<div class="wcard"><b style="font-size:13px">Nhật ký đổi tầng</b>${log}</div>` : ''}`;
+}
+/* --- sự kiện --- */
+document.addEventListener('click', async e => {
+  const t = e.target.closest('[data-wwk],[data-wmo],[data-wopen],[data-wback],[data-wsend],[data-wdel],[data-wdet],[data-wfil],[data-wreload],[data-wtsel],[data-wtsave]'); if (!t) return;
+  const ds = t.dataset;
+  if (ds.wwk) { WORK.wk = +ds.wwk; render(); }
+  else if (ds.wmo) { const m = wmoShift(WORK.mo, +ds.wmo); WORK.mo = m; WORK.screen = 'main'; WORK.loaded = false; render(); workLoad(m); }
+  else if (ds.wopen) { const [s, k] = ds.wopen.split('|'); workOpen(+s, k); }
+  else if (ds.wback) { WORK.screen = 'main'; WORK.form = null; render(); }
+  else if (ds.wsend) workSend();
+  else if (ds.wdel != null && ds.wdel !== '') { WORK.form.files.splice(+ds.wdel, 1); render(); }
+  else if (ds.wdet) workOpenDetail(ds.wdet);
+  else if (ds.wfil) { WORK.filter = ds.wfil; render(); }
+  else if (ds.wreload) { WORK.err = ''; WORK.loaded = false; render(); workLoad(); }
+  else if (ds.wtsel != null) { WTIER.sel = ds.wtsel || null; render(); }
+  else if (ds.wtsave) {
+    const v = document.querySelector('input[name=wtier]:checked'); if (!v || !WTIER.sel) return;
+    try { await call('workSetTier', TOKEN, WTIER.sel, +v.value); WTIER.sel = null; WTIER.list = null; toast('✅ Đã đổi tầng'); render(); } catch(er){ toast(er.message); }
+  }
+});
+document.addEventListener('change', e => {
+  const t = e.target, f = WORK.form;
+  if (t.id === 'wcam' || t.id === 'wpick') { if (!f) return; [...t.files].forEach(x => f.files.push({name: x.name || 'anh.jpg', size: x.size, type: x.type, file: x})); t.value = ''; f.err = ''; render(); }
+  else if (t.dataset && t.dataset.wlesson && f) { const s = +t.id.slice(2); f.lesson[s] = t.value; render(); if (t.value === '__own') { const i = document.getElementById(t.id + 'o'); if (i) i.focus(); } }
+  else if (t.id === 'wboth' && f) { f.both = t.checked; render(); }
+});
+document.addEventListener('input', e => {
+  const t = e.target, f = WORK.form; if (!f) return;
+  if (t.id === 'wlink') { f.link = t.value.trim(); const b = document.getElementById('wsend'); if (b) b.disabled = !(/youtu/.test(f.link) && String(f.lesson[f.slot] || '').trim() && f.lesson[f.slot] !== '__own'); }
+  else if (t.dataset && t.dataset.wown) { f.lesson[+t.id.slice(2, 3)] = t.value; const b = document.getElementById('wsend'); if (b) b.disabled = !(String(f.lesson[f.slot] || '').trim() && (f.kind === 'vd' ? /youtu/.test(f.link) : f.files.length)); }
+});
 
 /* ================== Tương tác ================== */
 document.addEventListener('click', async e => {
