@@ -816,7 +816,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.17';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.18';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -4504,30 +4504,39 @@ function workMainView(){
     <div class="wcard wdead ${(past || fl === 'Quá hạn') ? 'late' : ''}">${dead}<div class="wbar"><i style="width:${pc}%"></i></div><small class="muted">${done} / ${d.expected} ô</small></div>
     ${wMonthNav(d.mo, d.cur)}<div class="wwk">${chips}</div>${slotCard(1)}${slotCard(2)}${WORK.busy ? '<div class="muted" style="text-align:center">Đang tải…</div>' : ''}`;
 }
-function wLessonSelect(id, val){
-  const L = WORK.d.lessons, inList = L.some(x => x.name === val), chs = [...new Set(L.map(x => x.ch))];
+const wGrp = k => k === 'bt' ? 'bt' : 'lt';          // nhóm nộp: Lý thuyết + Video | Bài tập
+const wBase = n => String(n || '').replace(/\s*\[[^\]]*\]\s*$/, '').replace(/\s-\s(Ca \d+:.*|Chữa ca \d+)$/, '').trim();   // tên bài bỏ "Ca k" và nhãn loại
+function wPriorFor(kind, lesson){ const b = wBase(lesson); return b ? (WORK.d.prior || []).filter(p => WKK[p.kind] === kind && wBase(p.lesson) === b) : []; }
+function wLessonSelect(id, val, kind){
+  const g = wGrp(kind || (WORK.form && WORK.form.kind)), L = WORK.d.lessons.filter(x => !x.type || x.type === g), inList = L.some(x => x.name === val), chs = [...new Set(L.map(x => x.ch))];
   return `<select class="wsel" id="${id}" data-wlesson="${id}"><option value="">— Chọn bài —</option>` +
     chs.map(c => `<optgroup label="${esc(c)}">${L.filter(x => x.ch === c).map(x => `<option value="${esc(x.name)}" ${x.name === val ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</optgroup>`).join('') +
     `<option value="__own" ${val && !inList ? 'selected' : ''}>✍️ Tự ghi tên bài…</option></select>` +
     (val && !inList ? `<input class="winp" id="${id}o" data-wown="${id}" placeholder="Ghi tên bài" value="${esc(val === '__own' ? '' : val)}">` : '');
 }
 function workOpen(slot, kind){
-  const d = WORK.d, prev = d.items.filter(r => r.wk === WORK.wk && r.slot === slot)[0], other = d.items.filter(r => r.wk === WORK.wk && r.slot === 3 - slot)[0];
-  WORK.form = {slot, kind, lesson: {[slot]: prev ? prev.lesson : '', [3-slot]: other ? other.lesson : ''}, both: false, link: '', files: [], err: '', sending: ''};
+  const d = WORK.d, g = wGrp(kind), inG = r => wGrp(WKK[r.kind]) === g, prev = d.items.filter(r => r.wk === WORK.wk && r.slot === slot && inG(r))[0], other = d.items.filter(r => r.wk === WORK.wk && r.slot === 3 - slot && inG(r))[0];
+  WORK.form = {slot, kind, lesson: {[slot]: prev ? prev.lesson : '', [3-slot]: other ? other.lesson : ''}, both: false, link: '', files: [], err: '', sending: '', mode: 'new', reuse: ''};
   WORK.screen = 'form'; render(); scrollTo(0, 0);
 }
 function workFormView(){
   const f = WORK.form, d = WORK.d, s = f.slot, o = 3 - s, vd = f.kind === 'vd';
-  const ready = vd ? /youtu/.test(f.link) : f.files.length > 0, lessonOk = x => String(f.lesson[x] || '').trim() && f.lesson[x] !== '__own';
+  const pri = wPriorFor(f.kind, f.lesson[s]), old = f.mode === 'old' && pri.length;
+  const ready = old ? !!f.reuse : (vd ? /youtu/.test(f.link) : f.files.length > 0), lessonOk = x => String(f.lesson[x] || '').trim() && f.lesson[x] !== '__own';
   const ok = ready && lessonOk(s) && (!f.both || lessonOk(o)) && !f.sending;
   const files = f.files.map((x, i) => `<div class="wfile">${x.type === 'application/pdf' ? '📄' : '🖼️'}<span>${esc(x.name)}</span><small class="muted">${wmb(x.size)}</small><button data-wdel="${i}" aria-label="Bỏ tệp">×</button></div>`).join('');
   return `<div class="wtop"><button class="wbtn ghost" data-wback="1">‹ Quay lại</button><h3>${WKL[f.kind]} · Tuần ${WORK.wk} · Bài ${s}</h3></div>
-    <div class="wcard"><label class="muted" style="font-size:13px">Tên bài (Bài ${s})</label>${wLessonSelect('wl' + s, f.lesson[s])}
-      ${vd ? `<label class="muted" style="font-size:13px;display:block;margin-top:12px">Link YouTube</label><input class="winp" id="wlink" inputmode="url" placeholder="https://youtu.be/…" value="${esc(f.link)}">
+    <div class="wcard"><label class="muted" style="font-size:13px">Tên bài (Bài ${s})</label>${wLessonSelect('wl' + s, f.lesson[s], f.kind)}
+      ${pri.length ? `<div class="wmode"><label class="wfile"><input type="radio" name="wmode" value="new" ${old ? '' : 'checked'}> <span>${vd ? 'Dán link mới' : 'Gửi file mới'}</span></label>
+        <label class="wfile"><input type="radio" name="wmode" value="old" ${old ? 'checked' : ''}> <span>Gắn ${vd ? 'link' : 'file'} cũ của bài này</span></label>
+        ${old ? `<select class="wsel" id="wreuse" data-wreuse="1"><option value="">— Chọn lần nộp trước —</option>${pri.map(p => `<option value="${esc(p.rid)}" ${f.reuse === p.rid ? 'selected' : ''}>${esc(p.lesson.replace(/\s*\[[^\]]*\]\s*$/, ''))} · ${esc(String(p.fname).slice(0, 40))} · T${p.wk} ${wmo(p.mo)}</option>`).join('')}</select>` : ''}</div>` : ''}
+      ${old ? `<label class="wfile" style="margin-top:10px"><input type="checkbox" id="wboth" ${f.both ? 'checked' : ''}> <span>Dùng cho cả bài 1 và bài 2 của tuần này</span></label>${f.both ? `<label class="muted" style="font-size:13px;display:block;margin-top:10px">Tên bài (Bài ${o})</label>${wLessonSelect('wl' + o, f.lesson[o], f.kind)}` : ''}` : vd ? `<label class="muted" style="font-size:13px;display:block;margin-top:12px">Link YouTube</label><input class="winp" id="wlink" inputmode="url" placeholder="https://youtu.be/…" value="${esc(f.link)}">
         <label class="wfile" style="margin-top:10px"><input type="checkbox" id="wboth" ${f.both ? 'checked' : ''}> <span>Dùng chung link này cho cả bài 1 và bài 2</span></label>
-        ${f.both ? `<label class="muted" style="font-size:13px;display:block;margin-top:10px">Tên bài (Bài ${o})</label>${wLessonSelect('wl' + o, f.lesson[o])}` : ''}`
+        ${f.both ? `<label class="muted" style="font-size:13px;display:block;margin-top:10px">Tên bài (Bài ${o})</label>${wLessonSelect('wl' + o, f.lesson[o], f.kind)}` : ''}`
       : `<div style="display:flex;gap:8px;margin-top:12px"><label class="wbtn" style="display:inline-flex;align-items:center;flex:1;justify-content:center">📷 Chụp ảnh<input type="file" id="wcam" accept="image/*" capture="environment" hidden></label>
-        <label class="wbtn ghost" style="display:inline-flex;align-items:center;flex:1;justify-content:center">📎 Chọn tệp<input type="file" id="wpick" accept="image/*,application/pdf" multiple hidden></label></div>${files}`}
+        <label class="wbtn ghost" style="display:inline-flex;align-items:center;flex:1;justify-content:center">📎 Chọn tệp<input type="file" id="wpick" accept="image/*,application/pdf" multiple hidden></label></div>${files}
+        <label class="wfile" style="margin-top:10px"><input type="checkbox" id="wboth" ${f.both ? 'checked' : ''}> <span>Dùng chung file này cho cả bài 1 và bài 2</span></label>
+        ${f.both ? `<label class="muted" style="font-size:13px;display:block;margin-top:10px">Tên bài (Bài ${o})</label>${wLessonSelect('wl' + o, f.lesson[o], f.kind)}` : ''}`}
       ${f.err ? `<div class="wfl red" style="margin-top:10px;white-space:normal">${esc(f.err)}</div>` : ''}
       <button class="wbtn" id="wsend" data-wsend="1" style="width:100%;margin-top:14px" ${ok ? '' : 'disabled'}>${f.sending ? esc(f.sending) : 'Gửi bài'}</button></div>`;
 }
@@ -4547,12 +4556,15 @@ async function wPrep(file){
 }
 async function workSend(){
   const f = WORK.form; if (!f || f.sending) return;
-  const s = f.slot, slots = f.kind === 'vd' && f.both ? [1, 2] : [s], lessons = {};
+  const s = f.slot, slots = f.both ? [1, 2] : [s], lessons = {}, useOld = f.mode === 'old' && f.reuse;
   slots.forEach(x => lessons[x] = f.lesson[x]);
   const replace = WORK.d.items.some(r => r.wk === WORK.wk && slots.includes(r.slot) && WKK[r.kind] === f.kind), rid = Math.random().toString(36).slice(2, 10);
   f.err = '';
   try {
-    if (f.kind === 'vd') {
+    if (useOld) {
+      f.sending = 'Đang gắn lại…'; render();
+      const r = await call('workSubmit', TOKEN, {mo: WORK.mo, wk: WORK.wk, slots, lessons, kind: f.kind, reuse: f.reuse, fresh: replace, rid}); WORK.d = r.data;
+    } else if (f.kind === 'vd') {
       f.sending = 'Đang kiểm tra link…'; render();
       const r = await call('workSubmit', TOKEN, {mo: WORK.mo, wk: WORK.wk, slots, lessons, kind: 'vd', link: f.link, fresh: replace, rid}); WORK.d = r.data;
     } else {
@@ -4572,7 +4584,7 @@ function workListView(){
   const rows = L.list.filter(flt).map(x => {
     const fl = x.flags, pc = Math.round(100 * x.done / Math.max(1, x.exp));
     return `<div class="wrow" data-wdet="${esc(x.id)}"><div class="n"><b>${esc(x.name)} <span class="wfl ok">Tầng ${x.tier}</span></b><small>${x.done}/${x.exp} ô${x.last ? ' · nộp ' + wtime(x.last) : ' · chưa nộp'}</small>
-      <div class="wbar"><i style="width:${pc}%"></i></div>${fl.late ? `<span class="wfl red">${fl.late} quá hạn</span>` : ''}${fl.make ? `<span class="wfl">${fl.make} nộp bù</span>` : ''}${fl.shared ? `<span class="wfl">${fl.shared} link dùng chung</span>` : ''}${fl.empty ? `<span class="wfl red">${fl.empty} tệp rỗng</span>` : ''}</div><span class="muted">›</span></div>`; }).join('');
+      <div class="wbar"><i style="width:${pc}%"></i></div>${fl.late ? `<span class="wfl red">${fl.late} quá hạn</span>` : ''}${fl.make ? `<span class="wfl">${fl.make} nộp bù</span>` : ''}${fl.shared ? `<span class="wfl">${fl.shared} dùng chung</span>` : ''}${fl.empty ? `<span class="wfl red">${fl.empty} tệp rỗng</span>` : ''}</div><span class="muted">›</span></div>`; }).join('');
   const fb = (k, n) => `<button class="${F === k ? 'on' : ''}" data-wfil="${k}">${n}</button>`;
   return `<div class="sec"><h3>🗂️ Công việc</h3><span>Bài soạn của trợ giảng</span></div>${wMonthNav(L.mo, L.cur)}
     <div class="wst"><div><b>${c.full}</b><small>Đã đủ</small></div><div><b>${c.part}</b><small>Chưa đủ</small></div><div><b>${c.none}</b><small>Chưa nộp</small></div></div>
@@ -4858,8 +4870,10 @@ document.addEventListener('click', async e => {
 document.addEventListener('change', e => {
   const t = e.target, f = WORK.form;
   if (t.id === 'wcam' || t.id === 'wpick') { if (!f) return; [...t.files].forEach(x => f.files.push({name: x.name || 'anh.jpg', size: x.size, type: x.type, file: x})); t.value = ''; f.err = ''; render(); }
-  else if (t.dataset && t.dataset.wlesson && f) { const s = +t.id.slice(2); f.lesson[s] = t.value; render(); if (t.value === '__own') { const i = document.getElementById(t.id + 'o'); if (i) i.focus(); } }
+  else if (t.dataset && t.dataset.wlesson && f) { const s = +t.id.slice(2); f.lesson[s] = t.value; if (s === f.slot) f.reuse = ''; render(); if (t.value === '__own') { const i = document.getElementById(t.id + 'o'); if (i) i.focus(); } }
   else if (t.id === 'wboth' && f) { f.both = t.checked; render(); }
+  else if (t.name === 'wmode' && f) { f.mode = t.value; if (f.mode === 'new') f.reuse = ''; render(); }
+  else if (t.id === 'wreuse' && f) { f.reuse = t.value; render(); }
 });
 document.addEventListener('input', e => {
   const t = e.target, f = WORK.form; if (!f) return;
