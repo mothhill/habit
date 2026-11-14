@@ -816,7 +816,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.31';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.33';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -5513,10 +5513,10 @@ function mindAdminSection(){
   const h = `<div class="sec"><h3>🎙️ Chấm bài Tâm trí</h3><span>hàng chờ AI</span></div>`;
   if (!MQ) return h + `<div class="card"><div class="muted">Đang tải…</div></div>`;
   if (MQ.error) return h + `<div class="card"><div class="empty">${esc(MQ.error)}</div></div>`;
-  const mqRow = (r, showNo, why) => `<tr><td><b>${esc(r.name)}</b><br><small>${esc(r.date.slice(5).split('-').reverse().join('/'))} · ${r.kind === 'docsach' ? 'Đọc sách' : 'Cam kết'} · ${Math.round(r.secs/60*10)/10} phút${why ? ' · ' + esc(why) : ''}</small></td>
+  const mqRow = (r, showNo, why) => `<tr><td><label><input type="checkbox" data-mq-chk="${esc(r.rid)}"> <b>${esc(r.name)}</b></label><br><small>${esc(r.date.slice(5).split('-').reverse().join('/'))} · ${r.kind === 'docsach' ? 'Đọc sách' : 'Cam kết'} · ${Math.round(r.secs/60*10)/10} phút${why ? ' · ' + esc(why) : ''}</small></td>
     <td><a href="${esc(r.link)}" target="_blank" rel="noopener">Nghe</a></td>
     <td><button class="lnk" data-mq-ok="${esc(r.rid)}">Đạt</button>${showNo ? ` · <button class="lnk" data-mq-no="${esc(r.rid)}">Chưa đạt</button>` : ''}</td></tr>`;
-  const mqTbl = (L, showNo, whyOf, ttl, hint) => `<div class="muted" style="margin:12px 0 4px"><b>${ttl}</b> (${L.length})</div>` + (L.length ? `<div class="tblwrap"><table class="tbl"><thead><tr><th>Bài</th><th></th><th>Chấm tay</th></tr></thead><tbody>${L.map(r => mqRow(r, showNo, whyOf(r))).join('')}</tbody></table></div>` : `<div class="rule">${hint}</div>`);
+  const mqTbl = (L, showNo, whyOf, ttl, hint) => `<div class="mqg"><div class="muted" style="margin:12px 0 4px"><b>${ttl}</b> (${L.length})</div>` + (L.length ? `<div style="margin:4px 0"><label><input type="checkbox" data-mq-all="1"> Chọn tất cả</label> · <button class="lnk" data-mq-bulk="Đạt">✅ Đạt các bài đã chọn</button>${showNo ? ` · <button class="lnk" data-mq-bulk="Chưa đạt">Chưa đạt các bài đã chọn</button>` : ''}</div><div class="tblwrap"><table class="tbl"><thead><tr><th>Bài</th><th></th><th>Chấm tay</th></tr></thead><tbody>${L.map(r => mqRow(r, showNo, whyOf(r))).join('')}</tbody></table></div>` : `<div class="rule">${hint}</div>`) + `</div>`;
   const rows = mqTbl(MQ.list || [], true, r => r.reason ? '⏳ ' + r.reason : '⏳', '⏳ Chờ AI chấm (nghẽn AI, máy chủ tự chấm lại)', 'Không có bài nào đang chờ AI.')
     + mqTbl(MQ.revList || [], true, r => '✋ ' + r.note, '✋ Cần duyệt tay (bài có điểm lạ, bấm Đạt mới tính điểm)', 'Không có bài nào cần duyệt tay.')
     + mqTbl(MQ.noList || [], false, r => '❌ ' + r.note, '❌ AI chấm Chưa đạt (hôm nay, hôm qua; bấm Đạt để chấm lại)', 'Không có bài AI chấm chưa đạt.');
@@ -5528,11 +5528,20 @@ function mindAdminSection(){
     ${MQ.aiOn ? '' : '<div class="rule">AI chưa bật (chưa có khóa Gemini).</div>'}
     <button class="btn" data-mq-retry="1" ${MQBUSY ? 'disabled' : ''}>${MQBUSY ? 'Đang chấm…' : 'Chấm lại ngay'}</button>
     ${rows}
-    <div class="sec" style="margin-top:12px"><h3>📊 Dùng AI hôm nay</h3><span>theo khóa và model, giờ VN</span></div>${aiTbl}
     <div class="rule">AI hết lượt thì bài tự xếp hàng, máy chủ chấm dần mỗi 5 phút. Chấm tay chỉ khi cần gấp.</div></div>
+    <div class="sec" style="margin-top:12px"><h3>📊 Dùng AI hôm nay</h3><span>theo khóa và model, giờ VN</span></div><div class="card">${aiTbl}</div>
     <div class="sec" style="margin-top:12px"><h3>📈 Hướng tiến hóa</h3><span>ai đang dùng hướng nào</span></div><div class="card"><button class="btn" data-line-stats="1">📊 Xem thống kê hướng</button>${LSTAT ? (LSTAT.error ? '<div class="rule">'+LSTAT.error+'</div>' : '<div class="rule">'+LSTAT.people+' người, ghi từ '+(LSTAT.since||'—')+'. "Đang chọn" = hướng hiện tại; "Lượt chọn" = tổng lần chọn/đổi.</div><table style="width:100%;font-size:13px"><tr><th align="left">Hướng</th><th>Đang chọn</th><th>Lượt chọn</th></tr>'+LSTAT.rows.slice().sort((a,b)=>a.cur-b.cur||a.tot-b.tot).map(r => '<tr><td>'+((LINES[r.l]&&LINES[r.l].ic)||'')+' '+((LINES[r.l]&&LINES[r.l].n)||r.l)+'</td><td align="center">'+r.cur+'</td><td align="center">'+r.tot+'</td></tr>').join('')+'</table>') : ''}<div class="rule">Xếp từ ít đến nhiều để xét bỏ bớt hướng. Dữ liệu ở tab "Nhật ký hướng" trong Sheet.</div></div>
     <div class="sec" style="margin-top:12px"><h3>🏅 Huy hiệu</h3><span>lệnh cho mọi người</span></div><div class="card"><button class="btn" data-bdg-replay="1">🔁 Phát lại tất cả huy hiệu đã đạt</button><div class="rule">Lần đăng nhập tiếp theo, mỗi người xem lại toàn bộ huy hiệu mình đã đạt, từng cái một. Mỗi lần bấm là một lượt phát lại mới.</div></div>`;
 }
+document.addEventListener('click', e => {      // duyệt hàng loạt Tâm trí
+  const a = e.target.closest('[data-mq-all]'); if (a){ const g = a.closest('.mqg'); g.querySelectorAll('[data-mq-chk]').forEach(c => c.checked = a.checked); return; }
+  const b = e.target.closest('[data-mq-bulk]'); if (!b || MQBUSY) return;
+  const g = b.closest('.mqg'), ids = [...g.querySelectorAll('[data-mq-chk]:checked')].map(c => c.dataset.mqChk), st = b.dataset.mqBulk;
+  if (!ids.length){ toast('Chưa chọn bài nào'); return; }
+  const note = st === 'Chưa đạt' ? (prompt('Lý do chưa đạt cho ' + ids.length + ' bài (hiện cho người nộp, có thể bỏ trống):') || '') : '';
+  if (!confirm('Chấm ' + st + ' cho ' + ids.length + ' bài đã chọn?')) return;
+  toast('Đang chấm ' + ids.length + ' bài…'); mqLoad('mindManualBulk', ids, st, note);
+});
 document.addEventListener('click', async e => {
   if (e.target.closest('[data-line-stats]')){ try { LSTAT = await call('lineStats', TOKEN); } catch(err){ LSTAT = {error: err.message}; } render(); return; }
   const rb = e.target.closest('[data-bdg-replay]');
