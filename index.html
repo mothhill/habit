@@ -116,7 +116,7 @@ a.wbtn{text-decoration:none}.wrow .n small{display:block}
 .wfl{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;margin:2px 4px 0 0;background:var(--gold-soft);color:var(--gold)}
 .wfl.red{background:rgba(255,111,145,.15);color:var(--pink)}.wfl.ok{background:var(--mint-soft);color:var(--mint)}
 .rpim{width:96px;height:96px;object-fit:cover;border-radius:10px;border:1px solid var(--line);cursor:zoom-in;background:var(--bg)}.rpim.ph{display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);cursor:default;text-align:center}.rpims{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.rpims>div{position:relative}.rpims .x{position:absolute;top:-6px;right:-6px;min-height:26px;width:26px;padding:0;border-radius:50%;font-size:12px}.rvzoom{position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.86);display:flex;align-items:center;justify-content:center;padding:12px}.rvzoom img{max-width:100%;max-height:100%;border-radius:8px}
-.tdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--pink);margin-left:5px;vertical-align:middle}.rvit{display:flex;align-items:flex-start;gap:8px;padding:6px 0}.rvit span{flex:1;font-size:14px}.rvit .wbtn{min-height:32px;padding:0 10px;font-size:12px}.rvnew{background:var(--gold-soft);border-radius:6px;padding:0 4px}.rvrate{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.rvrate button{min-height:44px;border-radius:12px;background:var(--bg);border:1.5px solid var(--line);color:var(--ink);font-weight:700;font-size:13px}.rvrate button.on{border-color:var(--primary);background:var(--mint-soft)}
+.tdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--pink);margin-left:5px;vertical-align:middle}.rvit{display:flex;align-items:flex-start;gap:8px;padding:6px 0}.rvit span{flex:1;font-size:14px}.rvit .wbtn{min-height:32px;padding:0 10px;font-size:12px}.rvnew{font-style:normal;font-weight:inherit;background:linear-gradient(transparent 62%,var(--gold-soft) 62%)}.rvrate{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.rvrate button{min-height:44px;border-radius:12px;background:var(--bg);border:1.5px solid var(--line);color:var(--ink);font-weight:700;font-size:13px}.rvrate button.on{border-color:var(--primary);background:var(--mint-soft)}
 .rpseg{display:flex;gap:8px;margin-bottom:12px}.rpseg button{flex:1;min-height:44px;border-radius:12px;background:var(--card);color:var(--ink);font-weight:700;font-size:13px;border:1.5px solid var(--line)}.rpseg button.on{background:var(--primary);color:#10200f;border-color:var(--primary)}
 .rpta{width:100%;min-height:72px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:14px;padding:8px 12px;margin-top:6px;resize:vertical}.rppre{white-space:pre-wrap;font-size:12.5px;line-height:1.5;background:var(--bg);border-radius:10px;padding:10px;margin-top:8px;overflow:auto;max-height:50vh}
 .wsel,.winp{width:100%;min-height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:14px;padding:8px 12px;margin-top:6px}
@@ -816,7 +816,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.21';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.22';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -4817,7 +4817,7 @@ async function rvOpen(code){
 }
 function rvItem(p, s, t, isNew){
   const can = (s === 'Đang làm' || s === 'Ngày mai') && !/^\(?\s*không\s*\)?$/i.test(t), k = rvKey(p, s, t), on = RV.form.pri.has(k);
-  return `<div class="rvit"><span>${isNew ? `<i class="rvnew">${esc(t)}</i>` : esc(t)}</span>${can ? `<button class="wbtn ${on ? '' : 'ghost'}" data-rv="pri|${esc(k).replace(/\|/g, '&#124;')}" aria-pressed="${on}">${on ? '⭐ Ưu tiên' : 'Ưu tiên'}</button>` : ''}</div>`;
+  return `<div class="rvit"><span>${isNew ? `<span class="rvnew">${esc(t)}</span>` : esc(t)}</span>${can ? `<button class="wbtn ${on ? '' : 'ghost'}" data-rv="pri|${esc(k).replace(/\|/g, '&#124;')}" aria-pressed="${on}">${on ? '⭐ Ưu tiên' : 'Ưu tiên'}</button>` : ''}</div>`;
 }
 function rvDetailView(){
   const d = RV.d; if (!d) return `<div class="loading" style="min-height:40vh"><div class="spin"></div>Đang tải…</div>`;
