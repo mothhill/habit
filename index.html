@@ -756,7 +756,7 @@ html[data-theme=light] .banner{color:#5A4300}
 .run-bug{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}.run-bug input{flex:1 1 180px;min-height:42px}.run-bug .btn{min-height:42px}
 .run-cands{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 10px}.run-apkm{width:110px;min-height:40px}
 .run-km input[readonly],.run-min input[readonly]{opacity:.85;cursor:not-allowed}
-.ptabs{margin-bottom:14px}
+.ptabs{margin-bottom:14px}.ptabs button{font-size:12px;padding:8px 2px}
 .run-news{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px;border-left:4px solid var(--primary)}
 .run-news.no{border-left-color:#E5484D}.run-news small{display:block;margin-top:3px;color:var(--ink);opacity:.8}.run-news .btns{display:flex;gap:6px;margin:0}
 .mcard .mhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:8px}.mcard .mhead span{font-size:12.5px;color:var(--muted)}
@@ -812,7 +812,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.14';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.15';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -3066,7 +3066,7 @@ function render(){ if (typeof loadBS === 'function') loadBS(); if (typeof bdAsk 
   const s = summary();
   $('#root').innerHTML = `<div class="layout tab-${tab}"><aside class="side">${side(s)}</aside><main>
     <div class="tabs">${tabBtns()}</div>
-    ${tab === 'today' ? today() : tab === 'health' ? (typeof healthView === 'function' ? healthView() : '') : tab === 'mind' ? (typeof mindView === 'function' ? mindView() : '') : tab === 'work' ? workView() : tab === 'help' ? helpView() : tab === 'prog' ? progTabs() + progress(s) : tab === 'rank' ? rankView() : tab === 'admin' ? adminView() : progTabs() + badges(s)}</main></div>`;
+    ${tab === 'today' ? today() : tab === 'health' ? (typeof healthView === 'function' ? healthView() : '') : tab === 'mind' ? (typeof mindView === 'function' ? mindView() : '') : tab === 'work' ? workView() : tab === 'help' ? helpView() : tab === 'prog' ? progTabs() + progress(s) : tab === 'rank' ? progTabs() + rankView() : tab === 'pet' ? progTabs() + petView(s) : tab === 'admin' ? adminView() : progTabs() + badges(s)}</main></div>`;
   $('#bnav').innerHTML = tabBtns(true);
   const cur = document.querySelector('.ladder .cur'); if (cur) cur.parentNode.scrollLeft = cur.offsetLeft - cur.parentNode.offsetLeft - 70;
   if (tab === 'today') greetMasc();
@@ -3076,10 +3076,10 @@ function render(){ if (typeof loadBS === 'function') loadBS(); if (typeof bdAsk 
   if (tab === 'work') workInit();
 }
 function tabBtns(mobile){
-  const t = [['today','✅','Hôm nay'],['health','💚','Sức khỏe'],['mind','🧠','Tâm Trí'],['prog','📊','Tiến độ'],['rank','🏆','Xếp hạng']];   // Huy hiệu nằm trong Tiến độ
-  if (ME && ME.work) t.splice(4, 0, ['work','🗂️','Công việc']);
+  const t = [['today','✅','Hôm nay'],['health','💚','Sức khỏe'],['mind','🧠','Tâm Trí'],['pet','🏆','Thành tích']];   // Thành tích = Thú cưng (pet) · Huy hiệu (badge) · Cá nhân (prog) · Xếp hạng (rank)
+  if (ME && ME.work) t.splice(3, 0, ['work','🗂️','Công việc']);
   if (ME && ME.role === 'Quản lý') t.push(['admin','🛠️','Quản lý']);
-  return t.map(([k,e,n]) => `<button class="${tab===k || (k==='prog' && tab==='badge')?'on':''}" data-tab="${k}">${mobile?`<span>${e}</span>`:e+' '}${n}</button>`).join('');
+  return t.map(([k,e,n]) => `<button class="${tab===k || (k==='pet' && (tab==='badge' || tab==='prog' || tab==='rank'))?'on':''}" data-tab="${k}">${mobile?`<span>${e}</span>`:e+' '}${n}</button>`).join('');
 }
 function greet(){ const h = new Date().getHours(); return h < 11 ? 'Chào buổi sáng ☀️' : h < 14 ? 'Chào buổi trưa 🌤️' : h < 18 ? 'Chào buổi chiều 🌇' : 'Chào buổi tối 🌙'; }
 function side(s){
@@ -3104,7 +3104,7 @@ function side(s){
         <div class="lbl"><div class="pct">${Math.round(p*100)}%</div><div class="sub">${st.done}/${st.total} việc</div></div></div>
       <div class="chips">
         <div class="chip"><span class="e">🔥</span><div><b>${s.cur} ngày</b><small>Kỷ lục ${s.best}</small></div></div>
-        <div class="chip click" data-tab="badge"><span class="e evs">${evo(look().l, 'base', lk)}</span><div><b>Cấp ${lk+1}</b><small>${lvName(lk)}</small></div></div>
+        <div class="chip click" data-tab="pet"><span class="e evs">${evo(look().l, 'base', lk)}</span><div><b>Cấp ${lk+1}</b><small>${lvName(lk)}</small></div></div>
       </div>
     </div>
     <div class="xpbar"><i style="width:${Math.round(prog*100)}%"></i></div>
@@ -3504,7 +3504,7 @@ function itemStats(){
     return fold('it' + c, esc(SPEC[c].list.pin), '', `<div class="card">${rows}</div>`);
   }).join('');
 }
-function progTabs(){ return `<div class="seg ptabs"><button class="${tab==='prog'?'on':''}" data-tab="prog">📊 Thống kê</button><button class="${tab==='badge'?'on':''}" data-tab="badge">🏅 Huy hiệu</button></div>`; }
+function progTabs(){ const b = (k,l) => `<button class="${tab===k?'on':''}" data-tab="${k}">${l}</button>`; return `<div class="seg ptabs">${b('pet','🐾 Thú cưng')}${b('badge','🏅 Huy hiệu')}${b('prog','👤 Cá nhân')}${b('rank','🏆 Xếp hạng')}</div>`; }
 /* Lịch theo tuần tháng: mỗi hàng 1 tuần (1–7, 8–14, 15–21, 22–28), ngày nghỉ 29–31 thành hàng riêng */
 function heatGrid(d0, n, cell){
   const dN = addDays(d0, n-1); let h = `<div class="heat">`, b = blkStart(d0), w = 0;
@@ -3765,20 +3765,12 @@ function chalHtml(){
     <div class="card chals"><div class="muted" style="font-size:12.5px;margin-bottom:8px">Mỗi thói quen hằng ngày: tích <b>liền mạch ${CHAL_RUN} ngày liên tiếp</b> trong tháng = huy chương. Thẻ giữ lửa không tính.</div>${rows || '<div class="muted">Tháng này chưa có thói quen nào đủ 5 ngày để làm thử thách.</div>'}
     ${medals.length ? `<div class="medals">${medals.map(([m,n]) => `<span>🏅 T${+m.slice(5)}: ${n}</span>`).join('')}</div>` : ''}</div>${gold}`;
 }
-function badges(s){
+function petView(s){
   const lk = levelOf(s.xp), L = LEVELS[lk], N = LEVELS[lk+1], prog = N ? (s.xp - L.xp)/(N.xp - L.xp) : 1;
   const lo = look();
   const strip = (ln, cur) => LEVELS.map((l,j) => `<div data-pv="${ln}:${j}" class="${j<=lk?'got':'lock'} ${j===lk?'cur':''}"><span class="evl">${evo(ln, 'base', j)}</span>${j+1}. ${LINES[ln].st[j]}<small>${l.xp} XP</small></div>`).join('');
   const ladder = strip(lo.l);
   const lines = Object.keys(LINES).map(k => `<button class="pick ${k===lo.l?'on':''}" data-line="${k}"><span class="evp">${evo(k, 'base', lk)}</span><b>${LINES[k].n}</b><small>${LINES[k].st[lk]}</small></button>`).join('');
-  const has = id => !!(s.bset && s.bset.has(id));
-  const vis = BADGES.filter(b => !b.hid), hid = BADGES.filter(b => b.hid);
-  const got = vis.filter(b => has(b.id)).length, hOpen = hid.filter(b => has(b.id));
-  const cardOf = b => { const on = has(b.id), v = b.k && b.k !== 'fam' ? Math.min(s[b.k], b.g) : b.k === 'fam' ? Math.min((xstats().fam[b.fk]||0), b.g) : 0;
-    return `<div class="badge ${on?'on':'off'}"${on ? ` data-bdgview="${b.id}" style="cursor:pointer"` : ''}><div class="bi">${b.ic}</div><b>${b.n}</b><small>${b.d}</small>
-      ${on ? `<small style="color:var(--mint);font-weight:700">Đã đạt ✓ +${b.xp} XP · chạm để xem lại</small>` : b.k ? `<div class="bp"><i style="width:${Math.round(v/b.g*100)}%"></i></div><small>${v}/${b.g} · +${b.xp} XP</small>` : `<small>+${b.xp} XP</small>`}</div>`; };
-  const bg = vis.map(cardOf).join('') + hOpen.map(cardOf).join('')
-    + (hOpen.length < hid.length ? `<div class="badge hid off"><div class="bi">🎁</div><b>Còn ${hid.length - hOpen.length} huy hiệu ẩn</b><small>Không ai biết trước cách mở. Cứ làm đều, bất ngờ sẽ tới.</small></div>` : '');
   return `<div class="card"><div class="lvl">${(() => { const dc = sceneDeco(); return `<div class="big evbig ${dc.cls}" data-pv="${lo.l}:${lk}">${evfx(lo.l, lk, evo(lo.l, 'base', lk, 'big'))}${dc.html}</div>`; })()}<div style="flex:1">
       <div class="muted" style="font-size:13px">Cấp ${lk+1}/${LEVELS.length} <button class="sndb" data-snd title="Bật/tắt tiếng nhân vật">${SND_ON ? '🔊' : '🔇'}</button></div><h2>${lvName(lk)}</h2>
       <div class="xpbar"><i style="width:${Math.round(prog*100)}%"></i></div>
@@ -3789,8 +3781,19 @@ function badges(s){
       <div class="rules">Cách tính XP: mỗi tick hằng ngày +${XP_DAILY} · mỗi tick hằng tuần +${XP_WEEKLY} · ngày hoàn hảo 100% +${XP_PERFECT} · nộp chạy bộ, đọc sách, cam kết, giấc ngủ mỗi loại +${XP_SUB}.<br>
       Lỡ thói quen đang có chuỗi: -${PEN_DAILY} XP/ngày (việc tuần -${PEN_WEEKLY} XP/tuần), lỡ tối đa ${MISS_MAX} lần liên tiếp vẫn giữ chuỗi, lần thứ ${MISS_MAX+1} đứt chuỗi và hết trừ. XP có thể làm tụt cấp.<br>
       Cả ngày làm dưới 2/3 thói quen: -${PEN_DAY} XP/ngày, cũng lỡ tối đa ${MISS_MAX} ngày liên tiếp vẫn giữ chuỗi chung.<br>
-      Giữ lửa = làm từ 2/3 thói quen trong ngày.</div></div>
-    ${chalHtml()}
+      Giữ lửa = làm từ 2/3 thói quen trong ngày.</div></div>`;
+}
+
+function badges(s){
+  const has = id => !!(s.bset && s.bset.has(id));
+  const vis = BADGES.filter(b => !b.hid), hid = BADGES.filter(b => b.hid);
+  const got = vis.filter(b => has(b.id)).length, hOpen = hid.filter(b => has(b.id));
+  const cardOf = b => { const on = has(b.id), v = b.k && b.k !== 'fam' ? Math.min(s[b.k], b.g) : b.k === 'fam' ? Math.min((xstats().fam[b.fk]||0), b.g) : 0;
+    return `<div class="badge ${on?'on':'off'}"${on ? ` data-bdgview="${b.id}" style="cursor:pointer"` : ''}><div class="bi">${b.ic}</div><b>${b.n}</b><small>${b.d}</small>
+      ${on ? `<small style="color:var(--mint);font-weight:700">Đã đạt ✓ +${b.xp} XP · chạm để xem lại</small>` : b.k ? `<div class="bp"><i style="width:${Math.round(v/b.g*100)}%"></i></div><small>${v}/${b.g} · +${b.xp} XP</small>` : `<small>+${b.xp} XP</small>`}</div>`; };
+  const bg = vis.map(cardOf).join('') + hOpen.map(cardOf).join('')
+    + (hOpen.length < hid.length ? `<div class="badge hid off"><div class="bi">🎁</div><b>Còn ${hid.length - hOpen.length} huy hiệu ẩn</b><small>Không ai biết trước cách mở. Cứ làm đều, bất ngờ sẽ tới.</small></div>` : '');
+  return `${chalHtml()}
     <div class="sec"><h3>Huy hiệu</h3><span>${got}/${vis.length} đã đạt · ẩn ${hOpen.length}/${hid.length}</span></div><div class="badges">${bg}</div>`;
 }
 
@@ -5719,7 +5722,7 @@ const HELP = [
  {ic:'💪', t:'Tập gym', img:'gym', s:[
    'Chọn bài hay tập, mỗi set ghi kg × số lần.',
    'App tính sức mạnh ước tính, vẽ biểu đồ tiến bộ và đánh dấu kỷ lục.',
-   'Một buổi gym tự tích Thể dục 30 phút. Bảng xếp hạng ở 🏆 Xếp hạng → Gym.']},
+   'Một buổi gym tự tích Thể dục 30 phút. Bảng xếp hạng ở 🏆 Thành tích → Xếp hạng → Gym.']},
  {ic:'🤝', t:'7 điều cam kết từ tâm', img:'camket', s:[
    'Vào 🧠 Tâm Trí → 7 điều cam kết → bấm ghi âm.',
    'Đọc đúng câu mở đầu trong khung (tên, ngày tháng), rồi đọc to, rõ đủ 7 điều.',
@@ -5737,8 +5740,8 @@ const HELP = [
    '💸 Chi tiêu: ghi từng khoản theo nhóm, xem tổng ngày, tháng.']},
  {ic:'🏆', t:'Điểm, cấp độ, xếp hạng', s:[
    'Mỗi việc hằng ngày +10 XP, việc hằng tuần +30 XP, ngày đủ 100% được thưởng thêm.',
-   'XP giúp nhân vật đồng hành lên cấp. Huy hiệu xem ở 📊 Tiến độ.',
-   '🏆 Xếp hạng theo người hoặc theo phòng, có bảng chạy bộ và gym riêng. Chạm tên để xem tiến độ.']},
+   'XP giúp nhân vật đồng hành lên cấp. Huy hiệu xem ở 🏆 Thành tích → Huy hiệu, nhân vật đồng hành ở 🏆 Thành tích → Thú cưng.',
+   '🏆 Thành tích → Xếp hạng theo người hoặc theo phòng, có bảng chạy bộ và gym riêng. Chạm tên để xem tiến độ.']},
  {ic:'🛠️', t:'Dành cho quản lý', admin:true, s:[
    'Quản lý → Chạy bộ: dán khóa Gemini để bật AI đọc ảnh và chấm ghi âm. Dán dấu - để tắt.',
    'Ảnh và ghi âm AI chưa chấm được nằm ở tab "Ảnh chờ AI đọc" và "Tâm trí" trong Sheet.',
