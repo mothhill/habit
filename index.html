@@ -115,6 +115,10 @@ a.wbtn{text-decoration:none}.wrow .n small{display:block}
 .wbtn.ghost{background:var(--bg);color:var(--ink);border:1px solid var(--line)}.wbtn:disabled{opacity:.4}
 .wfl{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;margin:2px 4px 0 0;background:var(--gold-soft);color:var(--gold)}
 .wfl.red{background:rgba(255,111,145,.15);color:var(--pink)}.wfl.ok{background:var(--mint-soft);color:var(--mint)}
+.rpim{width:96px;height:96px;object-fit:cover;border-radius:10px;border:1px solid var(--line);cursor:zoom-in;background:var(--bg)}.rpim.ph{display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);cursor:default;text-align:center}.rpims{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.rpims>div{position:relative}.rpims .x{position:absolute;top:-6px;right:-6px;min-height:26px;width:26px;padding:0;border-radius:50%;font-size:12px}.rvzoom{position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.86);display:flex;align-items:center;justify-content:center;padding:12px}.rvzoom img{max-width:100%;max-height:100%;border-radius:8px}
+.tdot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--pink);margin-left:5px;vertical-align:middle}.rvit{display:flex;align-items:flex-start;gap:8px;padding:6px 0}.rvit span{flex:1;font-size:14px}.rvit .wbtn{min-height:32px;padding:0 10px;font-size:12px}.rvnew{background:var(--gold-soft);border-radius:6px;padding:0 4px}.rvrate{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.rvrate button{min-height:44px;border-radius:12px;background:var(--bg);border:1.5px solid var(--line);color:var(--ink);font-weight:700;font-size:13px}.rvrate button.on{border-color:var(--primary);background:var(--mint-soft)}
+.rpseg{display:flex;gap:8px;margin-bottom:12px}.rpseg button{flex:1;min-height:44px;border-radius:12px;background:var(--card);color:var(--ink);font-weight:700;font-size:13px;border:1.5px solid var(--line)}.rpseg button.on{background:var(--primary);color:#10200f;border-color:var(--primary)}
+.rpta{width:100%;min-height:72px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:14px;padding:8px 12px;margin-top:6px;resize:vertical}.rppre{white-space:pre-wrap;font-size:12.5px;line-height:1.5;background:var(--bg);border-radius:10px;padding:10px;margin-top:8px;overflow:auto;max-height:50vh}
 .wsel,.winp{width:100%;min-height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:14px;padding:8px 12px;margin-top:6px}
 .wfile{display:flex;align-items:center;gap:8px;padding:8px 10px;margin-top:6px;border-radius:10px;background:var(--bg);font-size:13px}.wfile span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .wfile button{width:36px;height:36px;color:var(--pink);font-size:18px}
@@ -812,7 +816,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.15';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.16';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -2454,6 +2458,7 @@ async function loadData(pre){
   if (!BOARD){ try { const b = JSON.parse(LS.get('rh_bc') || 'null'); if (b && b.me === ME.id) BOARD = b; } catch(e){} }
   if (cached) Promise.all(fl).then(refreshData); else dcSave();
   setTimeout(() => { if (D && !boardBusy) loadBoard(); }, 1500);
+  setTimeout(() => { if (ME && ME.work) rpInit(); }, 2500);
 }
 function buildData(d, noAF, keepVi){
   ME = d.me; SETTINGS = d.settings || {unlockAll:false};
@@ -3079,7 +3084,8 @@ function tabBtns(mobile){
   const t = [['today','✅','Hôm nay'],['health','💚','Sức khỏe'],['mind','🧠','Tâm Trí'],['pet','🏆','Thành tích']];   // Thành tích = Thú cưng (pet) · Huy hiệu (badge) · Cá nhân (prog) · Xếp hạng (rank)
   if (ME && ME.work) t.splice(3, 0, ['work','🗂️','Công việc']);
   if (ME && ME.role === 'Quản lý') t.push(['admin','🛠️','Quản lý']);
-  return t.map(([k,e,n]) => `<button class="${tab===k || (k==='pet' && (tab==='badge' || tab==='prog' || tab==='rank'))?'on':''}" data-tab="${k}">${mobile?`<span>${e}</span>`:e+' '}${n}</button>`).join('');
+  const dot = RP.info && RP.info.dot > 0 ? '<i class="tdot"></i>' : '';
+  return t.map(([k,e,n]) => `<button class="${tab===k || (k==='pet' && (tab==='badge' || tab==='prog' || tab==='rank'))?'on':''}" data-tab="${k}">${mobile?`<span>${e}</span>`:e+' '}${n}${k === 'work' ? dot : ''}</button>`).join('');
 }
 function greet(){ const h = new Date().getHours(); return h < 11 ? 'Chào buổi sáng ☀️' : h < 14 ? 'Chào buổi trưa 🌤️' : h < 18 ? 'Chào buổi chiều 🌇' : 'Chào buổi tối 🌙'; }
 function side(s){
@@ -4440,7 +4446,14 @@ const wtime = t => { const d = new Date(t); return ('0'+d.getDate()).slice(-2) +
 const wmb = b => b >= 1048576 ? (b/1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b/1024)) + ' KB';
 const wmoShift = (mo, k) => { const y = +mo.slice(0,4), m = +mo.slice(5) - 1 + k, d = new Date(y, m, 1); return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2); };
 const wIsTA = () => ME && ME.tier >= 2;
-function workInit(){ if (!WORK.loaded && !WORK.busy) workLoad(); }
+function workInit(){
+  if (!RP.ready) { rpInit(); return; }
+  if (RP.on && RP.sec === 'rp') {
+    if (RP.info.reviewer) { if (!RV.list && !RV.busy && !RV.err) rvLoad(); return; }
+    if (RP.info.teacher && !RP.d && !RP.loading && !RP.err) rpLoad(); return;
+  }
+  if (!WORK.loaded && !WORK.busy) workLoad();
+}
 async function workLoad(mo){
   WORK.busy = true; WORK.err = '';
   try {
@@ -4452,6 +4465,11 @@ async function workLoad(mo){
 }
 function wFlags(f){ return String(f || '').split(', ').filter(Boolean).map(x => `<span class="wfl ${x === 'Quá hạn' ? 'red' : ''}">${esc(x)}</span>`).join(''); }
 function workView(){
+  if (!RP.ready) return `<div class="loading" style="min-height:40vh"><div class="spin"></div>Đang tải…</div>`;
+  if (!RP.on) return workViewOld();
+  return rpSwitch() + (RP.sec === 'rp' ? rpView() : workViewOld()) + (RP.zoom && RPIMG[RP.zoom] ? `<div class="rvzoom" data-rp="zoom|"><img src="${esc(RPIMG[RP.zoom])}" alt="Ảnh"></div>` : '');
+}
+function workViewOld(){
   if (WORK.err && !WORK.busy) return `<div class="sec"><h3>🗂️ Công việc</h3></div><div class="wcard">${esc(WORK.err)}<br><button class="wbtn" data-wreload="1" style="margin-top:10px">Thử lại</button></div>`;
   if (!WORK.loaded) return `<div class="loading" style="min-height:40vh"><div class="spin"></div>Đang tải…</div>`;
   if (!wIsTA()) return WORK.screen === 'detail' ? workDetailView() : workListView();
@@ -4580,6 +4598,229 @@ function workDetailView(){
     <div class="wcard">Tháng ${wmo(d.mo)} · ${done}/${d.expected} ô<div class="wbar"><i style="width:${Math.round(100 * done / Math.max(1, d.expected))}%"></i></div></div>
     <div class="wwk">${chips}</div>${card(1)}${card(2)}`;
 }
+
+/* ================== Công việc: Báo cáo ngày (giáo viên nộp, thầy Quý đọc) ================== */
+let RP = {ready:false, busy:false, on:false, info:null, sec:'rp', d:null, dr:null, loading:false, err:'', sending:false, t:null, zoom:'', imBusy:''};
+const RPIMG = {};   // id ảnh → data URL ('' = không mở được, null = đang tải)
+const rpIds = md => { const m = String(md || '').match(/\x3C!--\s*anh:\s*([\w,-]+)\s*-->/); return m ? m[1].split(',').filter(Boolean) : []; };
+function rpThumb(id, extra){
+  if (RPIMG[id] === undefined) { RPIMG[id] = null; call('reportImage', TOKEN, id).then(r => { RPIMG[id] = r.url; }).catch(() => { RPIMG[id] = ''; }).finally(() => { if (tab === 'work') render(); }); }
+  const u = RPIMG[id];
+  return `<div>${u ? `<img class="rpim" src="${esc(u)}" data-rp="zoom|${id}" alt="Ảnh">` : `<div class="rpim ph">${u === '' ? 'Không mở được ảnh' : 'Đang tải…'}</div>`}${extra || ''}</div>`;
+}
+const rpImFiles = e => [...(e.clipboardData && e.clipboardData.items || [])].filter(i => i.type.startsWith('image/')).map(i => i.getAsFile()).filter(Boolean);
+async function rpAddFiles(files){
+  for (const f of files) {
+    if ((RP.dr.im || []).length >= 3) { toast('Tối đa 3 ảnh mỗi báo cáo'); break; }
+    RP.imBusy = 'Đang gửi ảnh…'; render();
+    try { const p = await wPrep(f), r = await call('reportImgAdd', TOKEN, p); RP.dr.im = r.im; } catch(e){ toast(e.message); }
+  }
+  RP.imBusy = ''; render();
+}
+const rpHm = t => { const d = new Date(t); return ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2); };
+const rpDay = s => s.slice(8) + '/' + s.slice(5, 7);
+const RPF = {d:'Đã làm', g:'Đang làm', n:'Ngày mai', v:'Vướng / cần hỏi'};
+async function rpInit(){
+  if (RP.ready || RP.busy) return; RP.busy = true;
+  try { RP.info = await call('reportInfo', TOKEN); RP.on = !!(RP.info.teacher || RP.info.reviewer); RP.sec = RP.on ? 'rp' : 'bai'; } catch(e){ RP.on = false; RP.sec = 'bai'; }
+  RP.ready = true; RP.busy = false; rpNav(); if (tab === 'work') render();
+}
+function rpNav(){ const b = $('#bnav'), t = document.querySelector('.tabs'); if (b) b.innerHTML = tabBtns(true); if (t) t.innerHTML = tabBtns(); }
+async function rpLoad(keep){
+  if (RP.loading) return; RP.loading = true; RP.err = '';
+  try {
+    const d = await call('reportMine', TOKEN); RP.d = d;
+    if (!keep || !RP.dr) RP.dr = Object.assign({d:'', g:'', n:'', v:'', x:'', p:{}, im:[]}, d.draft); else { RP.dr.p = d.draft.p || {}; RP.dr.im = d.draft.im || []; }
+  } catch(e){ RP.err = e.message; }
+  RP.loading = false; if (tab === 'work') render();
+}
+function rpSwitch(){
+  if (!RP.info.work) return '';
+  return `<div class="rpseg"><button class="${RP.sec === 'rp' ? 'on' : ''}" data-rp="sec|rp">📝 ${RP.info.reviewer && !RP.info.teacher ? 'Báo cáo các thầy' : 'Báo cáo ngày'}</button><button class="${RP.sec === 'bai' ? 'on' : ''}" data-rp="sec|bai">📚 Bài chuyên môn</button></div>`;
+}
+function rpView(){
+  if (RP.info.reviewer) return rvView();
+  if (RP.err) return `<div class="sec"><h3>🗂️ Báo cáo ngày</h3></div><div class="wcard">${esc(RP.err)}<br><button class="wbtn" data-rp="retry" style="margin-top:10px">Thử lại</button></div>`;
+  if (!RP.d) return `<div class="loading" style="min-height:40vh"><div class="spin"></div>Đang tải…</div>`;
+  const d = RP.d, r = d.report, g = d.gh, dr = RP.dr, pk = Object.keys(dr.p || {});
+  const st = !r ? `<b>Chưa nộp hôm nay (${rpDay(d.day)})</b><br><small>Tự nộp quanh 12:00 nếu bạn chưa nộp. Bấm Nộp bất cứ lúc nào cũng được; mỗi ngày chỉ có một báo cáo.</small>`
+    : `<b>✅ Đã nộp ${rpHm(r.time)}${r.how === 'tu_dong' ? ' (tự động)' : ''}${r.upd ? ' · cập nhật ' + rpHm(r.upd) : ''}</b><br><small>${r.n} dự án. Nộp lại sẽ thay báo cáo hôm nay.</small>`
+      + (r.rate ? `<div style="margin-top:8px"><span class="wfl ok">${esc(r.rate)}</span>${r.flag ? '<span class="wfl red">Cần nhắn thầy Quý sớm</span>' : ''}</div>` : '')
+      + (r.cmt ? `<div class="muted" style="margin-top:6px;font-size:13px">Thầy Quý: ${esc(r.cmt)}</div>` : '');
+  const ghBox = !g.on ? `<small class="muted">Chưa nối GitHub (quản lý cần đặt REPORT_GH_TOKEN). Tạm dùng "Dán mục dự án" bên dưới.</small>`
+    : g.err ? `<small class="wfl red">${esc(g.err)}</small>`
+    : g.files.length ? g.files.map(f => `<div class="wrow"><div class="n"><b>${esc(f.project)}</b><small>${esc(f.file)}</small></div></div>`).join('')
+    : `<small class="muted">Chưa có mục nào hôm nay. Trong mỗi dự án Claude, gọi skill <b>bao-cao-ngay</b>.</small>`;
+  const ta = k => `<label class="muted" style="font-size:13px;display:block;margin-top:10px">${RPF[k]} <small>(mỗi việc một dòng)</small></label><textarea class="rpta" data-rpf="${k}" rows="3">${esc(dr[k])}</textarea>`;
+  const hist = d.hist.length ? d.hist.map(h => `<div class="wrow"><div class="n"><b>${rpDay(h.day)}</b><small>${h.n} dự án${h.how === 'tu_dong' ? ' · tự nộp' : ''}</small></div>${h.rate ? `<span class="wfl ok">${esc(h.rate)}</span>` : '<span class="wfl">Chờ duyệt</span>'}${h.flag ? '<span class="wfl red">Nhắn sớm</span>' : ''}</div>`).join('') : '<small class="muted">Chưa có ngày nào.</small>';
+  const fbBox = d.fb && d.fb.length ? `<div class="wcard" style="border-color:var(--pink)"><b>💬 Thầy Quý đã phản hồi</b>${d.fb.map(f => `<div style="margin-top:8px"><b>${rpDay(f.day)}</b> <span class="wfl ok">${esc(f.rate)}</span>${f.flag ? '<span class="wfl red">Cần nhắn thầy sớm</span>' : ''}${f.cmt ? `<div class="muted" style="font-size:13px;margin-top:4px">${esc(f.cmt)}</div>` : ''}${f.img ? `<div class="rpims">${rpThumb(f.img)}</div>` : ''}</div>`).join('')}<button class="wbtn" data-rp="ack" style="margin-top:10px">Đã đọc</button></div>` : '';
+  const priBox = d.pri && d.pri.length ? `<div class="wcard" style="border-color:var(--gold)"><b>⭐ Thầy Quý muốn ưu tiên</b>${d.pri.map(x => `<div class="rvit"><span>${esc(x.t)}${x.p ? `<small class="muted" style="display:block">${esc(x.p)} · ${esc(x.s)}</small>` : ''}</span><button class="wbtn ghost" data-rp="done|${x.id}">Xong</button></div>`).join('')}</div>` : '';
+  return `<div class="sec"><h3>🗂️ Báo cáo ngày</h3><span>${esc(d.me.name)}</span></div>
+    ${fbBox}${priBox}<div class="wcard wdead">${st}</div>
+    <div class="wcard"><b>Từ các dự án (GitHub)</b> <button class="wbtn ghost" data-rp="reload" style="min-height:34px;padding:0 12px;float:right" ${RP.loading ? 'disabled' : ''}>↻</button><div style="margin-top:8px">${ghBox}</div></div>
+    <div class="wcard"><b>Dán mục dự án</b><div class="muted" style="font-size:13px">Dán khối bắt đầu bằng "## Dự án: …" do skill tạo. Cùng tên dự án thì thay mục cũ.</div>
+      <textarea class="rpta" id="rppaste" rows="4" placeholder="## Dự án: …"></textarea><button class="wbtn" data-rp="paste" style="margin-top:8px">Thêm</button>
+      ${pk.map((k, i) => `<div class="wrow"><div class="n"><b>${esc(k)}</b><small>Dán tay</small></div><button class="wbtn ghost" data-rp="drop|${i}" aria-label="Bỏ">✕</button></div>`).join('')}</div>
+    <div class="wcard"><b>Việc khác (gõ tay)</b>${ta('d')}${ta('g')}${ta('n')}${ta('v')}
+      <label class="muted" style="font-size:13px;display:block;margin-top:10px">Ghi chú thêm</label><textarea class="rpta" data-rpf="x" rows="3">${esc(dr.x)}</textarea><div class="muted" style="font-size:12px;margin-top:6px">Tự lưu khi bạn gõ.</div></div>
+    <div class="wcard"><b>Ảnh đính kèm</b> <small class="muted">(tối đa 3)</small>
+      <div class="rpims">${(dr.im || []).map(x => rpThumb(x.id, `<button class="wbtn ghost x" data-rp="imdrop|${x.id}" aria-label="Bỏ ảnh">✕</button>`)).join('')}</div>
+      ${(dr.im || []).length < 3 ? `<label class="wbtn ghost" style="display:inline-flex;align-items:center;margin-top:8px;cursor:pointer">📷 Thêm ảnh<input type="file" accept="image/*" multiple hidden id="rpfile"></label>` : ''}
+      <div class="muted" style="font-size:12px;margin-top:6px">${RP.imBusy || 'Trên máy tính: chụp màn hình rồi bấm Ctrl+V ở trang này.'}</div></div>
+    <button class="wbtn" data-rp="send" style="width:100%;margin-bottom:12px" ${RP.sending ? 'disabled' : ''}>${RP.sending ? 'Đang nộp…' : r ? 'Cập nhật báo cáo' : 'Nộp báo cáo'}</button>
+    ${r ? `<div class="wcard"><details><summary><b>Xem báo cáo đã nộp</b></summary><pre class="rppre">${esc(r.md)}</pre></details></div>` : ''}
+    <div class="wcard"><b>Các ngày trước</b>${hist}</div>`;
+}
+async function rpSaveDraft(){
+  const x = RP.dr; if (!x) return;
+  try { await call('reportSaveDraft', TOKEN, {d:x.d, g:x.g, n:x.n, v:x.v, x:x.x}); } catch(e){ toast('Chưa lưu được nháp: ' + e.message); }
+}
+async function rpSend(){
+  if (RP.sending) return; RP.sending = true; clearTimeout(RP.t); render();
+  try {
+    await call('reportSaveDraft', TOKEN, {d:RP.dr.d, g:RP.dr.g, n:RP.dr.n, v:RP.dr.v, x:RP.dr.x});
+    const r = await call('reportSubmit', TOKEN);
+    toast(r.res === 'khong_doi' ? 'Không có gì mới so với báo cáo đã nộp' : r.res === 'moi' ? '✅ Đã nộp báo cáo' : '✅ Đã cập nhật báo cáo');
+    RP.loading = false; await rpLoad(true);
+  } catch(e){ toast(e.message); }
+  RP.sending = false; if (tab === 'work') render();
+}
+async function rpPaste(){
+  const el = document.getElementById('rppaste'); if (!el || !el.value.trim()) return toast('Chưa dán gì');
+  try { const r = await call('reportPaste', TOKEN, el.value); RP.dr.p = r.draft.p; el.value = ''; toast('Đã thêm ' + r.projects.length + ' mục'); render(); } catch(e){ toast(e.message); }
+}
+document.addEventListener('click', async e => {
+  const t = e.target.closest('[data-rp]'); if (!t) return;
+  const [a, v] = t.dataset.rp.split('|');
+  if (a === 'sec') { RP.sec = v; render(); }
+  else if (a === 'retry') { RP.err = ''; RP.d = null; render(); }
+  else if (a === 'reload') { rpLoad(true); render(); }
+  else if (a === 'paste') rpPaste();
+  else if (a === 'zoom') { RP.zoom = v || ''; if (v && RPIMG[v] === undefined) rpThumb(v); render(); }
+  else if (a === 'imdrop') { try { const r = await call('reportImgDrop', TOKEN, v); RP.dr.im = r.im; render(); } catch(er){ toast(er.message); } }
+  else if (a === 'ack') { try { await call('reportAck', TOKEN); RP.d.fb = []; if (RP.info) RP.info.dot = 0; rpNav(); render(); } catch(er){ toast(er.message); } }
+  else if (a === 'done') { try { await call('reportPriDone', TOKEN, +v, (RP.d.pri.find(x => x.id === +v) || {}).t); RP.d.pri = RP.d.pri.filter(x => x.id !== +v); render(); } catch(er){ toast(er.message); } }
+  else if (a === 'send') rpSend();
+  else if (a === 'drop') { const k = Object.keys(RP.dr.p)[+v]; if (k == null) return; try { const r = await call('reportDropPaste', TOKEN, k); RP.dr.p = r.draft.p; render(); } catch(er){ toast(er.message); } }
+});
+document.addEventListener('input', e => {
+  const k = e.target.dataset && e.target.dataset.rpf; if (!k || !RP.dr) return;
+  RP.dr[k] = e.target.value; clearTimeout(RP.t); RP.t = setTimeout(rpSaveDraft, 800);
+});
+
+
+/* --- thầy Quý: duyệt báo cáo các thầy --- */
+let RV = {day:'', list:null, d:null, screen:'list', busy:false, err:'', form:null, sending:false, imBusy:''};
+async function rvAddImg(file){
+  RV.imBusy = 'Đang gửi ảnh…'; render();
+  try { const p = await wPrep(file), r = await call('reportFbImgAdd', TOKEN, RV.d.code, RV.d.day, p); RV.form.img = r.id; } catch(e){ toast(e.message); }
+  RV.imBusy = ''; render();
+}
+const RV_RATES = ['⭐ Hoàn thành xuất sắc', '👍 Duyệt', '🤔 Chưa ưng ý', '❌ Chưa đạt yêu cầu'];
+const rvShift = (day, k) => { const d = new Date(day + 'T00:00:00'); d.setDate(d.getDate() + k); return d.getFullYear() + '-' + ('0'+(d.getMonth()+1)).slice(-2) + '-' + ('0'+d.getDate()).slice(-2); };
+async function rvLoad(day){
+  RV.busy = true; RV.err = '';
+  try { RV.list = await call('reportList', TOKEN, day || RV.day || undefined); RV.day = RV.list.day; if (RP.info) RP.info.dot = RV.list.counts.wait; rpNav(); } catch(e){ RV.err = e.message; }
+  RV.busy = false; if (tab === 'work') render();
+}
+function rvParse(md){
+  const blocks = []; let b = null, sc = null;
+  String(md || '').split('\n').forEach(ln => {
+    let m;
+    if ((m = ln.match(/^##(?!#)\s*(.+)$/))) { const p = m[1].match(/^Dự án\s*:\s*(.+)$/); b = {name: p ? p[1].trim() : m[1].trim(), secs: []}; blocks.push(b); sc = null; return; }
+    if (!b || ln.startsWith('\x3C!--')) return;
+    if ((m = ln.match(/^###\s*(.+)$/))) { sc = {t: m[1].trim(), items: [], text: []}; b.secs.push(sc); return; }
+    if (!sc) return;
+    if ((m = ln.match(/^\s*[-•*]\s+(.+)$/))) sc.items.push(m[1].trim()); else if (ln.trim()) sc.text.push(ln.trim());
+  });
+  return blocks;
+}
+const rvKey = (p, s, t) => p + '|' + s + '|' + t;
+async function rvOpen(code){
+  RV.busy = true; RV.screen = 'detail'; RV.d = null; render();
+  try {
+    const d = await call('reportDetail', TOKEN, code, RV.day); RV.d = d;
+    RV.form = {rate: d.report.rate || '', flag: !!d.report.flag, cmt: d.report.cmt || '', img: d.report.img || '', extra: d.extra.join('\n'), pri: new Set(d.pri.map(x => rvKey(x.p, x.s, x.t)))};
+  } catch(e){ toast(e.message); RV.screen = 'list'; }
+  RV.busy = false; render(); scrollTo(0, 0);
+}
+function rvItem(p, s, t, isNew){
+  const can = s === 'Đang làm' || s === 'Ngày mai', k = rvKey(p, s, t), on = RV.form.pri.has(k);
+  return `<div class="rvit"><span>${isNew ? `<i class="rvnew">${esc(t)}</i>` : esc(t)}</span>${can ? `<button class="wbtn ${on ? '' : 'ghost'}" data-rv="pri|${esc(k).replace(/\|/g, '&#124;')}" aria-pressed="${on}">${on ? '⭐ Ưu tiên' : 'Ưu tiên'}</button>` : ''}</div>`;
+}
+function rvDetailView(){
+  const d = RV.d; if (!d) return `<div class="loading" style="min-height:40vh"><div class="spin"></div>Đang tải…</div>`;
+  const r = d.report, f = RV.form, old = new Set(String(d.seenMd || '').split('\n').map(x => x.replace(/^\s*[-•*]\s+/, '').trim()));
+  const hasOld = !!d.seenMd;
+  const imgs = rpIds(r.md), blocks = rvParse(r.md).filter(b => b.name !== 'Ảnh đính kèm').map(b => `<div class="wcard"><b>${esc(b.name)}</b>${b.secs.map(sc => `<div style="margin-top:8px"><div class="muted" style="font-size:12px;font-weight:700">${esc(sc.t)}</div>${sc.items.map(t => rvItem(b.name, sc.t, t, hasOld && !old.has(t))).join('')}${sc.text.map(t => `<div style="font-size:14px;margin-top:4px">${esc(t)}</div>`).join('')}</div>`).join('')}</div>`).join('');
+  return `<div class="wtop"><button class="wbtn ghost" data-rv="back">‹ Danh sách</button><h3>${esc(d.name)} · ${rpDay(d.day)}</h3></div>
+    <div class="wcard wdead"><b>Nộp ${rpHm(r.time)}${r.how === 'tu_dong' ? ' (tự động)' : ''}${r.upd ? ' · cập nhật ' + rpHm(r.upd) : ''}</b><br><small>${r.n} dự án${r.fresh ? ' · <span class="rvnew">có thêm nội dung sau khi thầy duyệt</span>' : ''}</small></div>
+    ${blocks}${imgs.length ? `<div class="wcard"><b>Ảnh đính kèm</b><div class="rpims">${imgs.map(id => rpThumb(id)).join('')}</div></div>` : ''}
+    <div class="wcard"><b>Đánh giá</b><div class="rvrate">${RV_RATES.map((x, i) => `<button class="${f.rate === x ? 'on' : ''}" data-rv="rate|${i}">${x}</button>`).join('')}</div>
+      <button class="wbtn ${f.flag ? '' : 'ghost'}" data-rv="flag" style="margin-top:10px;width:100%">${f.flag ? '🚩 Cần nhắn thầy sớm (đang bật)' : '🚩 Cần nhắn thầy sớm'}</button>
+      <label class="muted" style="font-size:13px;display:block;margin-top:12px">Nhận xét</label><textarea class="rpta" data-rvf="cmt" rows="3" placeholder="Gửi lại cho thầy…">${esc(f.cmt)}</textarea>
+      <div class="rpims">${f.img ? rpThumb(f.img, `<button class="wbtn ghost x" data-rv="imdrop" aria-label="Bỏ ảnh">✕</button>`) : ''}</div>
+      ${f.img ? '' : `<label class="wbtn ghost" style="display:inline-flex;align-items:center;margin-top:8px;cursor:pointer">📷 Ảnh nhận xét<input type="file" accept="image/*" hidden id="rvfile"></label>`}<div class="muted" style="font-size:12px;margin-top:4px">${RV.imBusy || 'Có thể dán ảnh chụp màn hình bằng Ctrl+V.'}</div>
+      <label class="muted" style="font-size:13px;display:block;margin-top:10px">Ưu tiên việc khác <small>(mỗi việc một dòng)</small></label><textarea class="rpta" data-rvf="extra" rows="2">${esc(f.extra)}</textarea>
+      <button class="wbtn" data-rv="send" style="width:100%;margin-top:12px" ${RV.sending ? 'disabled' : ''}>${RV.sending ? 'Đang gửi…' : 'Gửi phản hồi'}</button></div>
+    <div class="wcard"><details><summary><b>Xem nguyên văn</b></summary><pre class="rppre">${esc(r.md)}</pre></details></div>`;
+}
+function rvView(){
+  if (RV.screen === 'detail') return rvDetailView();
+  if (RV.err) return `<div class="sec"><h3>🗂️ Báo cáo các thầy</h3></div><div class="wcard">${esc(RV.err)}<br><button class="wbtn" data-rv="retry" style="margin-top:10px">Thử lại</button></div>`;
+  if (!RV.list) return `<div class="loading" style="min-height:40vh"><div class="spin"></div>Đang tải…</div>`;
+  const L = RV.list, c = L.counts;
+  const rows = L.list.map(x => {
+    const sub = x.st === 'Đã nộp' ? `${rpHm(x.time)}${x.how === 'tu_dong' ? ' (tự động)' : ''} · ${x.n} dự án${x.seen ? '' : ' · chưa xem'}` : 'Chưa nộp';
+    return `<div class="wrow" ${x.st === 'Đã nộp' ? `data-rv="open|${esc(x.code)}"` : ''}><div class="n"><b>${esc(x.name)}</b><small>${sub}</small>${x.rate ? `<span class="wfl ok">${esc(x.rate)}</span>` : x.st === 'Đã nộp' ? '<span class="wfl">Chờ duyệt</span>' : ''}${x.flag ? '<span class="wfl red">Nhắn sớm</span>' : ''}${x.fresh ? '<span class="wfl red">Có thêm nội dung</span>' : ''}</div></div>`;
+  }).join('');
+  return `<div class="sec"><h3>🗂️ Báo cáo các thầy</h3><span>${rpDay(L.day)}</span></div>
+    <div class="wmo"><button data-rv="day|-1" aria-label="Ngày trước">‹</button><b>${L.day === L.today ? 'Hôm nay' : rpDay(L.day) + '/' + L.day.slice(0, 4)}</b><button data-rv="day|1" ${L.day >= L.today ? 'disabled' : ''} aria-label="Ngày sau">›</button></div>
+    <div class="wst"><div><b>${c.done}</b><small>Đã nộp</small></div><div><b>${c.wait}</b><small>Chờ duyệt</small></div><div><b>${c.none}</b><small>Chưa nộp</small></div></div>
+    <div class="wcard wlist">${rows}</div>${RV.busy ? '<div class="muted" style="text-align:center">Đang tải…</div>' : ''}`;
+}
+async function rvSend(){
+  if (RV.sending) return; const f = RV.form;
+  if (!f.rate) return toast('Hãy chọn một mức đánh giá');
+  RV.sending = true; render();
+  try {
+    const pri = [...f.pri].map(k => { const [p, s, ...t] = k.split('|'); return {p, s, t: t.join('|')}; });
+    await call('reportReview', TOKEN, RV.d.code, RV.d.day, {rate: f.rate, flag: f.flag, cmt: f.cmt, img: f.img || '', pri, extra: f.extra});
+    toast('✅ Đã gửi phản hồi'); RV.screen = 'list'; RV.d = null; RV.sending = false; await rvLoad(RV.day); return;
+  } catch(e){ toast(e.message); }
+  RV.sending = false; render();
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-rv]'); if (!t) return;
+  const a = t.dataset.rv, i = a.indexOf('|'), k = i < 0 ? a : a.slice(0, i), v = i < 0 ? '' : a.slice(i + 1), f = RV.form;
+  if (k === 'open') rvOpen(v);
+  else if (k === 'back') { RV.screen = 'list'; RV.d = null; render(); rvLoad(); }
+  else if (k === 'day') { RV.list = null; render(); rvLoad(rvShift(RV.day, +v)); }
+  else if (k === 'retry') { RV.err = ''; render(); rvLoad(); }
+  else if (k === 'rate' && f) { f.rate = RV_RATES[+v]; render(); }
+  else if (k === 'flag' && f) { f.flag = !f.flag; render(); }
+  else if (k === 'imdrop' && f) { f.img = ''; render(); }
+  else if (k === 'pri' && f) { const key = v; if (f.pri.has(key)) f.pri.delete(key); else f.pri.add(key); render(); }
+  else if (k === 'send') rvSend();
+});
+document.addEventListener('input', e => {
+  const k = e.target.dataset && e.target.dataset.rvf; if (!k || !RV.form) return;
+  RV.form[k] = e.target.value;
+});
+
+document.addEventListener('change', e => {
+  const t = e.target; if (!t || !t.files) return;
+  if (t.id === 'rpfile' && RP.dr) { const fs = [...t.files]; t.value = ''; rpAddFiles(fs); }
+  else if (t.id === 'rvfile' && RV.form) { const f = t.files[0]; t.value = ''; if (f) rvAddImg(f); }
+});
+document.addEventListener('paste', e => {
+  if (tab !== 'work' || !RP.on || RP.sec !== 'rp') return;
+  const fs = rpImFiles(e); if (!fs.length) return;
+  const hasText = [...(e.clipboardData && e.clipboardData.items || [])].some(i => i.type === 'text/plain');
+  if (hasText && e.target && e.target.closest && e.target.closest('textarea,input')) return;   // dán chữ (Word/Excel chép kèm ảnh) thì để trình duyệt dán chữ
+  if (RP.info.reviewer) { if (RV.screen === 'detail' && RV.form && RV.d) { e.preventDefault(); rvAddImg(fs[0]); } }
+  else if (RP.info.teacher && RP.d && RP.dr) { e.preventDefault(); rpAddFiles(fs); }
+});
 /* --- quản lý: đổi tầng --- */
 let WTIER = {list:null, log:null, sel:null, busy:false, err:''};
 async function workTierLoad(){ if (WTIER.busy) return; WTIER.busy = true; try { WTIER.list = await call('workMembers', TOKEN); WTIER.log = await call('workTierLog', TOKEN, ''); } catch(e){ WTIER.err = e.message; } WTIER.busy = false; if (tab === 'admin') render(); }
