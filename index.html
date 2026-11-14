@@ -820,7 +820,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.42';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.43';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -6208,7 +6208,7 @@ function confirmTwice(b){ if (b.dataset.sure) return true; b.dataset.sure = 1; b
 
 /* ===== v14.11.40: NGHE SÁCH (YouTube) – không ghi âm. Chỉ tính PHÚT THẬT: đang phát + app hiển thị + có tiếng + còn xác nhận (3 phút hỏi 1 lần, 1 phút không bấm → loại cả lượt). Tua không tính; đoạn video đã nghe trước đó máy chủ không tính lại. ===== */
 let DSMODE = (() => { try { return localStorage.getItem('rh_dsmode') || 'doc'; } catch(e){ return 'doc'; } })(), LSN = null;
-const LSN_ASK_EVERY = 180, LSN_ASK_WAIT = 60, LSN_NEED = 600;
+const LSN_ASK_EVERY = 300, LSN_ASK_WAIT = 60, LSN_NEED = 600;
 function dsSwitch(){ return `<div class="dsw"><button class="${DSMODE === 'doc' ? 'on' : ''}" data-dsmode="doc">🎙️ Đọc to</button><button class="${DSMODE === 'listen' ? 'on' : ''}" data-dsmode="listen">🎧 Nghe sách</button></div>`; }
 const lsnMerge = a => { const o = []; a.filter(x => x && x[1] > x[0]).sort((p, q) => p[0] - q[0]).forEach(x => { const l = o[o.length - 1]; if (l && x[0] <= l[1] + 1) l[1] = Math.max(l[1], x[1]); else o.push([x[0], x[1]]); }); return o; };
 function lsnUI(){
@@ -6218,7 +6218,7 @@ function lsnUI(){
     return `<div class="mcode"><small>🎧 Đang nghe</small><b>${esc(L.title || '')}</b></div>
       <div class="mrec on"><span class="mdot"></span><b data-lclock>${mmss(tot)}</b> / 10:00 <small data-lstate style="flex-basis:100%">${esc(L.why || 'Đang tính phút nghe')}</small>
       <button class="btn" data-lsn="stop" ${L.step === 'sending' || L.secs < 60 ? 'disabled' : ''}>⏹ Dừng và nộp</button><button class="lnk" data-lsn="cancel">Huỷ</button></div>
-      <div class="rule">Video đang phát ở khung nhỏ góc màn hình (vẫn thấy khi bạn chuyển tab trong app). Phải <b>mở app, có tiếng</b>; cứ 3 phút app hỏi “Vẫn đang nghe?”.</div>`;
+      <div class="rule">Video đang phát ở khung nhỏ góc màn hình (vẫn thấy khi bạn chuyển tab trong app). Phải <b>mở app, có tiếng</b>; đến phút thứ 5 app hỏi “Vẫn đang nghe?” <b>một lần duy nhất</b>.</div>`;
   }
   const head = `<input class="lsnin" data-lsnurl placeholder="Dán link YouTube sách nói / tóm tắt sách…" value="${esc(L.url || '')}" ${L.step === 'checking' ? 'disabled' : ''}>
     ${L.err ? `<div class="mres no">❌ ${esc(L.err)}</div>` : ''}`;
@@ -6292,7 +6292,7 @@ function lsnTick(){
   }
   L.lastPos = cur; L.why = why;
   if (L.ranges.length > 300) L.ranges = lsnMerge(L.ranges);
-  if (counted && !L.ask && L.secs - L.askBase >= LSN_ASK_EVERY){ L.ask = {deadline: now + LSN_ASK_WAIT * 1000}; try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch(e){} toast('👂 Vẫn đang nghe? Bấm xác nhận ở khung video', 6000); lsnSave(); }
+  if (counted && !L.ask && !L.asked && L.secs - L.askBase >= LSN_ASK_EVERY){ L.asked = 1; L.ask = {deadline: now + LSN_ASK_WAIT * 1000}; try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch(e){} toast('👂 Vẫn đang nghe? Bấm xác nhận ở khung video', 6000); lsnSave(); }
   if (counted && Math.round(L.secs) % 15 === 0) lsnSave();
   lsnPaint();
   if (L.secs + (L.todaySecs || 0) >= LSN_NEED && !L.ask) lsnFinish(true);
