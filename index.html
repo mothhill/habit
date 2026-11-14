@@ -816,7 +816,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.16';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.17';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -4600,7 +4600,7 @@ function workDetailView(){
 }
 
 /* ================== Công việc: Báo cáo ngày (giáo viên nộp, thầy Quý đọc) ================== */
-let RP = {ready:false, busy:false, on:false, info:null, sec:'rp', d:null, dr:null, loading:false, err:'', sending:false, t:null, zoom:'', imBusy:''};
+let RP = {ready:false, busy:false, on:false, info:null, sec:'rp', d:null, dr:null, loading:false, err:'', sending:false, t:null, zoom:'', imBusy:'', open:{}};
 const RPIMG = {};   // id ảnh → data URL ('' = không mở được, null = đang tải)
 const rpIds = md => { const m = String(md || '').match(/\x3C!--\s*anh:\s*([\w,-]+)\s*-->/); return m ? m[1].split(',').filter(Boolean) : []; };
 function rpThumb(id, extra){
@@ -4658,11 +4658,11 @@ function rpView(){
   return `<div class="sec"><h3>🗂️ Báo cáo ngày</h3><span>${esc(d.me.name)}</span></div>
     ${fbBox}${priBox}<div class="wcard wdead">${st}</div>
     <div class="wcard"><b>Từ các dự án (GitHub)</b> <button class="wbtn ghost" data-rp="reload" style="min-height:34px;padding:0 12px;float:right" ${RP.loading ? 'disabled' : ''}>↻</button><div style="margin-top:8px">${ghBox}</div></div>
-    <div class="wcard"><b>Dán mục dự án</b><div class="muted" style="font-size:13px">Dán khối bắt đầu bằng "## Dự án: …" do skill tạo. Cùng tên dự án thì thay mục cũ.</div>
+    <div class="wcard"><details data-rpo="paste" ${RP.open.paste ? 'open' : ''}><summary><b>Dán mục dự án</b>${pk.length ? ` <span class="wfl ok">${pk.length} mục</span>` : ''}</summary><div class="muted" style="font-size:13px;margin-top:6px">Dán khối bắt đầu bằng "## Dự án: …" do skill tạo. Cùng tên dự án thì thay mục cũ.</div>
       <textarea class="rpta" id="rppaste" rows="4" placeholder="## Dự án: …"></textarea><button class="wbtn" data-rp="paste" style="margin-top:8px">Thêm</button>
-      ${pk.map((k, i) => `<div class="wrow"><div class="n"><b>${esc(k)}</b><small>Dán tay</small></div><button class="wbtn ghost" data-rp="drop|${i}" aria-label="Bỏ">✕</button></div>`).join('')}</div>
-    <div class="wcard"><b>Việc khác (gõ tay)</b>${ta('d')}${ta('g')}${ta('n')}${ta('v')}
-      <label class="muted" style="font-size:13px;display:block;margin-top:10px">Ghi chú thêm</label><textarea class="rpta" data-rpf="x" rows="3">${esc(dr.x)}</textarea><div class="muted" style="font-size:12px;margin-top:6px">Tự lưu khi bạn gõ.</div></div>
+      ${pk.map((k, i) => `<div class="wrow"><div class="n"><b>${esc(k)}</b><small>Dán tay</small></div><button class="wbtn ghost" data-rp="drop|${i}" aria-label="Bỏ">✕</button></div>`).join('')}</details></div>
+    <div class="wcard"><details data-rpo="man" ${RP.open.man ? 'open' : ''}><summary><b>Việc khác (gõ tay)</b>${['d','g','n','v','x'].some(k => String(dr[k] || '').trim()) ? ' <span class="wfl ok">có nội dung</span>' : ''}</summary>${ta('d')}${ta('g')}${ta('n')}${ta('v')}
+      <label class="muted" style="font-size:13px;display:block;margin-top:10px">Ghi chú thêm</label><textarea class="rpta" data-rpf="x" rows="3">${esc(dr.x)}</textarea><div class="muted" style="font-size:12px;margin-top:6px">Tự lưu khi bạn gõ.</div></details></div>
     <div class="wcard"><b>Ảnh đính kèm</b> <small class="muted">(tối đa 3)</small>
       <div class="rpims">${(dr.im || []).map(x => rpThumb(x.id, `<button class="wbtn ghost x" data-rp="imdrop|${x.id}" aria-label="Bỏ ảnh">✕</button>`)).join('')}</div>
       ${(dr.im || []).length < 3 ? `<label class="wbtn ghost" style="display:inline-flex;align-items:center;margin-top:8px;cursor:pointer">📷 Thêm ảnh<input type="file" accept="image/*" multiple hidden id="rpfile"></label>` : ''}
@@ -4745,7 +4745,7 @@ async function rvOpen(code){
   RV.busy = false; render(); scrollTo(0, 0);
 }
 function rvItem(p, s, t, isNew){
-  const can = s === 'Đang làm' || s === 'Ngày mai', k = rvKey(p, s, t), on = RV.form.pri.has(k);
+  const can = (s === 'Đang làm' || s === 'Ngày mai') && !/^\(?\s*không\s*\)?$/i.test(t), k = rvKey(p, s, t), on = RV.form.pri.has(k);
   return `<div class="rvit"><span>${isNew ? `<i class="rvnew">${esc(t)}</i>` : esc(t)}</span>${can ? `<button class="wbtn ${on ? '' : 'ghost'}" data-rv="pri|${esc(k).replace(/\|/g, '&#124;')}" aria-pressed="${on}">${on ? '⭐ Ưu tiên' : 'Ưu tiên'}</button>` : ''}</div>`;
 }
 function rvDetailView(){
@@ -4813,6 +4813,7 @@ document.addEventListener('change', e => {
   if (t.id === 'rpfile' && RP.dr) { const fs = [...t.files]; t.value = ''; rpAddFiles(fs); }
   else if (t.id === 'rvfile' && RV.form) { const f = t.files[0]; t.value = ''; if (f) rvAddImg(f); }
 });
+document.addEventListener('toggle', e => { const k = e.target && e.target.dataset && e.target.dataset.rpo; if (k) RP.open[k] = e.target.open; }, true);
 document.addEventListener('paste', e => {
   if (tab !== 'work' || !RP.on || RP.sec !== 'rp') return;
   const fs = rpImFiles(e); if (!fs.length) return;
