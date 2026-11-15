@@ -3048,7 +3048,7 @@ function isNeutral0(c,i){ const kd = kindOf(c); if (kd !== 'note' && kd !== 'che
 const peek = (c,pk) => D.entries['E:'+c+':'+pk] || {c:[], n:'', m:0};
 function ent(c,pk){ const k = 'E:'+c+':'+pk; if (!D.entries[k]) D.entries[k] = {c:[], n:'', m:0, z:0, s:{}}; return D.entries[k]; }
 function satisfied(c,i){ return atDay(i, () => satisfied0(c,i)); }
-const needOf = (s, avail) => s.min === 'all' ? avail : s.min === '2/3' ? Math.ceil(avail*2/3 - 1e-9) : Math.min(s.min, avail);   // 15/11/2026: 'Không nên làm' chỉ cần 2/3
+const needOf = (s, avail) => s.min === 'all' ? avail : s.min === '2/3' ? Math.max(1, Math.floor(avail*2/3 + 1e-9)) : Math.min(s.min, avail);   // 15/11/2026: 'Không nên làm' chỉ cần 2/3
 function satisfied0(c,i){
   const s = spec(c), k = kindOf(c), e = peek(c, pkey(c,i));
   if (k === 'auto') return DAILY.some(h => h.code !== c && activeDay(h,i) && D.daily[h.code][i]);
