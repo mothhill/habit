@@ -2229,7 +2229,7 @@ const listSug = c => LSUG[c] || (c === '05' || c === '14' ? peopleSug() : []);
 const SPEC = {
  '01':{kind:'auto'},
  '02':{kind:'check', list:{n:3, title:'3 mục tiêu 90 ngày của tôi', ph:['Mục tiêu công việc…','Mục tiêu tài chính…','Mục tiêu bản thân / sức khoẻ…'], pin:'Mục tiêu 90 ngày'}, short:'Đã nhìn lại', label:'Hôm nay đã đọc lại', min:'all'},
- '25':{kind:'check', list:{n:5, title:'5 việc tôi không nên làm', ph:['Ví dụ: lướt mạng xã hội khi chưa xong việc chính','Ví dụ: thức quá khuya','Ví dụ: nói lời tiêu cực khi đang bực','Ví dụ: mua sắm bốc đồng','Ví dụ: để việc quan trọng đến sát hạn'], pin:'Việc không nên làm'}, short:'Đã tránh', label:'Hôm nay đã tránh được', min:'all'},
+ '25':{kind:'check', list:{n:5, title:'5 việc tôi không nên làm', ph:['Ví dụ: lướt mạng xã hội khi chưa xong việc chính','Ví dụ: thức quá khuya','Ví dụ: nói lời tiêu cực khi đang bực','Ví dụ: mua sắm bốc đồng','Ví dụ: để việc quan trọng đến sát hạn'], pin:'Việc không nên làm'}, short:'Đã tránh', label:'Hôm nay đã tránh được', min:'2/3'},
  '13':{kind:'tool', go:'mind', act:'🎙️ Đọc 7 điều cam kết (mục Tâm Trí)', rule:'Tự đạt khi bài đọc 7 điều cam kết hôm nay được chấm Đạt.'},
  '29':{kind:'check', list:{n:3, title:'Ranh giới của tôi', ph:'Ví dụ: Không trả lời tin công việc sau 22h', pin:'Ranh giới'}, short:'Đã giữ', label:'Hôm nay đã giữ được', min:'all'},
  '05':{kind:'check', list:{n:10, title:'Những người cùng chí hướng', ph:'Tên người'}, short:'Đã kết nối', label:'Tuần này đã chủ động kết nối với', min:2},
@@ -3047,13 +3047,14 @@ function isNeutral0(c,i){ const kd = kindOf(c); if (kd !== 'note' && kd !== 'che
 const peek = (c,pk) => D.entries['E:'+c+':'+pk] || {c:[], n:'', m:0};
 function ent(c,pk){ const k = 'E:'+c+':'+pk; if (!D.entries[k]) D.entries[k] = {c:[], n:'', m:0, z:0, s:{}}; return D.entries[k]; }
 function satisfied(c,i){ return atDay(i, () => satisfied0(c,i)); }
+const needOf = (s, avail) => s.min === 'all' ? avail : s.min === '2/3' ? Math.ceil(avail*2/3 - 1e-9) : Math.min(s.min, avail);   // 15/11/2026: 'Không nên làm' chỉ cần 2/3
 function satisfied0(c,i){
   const s = spec(c), k = kindOf(c), e = peek(c, pkey(c,i));
   if (k === 'auto') return DAILY.some(h => h.code !== c && activeDay(h,i) && D.daily[h.code][i]);
   if (k === 'tool') return !!(tickArr(c) || [])[tidx(c,i)];
   if (k === 'check'){ const it = listItems(s.ref || c); if (!it.length) return false;
     const cs = e.c || [], avail = it.filter((_,j) => cs[j] !== 3).length; if (!avail) return false;
-    const n = it.filter((_,j) => cs[j] === 1).length; return n >= (s.min === 'all' ? avail : Math.min(s.min, avail)); }
+    const n = it.filter((_,j) => cs[j] === 1).length; return n >= needOf(s, avail); }
   const r = lineCounts(c,i); return r.n > 0 && r.b === 0 && r.z === 0 && r.a > 0;
 }
 function progressTxt(c,i){ return atDay(i, () => progressTxt0(c,i)); }
@@ -3064,7 +3065,7 @@ function progressTxt0(c,i){
   if (k === 'check'){ const it = listItems(s.ref || c); if (!it.length) return s.ref ? 'Cần 3 mục tiêu 90 ngày' : 'Chưa có danh sách';
     const cs = e.c || [], n = it.filter((_,j) => cs[j] === 1).length, y = it.filter((_,j) => cs[j] === 3).length;
     if (y && y === it.length && !tickArr(c)[tidx(c,i)]) return '○ Chưa có sự kiện';
-    return `${s.short} ${n}/${it.length - y}` + (y ? ` · ○ ${y}` : '') + (s.min !== 'all' ? ` · cần ${s.min}` : ''); }
+    return `${s.short} ${n}/${it.length - y}` + (y ? ` · ○ ${y}` : '') + (s.min !== 'all' && it.length - y ? ` · cần ${needOf(s, it.length - y)}` : ''); }
   const r = lineCounts(c,i), t = tickArr(c)[tidx(c,i)];
   if (r.n && r.y === r.n && !t) return '○ Chưa có sự kiện';
   if (r.n && (r.a || r.b || r.y)) return `✓ ${r.a}/${r.n}` + (r.b ? ` · ✕ ${r.b}` : '') + (r.y ? ` · ○ ${r.y}` : '');
@@ -3074,7 +3075,7 @@ function ruleOf(c){
   const s = spec(c), k = kindOf(c);
   if (k === 'auto') return 'Tự đạt khi bạn đã tick ít nhất 1 thói quen khác trong ngày.';
   if (k === 'tool') return s.rule || '';
-  if (k === 'check') return (s.min === 'all' ? `Đạt khi ${s.short.toLowerCase()} đủ các mục.` : `Đạt khi ${s.short.toLowerCase()} ít nhất ${s.min}.`) + ' Mục chọn ○ (chưa có sự kiện) không bị tính.';
+  if (k === 'check') return (s.min === 'all' ? `Đạt khi ${s.short.toLowerCase()} đủ các mục.` : `Đạt khi ${s.short.toLowerCase()} ít nhất ${s.min === '2/3' ? '2/3 số mục' : s.min}.`) + ' Mục chọn ○ (chưa có sự kiện) không bị tính.';
   return planLines(c).length ? 'Mọi dòng đều ✓ (hoặc ○) là hoàn thành.' : 'Viết cách rèn, mỗi dòng một việc, rồi chấm ✓ ✕ ○ cho từng việc.';
 }
 function subline(c){
