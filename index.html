@@ -815,6 +815,7 @@ html[data-theme=light] .banner{color:#5A4300}
 .qrest{font-size:13px;color:var(--muted)}
 .appver{position:fixed;top:calc(3px + env(safe-area-inset-top));right:6px;z-index:5;font:600 9px/1 system-ui,sans-serif;letter-spacing:.3px;color:var(--muted,#8a948e);opacity:.55;pointer-events:none;user-select:none}
 button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+@media(max-width:560px){.brand{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:1fr 1fr;column-gap:12px;row-gap:8px;align-items:center}.brand img{grid-row:1/3}.brand .bt{grid-row:1/3;grid-column:2}.brand .themebtn{grid-column:3;margin:0}.brand .helpbtn{grid-row:1;align-self:end}.brand #themebtn{grid-row:2;align-self:start}}
 </style>
 </head>
 <body>
@@ -827,7 +828,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.54';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.55';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
