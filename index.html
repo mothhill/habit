@@ -2228,13 +2228,13 @@ function peopleSug(){
 const listSug = c => LSUG[c] || (c === '05' || c === '14' ? peopleSug() : []);
 const SPEC = {
  '01':{kind:'auto'},
- '02':{kind:'check', list:{n:3, title:'3 mục tiêu 90 ngày của tôi', ph:['Mục tiêu công việc…','Mục tiêu tài chính…','Mục tiêu bản thân / sức khoẻ…'], pin:'Mục tiêu 90 ngày'}, short:'Đã nhìn lại', label:'Hôm nay đã đọc lại', min:'all'},
+ '02':{kind:'check', list:{n:3, title:'3 mục tiêu 90 ngày của tôi', ph:['Mục tiêu công việc…','Mục tiêu tài chính…','Mục tiêu bản thân / sức khoẻ…'], pin:'Mục tiêu 90 ngày'}, short:'Đã nhìn lại', label:'Hôm nay đã đọc lại', min:'2/3'},
  '25':{kind:'check', list:{n:5, title:'5 việc tôi không nên làm', ph:['Ví dụ: lướt mạng xã hội khi chưa xong việc chính','Ví dụ: thức quá khuya','Ví dụ: nói lời tiêu cực khi đang bực','Ví dụ: mua sắm bốc đồng','Ví dụ: để việc quan trọng đến sát hạn'], pin:'Việc không nên làm'}, short:'Đã tránh', label:'Hôm nay đã tránh được', min:'2/3'},
  '13':{kind:'tool', go:'mind', act:'🎙️ Đọc 7 điều cam kết (mục Tâm Trí)', rule:'Tự đạt khi bài đọc 7 điều cam kết hôm nay được chấm Đạt.'},
- '29':{kind:'check', list:{n:3, title:'Ranh giới của tôi', ph:'Ví dụ: Không trả lời tin công việc sau 22h', pin:'Ranh giới'}, short:'Đã giữ', label:'Hôm nay đã giữ được', min:'all'},
+ '29':{kind:'check', list:{n:3, title:'Ranh giới của tôi', ph:'Ví dụ: Không trả lời tin công việc sau 22h', pin:'Ranh giới'}, short:'Đã giữ', label:'Hôm nay đã giữ được', min:'2/3'},
  '05':{kind:'check', list:{n:10, title:'Những người cùng chí hướng', ph:'Tên người'}, short:'Đã kết nối', label:'Tuần này đã chủ động kết nối với', min:2},
  '14':{kind:'check', list:{n:3, title:'Cố vấn của tôi', ph:'Tên cố vấn / người đi trước'}, short:'Đã học từ', label:'Tuần này đã học hỏi từ', min:1},
- '16':{kind:'check', ref:'02', short:'Đạt', label:'Mục tiêu đã qua 3 câu hỏi: tốt cho mình? tốt cho người khác? trung thực?', min:'all'},
+ '16':{kind:'check', ref:'02', short:'Đạt', label:'Mục tiêu đã qua 3 câu hỏi: tốt cho mình? tốt cho người khác? trung thực?', min:'2/3'},
  '06':{sug:['Ngủ trước 23h, dậy cùng một giờ kể cả cuối tuần','Cất điện thoại 30 phút trước khi ngủ','Ăn 3 bữa đúng giờ']},
  '04':{sug:['Đi bộ nhanh hoặc chạy bộ 30 phút mỗi ngày','Tập 15 phút sáng + 15 phút tối tại nhà','Mỗi ngày 1 bữa nhiều rau, uống đủ nước']},
  '07':{sug:['Mỗi sáng chọn 1 việc quan trọng nhất và làm xong trước 12h','Làm việc khó nhất vào đầu ngày','Chia mục tiêu lớn thành việc nhỏ 25 phút']},
@@ -3056,7 +3056,7 @@ function satisfied0(c,i){
   if (k === 'check'){ const it = listItems(s.ref || c); if (!it.length) return false;
     const cs = e.c || [], avail = it.filter((_,j) => cs[j] !== 3).length; if (!avail) return false;
     const n = it.filter((_,j) => cs[j] === 1).length; return n >= needOf(s, avail); }
-  const r = lineCounts(c,i); return r.n > 0 && r.b === 0 && r.z === 0 && r.a > 0;
+  const r = lineCounts(c,i), av = r.n - r.y; return av > 0 && r.a >= needOf({min:'2/3'}, av);   // 15/11/2026: chỉ cần cố gắng ~2/3
 }
 function progressTxt(c,i){ return atDay(i, () => progressTxt0(c,i)); }
 function progressTxt0(c,i){
@@ -3077,7 +3077,7 @@ function ruleOf(c){
   if (k === 'auto') return 'Tự đạt khi bạn đã tick ít nhất 1 thói quen khác trong ngày.';
   if (k === 'tool') return s.rule || '';
   if (k === 'check') return (s.min === 'all' ? `Đạt khi ${s.short.toLowerCase()} đủ các mục.` : `Đạt khi ${s.short.toLowerCase()} ít nhất ${s.min === '2/3' ? '2/3 số mục' : s.min}.`) + ' Mục chọn ○ (chưa có sự kiện) không bị tính.';
-  return planLines(c).length ? 'Mọi dòng đều ✓ (hoặc ○) là hoàn thành.' : 'Viết cách rèn, mỗi dòng một việc, rồi chấm ✓ ✕ ○ cho từng việc.';
+  return planLines(c).length ? 'Đạt khi ✓ ít nhất 2/3 số dòng (dòng ○ không tính).' : 'Viết cách rèn, mỗi dòng một việc, rồi chấm ✓ ✕ ○ cho từng việc.';
 }
 function subline(c){
   const s = spec(c), k = kindOf(c);
@@ -5093,7 +5093,7 @@ document.addEventListener('input', e => {
 });
 function resyncCheck(){   // 15/11/2026: luật 'đạt' đổi (vd. Không nên làm 2/3) → tự tick những ngày còn sửa được đã đủ điều kiện, chỉ thêm, không gỡ
   if (!D || T < 0) return;
-  ['25'].forEach(c => { if (!byCode[c] || !tickArr(c)) return;
+  D.habits.map(h => h.code).filter(c => kindOf(c) === 'check' || (kindOf(c) === 'note' && planLines(c).length)).forEach(c => { if (!tickArr(c)) return;
     for (let i = 0; i <= T; i++){ if (!activeAt(c,i) || !canEdit(c,i)) continue;
       const arr = tickArr(c), idx = tidx(c,i); if (arr[idx] || !satisfied(c,i)) continue;
       arr[idx] = 1; markDirty(rowKeyOf(c,i));
