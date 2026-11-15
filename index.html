@@ -821,7 +821,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.45';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.50';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -2362,6 +2362,7 @@ const WDL = ['Chủ nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Th�
 
 /* ================== Trạng thái ================== */
 let D = null, T = 0, tab = 'today', vi = 0, DAILY = [], WEEKLY = [], pending = 0, byCode = {};
+let boardAt = 0;
 let TOKEN = '', ME = null, SETTINGS = {unlockAll:false}, BOARD = null, ADMIN = null, NEWPIN = null;
 let rankMode = 'total', rankGroup = 'person';
 const OPEN = new Set(), LE = new Set(), LD = {}, dirty = {}, timers = {};
@@ -2454,7 +2455,7 @@ async function loadData(pre){
   if (!d){ const c = dcRead(); if (c){ d = Object.assign({}, c, {today: ymd(new Date())}); cached = true; } }
   if (!d){
     $('#root').innerHTML = '<div class="loading"><div class="spin"></div>Đang tải dữ liệu…</div>';
-    try { d = await call('getData', TOKEN); }
+    try { d = await call('getData', TOKEN, true); takeBoard(d); }
     catch(e){ if (isAuthErr(e)) { dropToken(); return showLogin('Phiên đăng nhập đã hết, hãy đăng nhập lại.'); } $('#root').innerHTML = errBox(e.message); return; }
   }
   const wal = walApply(d);
@@ -2462,9 +2463,18 @@ async function loadData(pre){
   const fl = wal.map(k => { dirty[k] = 1; return flush(k); });
   if (!BOARD){ try { const b = JSON.parse(LS.get('rh_bc') || 'null'); if (b && b.me === ME.id) BOARD = b; } catch(e){} }
   if (cached) Promise.all(fl).then(refreshData); else dcSave();
-  setTimeout(() => { if (D && !boardBusy) loadBoard(); }, 1500);
+  setTimeout(() => { if (D && !boardBusy && !boardAt) loadBoard(); }, cached ? 8000 : 1500);   // bảng xếp hạng nay đi kèm getData; chỉ gọi riêng nếu chưa có
   setTimeout(() => { if (ME && ME.work) rpInit(); }, 2500);
+  setTimeout(qTick, 4000);
 }
+/* Việc nền (chấm bài chờ…): gọi ngầm, không ai chờ; máy chủ tự giới hạn 1 lượt / 5 phút cho cả trung tâm. */
+let qTickAt = 0;
+function qTick(){
+  if (!TOKEN || Date.now() - qTickAt < 600000) return;
+  qTickAt = Date.now();
+  call('queueTick', TOKEN).catch(() => {});
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') setTimeout(qTick, 3000); });
 function buildData(d, noAF, keepVi){
   ME = d.me; SETTINGS = d.settings || {unlockAll:false};
   const days = Array.from({length:90}, (_,i) => addDays(ME.start, i));
@@ -2497,7 +2507,7 @@ function buildData(d, noAF, keepVi){
 // Đã hiện dữ liệu lưu sẵn trên máy; lấy bản mới từ máy chủ ở nền, chỉ vẽ lại khi có thay đổi và người dùng không đang gõ.
 async function refreshData(){
   let d; const t0 = Date.now();
-  try { d = await call('getData', TOKEN); }
+  try { d = await call('getData', TOKEN, true); takeBoard(d); }
   catch(e){ if (isAuthErr(e)){ closeProfile(); dropToken(); showLogin('Phiên đăng nhập đã hết, hãy đăng nhập lại.'); } return; }
   if (!D || !RAWD) return;
   if (pending > 0 || Object.keys(dirty).length || savedAt >= t0) return;
@@ -3560,9 +3570,15 @@ function progress(s){
 }
 
 /* ---- Xếp hạng ---- */
+/* getData(token, true) trả kèm bảng xếp hạng: lấy ra khỏi d (không để vào bộ nhớ tạm của dữ liệu cá nhân). Máy chủ cũ không trả → loadBoard gọi riêng như trước. */
+function takeBoard(d){
+  if (!d || !d.board) return;
+  const b = d.board; delete d.board;
+  if (b && b.rows && d.me && b.me === d.me.id){ BOARD = b; boardAt = Date.now(); try { LS.set('rh_bc', JSON.stringify(b)); } catch(e){} if (tab === 'rank' && D) render(); }
+}
 async function loadBoard(){
   if (boardBusy) return; boardBusy = true;
-  try { BOARD = await call('getBoard', TOKEN); LS.set('rh_bc', JSON.stringify(BOARD)); }
+  try { BOARD = await call('getBoard', TOKEN); boardAt = Date.now(); LS.set('rh_bc', JSON.stringify(BOARD)); }
   catch(e){ if (isAuthErr(e)) { boardBusy = false; dropToken(); return showLogin(); } if (!BOARD || BOARD.error) BOARD = {error: e.message}; }
   boardBusy = false;
   if (tab === 'rank') render();
