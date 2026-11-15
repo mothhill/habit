@@ -829,7 +829,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.65';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.66';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -5991,28 +5991,33 @@ async function mindStart(kind, from){
   try { stream = await navigator.mediaDevices.getUserMedia({audio: kind === 'docsach' ? {echoCancellation:false, noiseSuppression:false, autoGainControl:true} : {echoCancellation:true, noiseSuppression:true}}); }
   catch(e){ if (kind === 'camket'){ toast('🎙️ Cam kết phải ghi âm trực tiếp trong app. Hãy cho phép micro: bấm biểu tượng ổ khoá / cài đặt trang → Micro → Cho phép, rồi thử lại'); return; } MFALL = kind; render(); toast(e && e.name === 'NotAllowedError' ? '🎙️ App chưa được dùng micro. Bấm "Mở máy ghi âm của điện thoại" để ghi rồi gửi tệp' : '🎙️ Trình duyệt chặn ghi âm trong app, hãy dùng máy ghi âm của điện thoại'); return; }
   const types = ['audio/webm;codecs=opus','audio/mp4','audio/webm','audio/ogg;codecs=opus'], mime = types.find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || '';
-  const mr = new MediaRecorder(stream, Object.assign({audioBitsPerSecond: 24000}, mime ? {mimeType: mime} : {}));
+  let recStream = stream, gc = null;   // v14.11.66: bài đọc sách tăng âm 3 lần (có bộ chặn vỡ tiếng) vì iPhone thu giọng nhỏ; lỗi/không chạy → thu thẳng như cũ
+  if (kind === 'docsach'){ try { const AC0 = window.AudioContext || window.webkitAudioContext; gc = new AC0(); const s0 = gc.createMediaStreamSource(stream), g0 = gc.createGain(), cp = gc.createDynamicsCompressor(), ds = gc.createMediaStreamDestination();
+      g0.gain.value = 3; cp.threshold.value = -12; cp.knee.value = 6; cp.ratio.value = 12; cp.attack.value = 0.003; cp.release.value = 0.1; s0.connect(g0); g0.connect(cp); cp.connect(ds);
+      await Promise.race([gc.resume(), new Promise(res => setTimeout(res, 1500))]);
+      if (gc.state !== 'running') throw new Error('ac'); recStream = ds.stream; } catch(e){ recStream = stream; try { gc && gc.close(); } catch(e2){} gc = null; } }
+  const mr = new MediaRecorder(recStream, Object.assign({audioBitsPerSecond: 24000}, mime ? {mimeType: mime} : {}));
   const r = MREC || (MREC = {kind, sid: from ? from.sid : obxRid(), uid: ME && ME.id, mode: from ? from.mode : MMODE, date: from ? from.date : (MIND && MIND.today) || '', parts: from ? from.parts.slice() : [], secs: 0});
   Object.assign(r, {mr, stream, chunks: [], t0: Date.now(), curSecs: 0, mime: mr.mimeType || mime || 'audio/webm', wake: null, paused: 0, why: '', quiet: 0, win: 0});
   r.secs = recSecs(r);
   mr.ondataavailable = e => { if (e.data && e.data.size && MREC === r && r.mr === mr) r.chunks.push(e.data); };
   mr.onerror = () => { if (MREC === r && r.mr === mr) recPause(r, 'mic'); };
   try { const tk = stream.getAudioTracks()[0]; if (tk) tk.onended = () => { if (MREC === r && r.mr === mr) recPause(r, 'mic'); }; } catch(e){}
-  try { const AC = window.AudioContext || window.webkitAudioContext; r.ac = new AC(); const src = r.ac.createMediaStreamSource(stream); r.an = r.ac.createAnalyser(); r.an.fftSize = 1024; src.connect(r.an); } catch(e){ r.an = null; }
+  try { const AC = window.AudioContext || window.webkitAudioContext; r.ac = gc || new AC(); const src = r.ac.createMediaStreamSource(stream); r.an = r.ac.createAnalyser(); r.an.fftSize = 1024; src.connect(r.an); } catch(e){ r.an = null; }
   try { if (r.ac && r.ac.state === 'suspended') r.ac.resume(); } catch(e){}
   mr.start(1000);
   r.vu = setInterval(() => { if (MREC !== r || !r.an) return; const bar = document.querySelector('[data-mvu]'); if (!bar) return;
     try { const bf = new Float32Array(1024); r.an.getFloatTimeDomainData(bf); let q = 0; for (let k = 0; k < bf.length; k++) q += bf[k] * bf[k]; const rms = Math.sqrt(q / bf.length), db = 20 * Math.log10(rms + 1e-6), pc = Math.max(0, Math.min(1, (db + 60) / 45));
-      r.lv = Math.max(pc, (r.lv || 0) * 0.85); r.pk = rms > 0.004 ? Date.now() : (r.pk || 0);
+      r.lv = Math.max(pc, (r.lv || 0) * 0.85); r.pk = rms > 0.002 ? Date.now() : (r.pk || 0);
       bar.firstElementChild.style.width = Math.round(r.lv * 100) + '%'; const ok = Date.now() - r.pk < 1500; bar.classList.toggle('lo', !ok);
-      const lb = document.querySelector('[data-mvl]'); if (lb) lb.textContent = ok ? '🎙️ Đang thu · máy nghe thấy giọng' : '🔇 Chưa nghe thấy tiếng · đọc to hơn hoặc kiểm tra micro'; } catch(e){} }, 100);
+      const lb = document.querySelector('[data-mvl]'); if (lb) lb.textContent = ok ? (r.lv < 0.35 ? '🎙️ Đang thu · giọng hơi nhỏ, đưa máy gần miệng hơn' : '🎙️ Đang thu · máy nghe thấy giọng') : '🔇 Chưa nghe thấy tiếng · đọc to hơn hoặc kiểm tra micro'; } catch(e){} }, 100);
   try { if (navigator.wakeLock) r.wake = await navigator.wakeLock.request('screen'); } catch(e){}
   r.timer = setInterval(() => { if (MREC !== r || !r.mr) return; r.curSecs = Math.floor((Date.now() - r.t0)/1000); r.secs = recSecs(r);
     const c = document.querySelector('[data-mclock]'); if (c) c.textContent = mmss(r.secs);
     const b = document.querySelector('[data-mstop]'); if (b && b.dataset.mneed) b.disabled = r.secs < +b.dataset.mneed;
     if (r.an){ try { const bf = new Float32Array(1024); r.an.getFloatTimeDomainData(bf); let q = 0; for (let k = 0; k < bf.length; k++) q += bf[k] * bf[k]; r.win = Math.max(r.win, Math.sqrt(q / bf.length)); } catch(e){} }
     if (Date.now() - (r.lastSave || r.t0) >= 10000){ r.lastSave = Date.now(); recSave(r);      // lưu bản ghi dở xuống máy mỗi 10 giây
-      if (r.an && r.curSecs >= 20){ const qt = r.win < 0.002 ? 1 : 0; r.win = 0; if (qt !== r.quiet){ r.quiet = qt; render(); } } }
+      if (r.an && r.curSecs >= 20){ const qt = r.win < 0.001 ? 1 : 0; r.win = 0; if (qt !== r.quiet){ r.quiet = qt; render(); } } }
     if (r.kind === 'docsach' && r.secs === 600) toast('🎉 Đủ 10 phút rồi! Đọc tiếp hoặc bấm Dừng và nộp');
     if (r.secs >= 1800) mindStop(true); }, 1000);
   render();
@@ -6075,7 +6080,7 @@ async function mindSample(blobs){
     for (let w = 0; w < nw; w++){ let s2 = 0; for (let i = w * W; i < (w + 1) * W; i += 8){ const v = mono(i); s2 += v * v; } const r = Math.sqrt(s2 / (W / 8)); rms.push(r); }
     if (nw < 100) return null;
     const srt = rms.slice().sort((x, y) => x - y), p10 = srt[Math.floor(nw * 0.1)], p90 = srt[Math.floor(nw * 0.9)];
-    const thr = Math.min(0.01, Math.max(0.0015, p90 * 0.25, p10 * 2.5));   // ngưỡng theo mức âm thực tế (tiếng loa nhỏ vẫn tính là có giọng)
+    const thr = Math.min(0.003, Math.max(0.0015, p90 * 0.25, p10 * 2.5));   // v14.11.66: trần 0,003 (cũ 0,01 làm giọng iPhone thu nhỏ bị tính là im lặng: bài 8,7–10 phút chỉ ra 0,6–3 phút)   // ngưỡng theo mức âm thực tế (tiếng loa nhỏ vẫn tính là có giọng)
     rms.forEach(x => { if (x > thr) voiced++; });
     const seg = 30, starts = [0], pick = () => { for (let t = 0; t < 12; t++){ const a = 60 + Math.floor(Math.random() * Math.max(1, nw - 60 - seg)); if (rms.slice(a, a + seg).filter(x => x > thr).length >= 15 && starts.every(b => Math.abs(b - a) >= seg)) return a; } return null; };
     for (let k = 0; k < 2; k++){ const a = pick(); if (a != null) starts.push(a); }
