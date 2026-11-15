@@ -829,7 +829,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.64';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.65';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -5955,7 +5955,8 @@ function mindView(){
   if (MIND.error) return h + `<div class="card"><div class="empty">${esc(MIND.error)}</div></div>` + tools;
   return h + recCard() + obxCard() + mindCK() + mindDS() + (tools ? `<div class="sec"><h3>🧰 Công cụ thói quen</h3></div>` + tools : '');
 }
-function mindRes(L){ return (L || []).map(x => `<div class="mres ${x.st === 'Đạt' ? 'ok' : x.st === 'Chưa đạt' ? 'no' : 'wait'}">${x.st === 'Đạt' ? '✅' : x.st === 'Chưa đạt' ? '❌' : '⏳'} <b>${esc(x.st === 'Chờ chấm' ? 'Đã nhận, đang chờ chấm' : x.st)}</b>${x.note && x.st !== 'Chờ chấm' ? ' · ' + esc(x.note) : ''}${x.sum ? `<br><small>📖 ${esc(x.sum)}</small>` : ''}</div>`).join(''); }
+function mBookTag(x){ return x.kind === 'docsach' && x.book ? `📕 ${esc(x.book)} <button class="lnk" data-mbook="${esc(x.rid)}" title="Sửa tên sách">✏️</button>` : ''; }
+function mindRes(L){ return (L || []).map(x => `<div class="mres ${x.st === 'Đạt' ? 'ok' : x.st === 'Chưa đạt' ? 'no' : 'wait'}">${x.st === 'Đạt' ? '✅' : x.st === 'Chưa đạt' ? '❌' : '⏳'} <b>${esc(x.st === 'Chờ chấm' ? 'Đã nhận, đang chờ chấm' : x.st)}</b>${x.note && x.st !== 'Chờ chấm' ? ' · ' + esc(x.note) : ''}${mBookTag(x) ? '<br>' + mBookTag(x) : ''}${x.sum ? `<br><small>📖 ${esc(x.sum)}</small>` : ''}</div>`).join(''); }
 function mindRecUI(kind){
   const r = MREC && MREC.kind === kind ? MREC : null;
   if (r && r.sending) return `<div class="mrec busy">⏳ Đang gửi bài… <b>đừng tắt app</b>. Bài đã được giữ trên máy, gửi chưa xong thì mở lại app sẽ tự gửi tiếp.</div>`;
@@ -5981,7 +5982,7 @@ function mindDS(){
   return `<div class="card mcard"><div class="mhead"><b>📚 Đọc sách 10 phút</b><span>${d.done ? '✅ Hôm nay đã đạt' : 'Hôm nay chưa đọc'} · 🔥 ${d.streak} ngày · ${d.minutes} phút</span></div>
     ${MREC ? '' : dsSwitch()}${(DSMODE === 'listen' || (LSN && LSN.step === 'play')) && !MREC ? lsnUI() : mindRecUI('docsach')}${mindRes(d.last)}
     <div class="rule">${DSMODE === 'listen' ? 'Phát trực tiếp: dán link YouTube, app tự tính số phút bạn thật sự nghe. Không cần ghi âm.' : 'Ghi âm: tự đọc hoặc mở sách nói rồi ghi âm.'} Sách hay bất kỳ nội dung học hỏi, kỹ năng đều tính; nhạc, game, phim, giải trí thì không.</div>
-    ${d.log.length ? `<details class="mlog"><summary>📒 Nhật ký đọc (${d.total} ngày)</summary>${d.books.length ? `<div class="mbooks">${d.books.map(b => `<span>📕 ${esc(b.b)} · ${b.min}′</span>`).join('')}</div>` : ''}${d.log.map(x => `<div class="mli"><b>${dm(x.date)} · ${esc(x.book)}</b>${x.mode ? ' · ' + esc(x.mode) : ''}${x.sum ? `<br><small>${esc(x.sum)}</small>` : ''}</div>`).join('')}</details>` : ''}</div>`;
+    ${d.log.length ? `<details class="mlog"><summary>📒 Nhật ký đọc (${d.total} ngày)</summary>${d.books.length ? `<div class="mbooks">${d.books.map(b => `<span>📕 ${esc(b.b)} · ${b.min}′</span>`).join('')}</div>` : ''}${d.log.map(x => `<div class="mli"><b>${dm(x.date)} · ${esc(x.book)}</b> <button class="lnk" data-mbook="${esc(x.rid)}" title="Sửa tên sách">✏️</button>${x.mode ? ' · ' + esc(x.mode) : ''}${x.sum ? `<br><small>${esc(x.sum)}</small>` : ''}</div>`).join('')}</details>` : ''}</div>`;
 }
 async function mindStart(kind, from){
   if (MREC && !MREC.paused) return;
@@ -6245,6 +6246,12 @@ document.addEventListener('click', e => {
   else if (d.mcancel){ if (confirmTwice(b)) mindCancel(); }
   else if (d.mmode){ MMODE = d.mmode; render(); }
 });
+document.addEventListener('click', async e => { const b = e.target.closest('[data-mbook]'); if (!b || !MIND || !MIND.ds) return;
+  const rid = b.dataset.mbook, x = [...(MIND.ds.last || []), ...(MIND.ds.log || [])].find(y => y.rid === rid);
+  const v = prompt('Tên sách đúng:', x ? x.book : ''); if (v == null || !v.trim() || (x && v.trim() === x.book)) return;
+  b.disabled = true;
+  try { MIND = await call('mindSetBook', TOKEN, rid, v.trim()); toast('✏️ Đã sửa tên sách'); } catch(err){ toast('⚠️ ' + err.message); }
+  render(); });
 document.addEventListener('click', e => { const b = e.target.closest('[data-dsmode],[data-lsn]'); if (!b) return;
   if (b.dataset.dsmode){ DSMODE = b.dataset.dsmode; try { localStorage.setItem('rh_dsmode', DSMODE); } catch(_){} render(); }
   else lsnAct(b.dataset.lsn); });
