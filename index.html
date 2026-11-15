@@ -821,7 +821,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.44';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.45';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -5925,7 +5925,7 @@ function mindRecUI(kind){
   if (r && r.sending) return `<div class="mrec busy">⏳ Đang gửi bài… <b>đừng tắt app</b>. Bài đã được giữ trên máy, gửi chưa xong thì mở lại app sẽ tự gửi tiếp.</div>`;
   const intro = kind === 'camket' ? MIND.intro.camket : MIND.intro[MMODE === 'nghe' ? 'nghe' : 'doc'];
   const codeBox = `<div class="mcode"><small>🗣️ Câu mở đầu:</small><b>“${esc(intro)}”</b></div>`, need = kind === 'docsach' ? 600 : 30;
-  if (r && r.paused) return codeBox + `<div class="mrec"><b>${r.why === 'mic' ? '⚠️ Mic bị ngắt' : '⏸ Đã tạm dừng'} · đã ghi ${mmss(r.secs)}${kind === 'docsach' ? ' / 10:00' : ''}</b>
+  if (r && r.paused) return codeBox + `<div class="mrec"><b>${r.why === 'mic' ? '⚠️ Mic bị ngắt' : r.why === 'hidden' ? '⏸ Bạn đã rời app, bản ghi tạm dừng' : '⏸ Đã tạm dừng'} · đã ghi ${mmss(r.secs)}${kind === 'docsach' ? ' / 10:00' : ''}</b>
       <button class="btn mgo" data-mrec="${kind}">🎙️ Ghi tiếp</button><button class="btn" data-mstop="1" ${r.secs < need ? 'disabled' : ''}>📤 Nộp phần đã ghi</button><button class="lnk" data-mcancel="1">Huỷ</button></div>`;
   if (r) return codeBox + `<div class="mrec on"><span class="mdot"></span><b data-mclock>${mmss(r.secs)}</b>${kind === 'docsach' ? ` / 10:00` : ''}
       <button class="btn" data-mstop="1" ${r.secs < need ? 'disabled' : ''} data-mneed="${need}">${kind === 'docsach' ? '⏹ Dừng và nộp' : '⏹ Đọc xong, nộp bài'}</button><button class="lnk" data-mcancel="1">Huỷ</button></div>
@@ -5996,7 +5996,7 @@ async function recRefresh(){ try { RECLIST = ((await RECDB.all()) || []).filter(
 function recPause(r, why){
   if (!r.mr) return; const mr = r.mr;
   const fin = () => { if (r.mr !== mr) return; r.mr = null; if (r.chunks.length) r.parts.push({blob: new Blob(r.chunks, {type: r.mime}), secs: r.curSecs, mime: r.mime}); r.chunks = []; r.curSecs = 0; r.secs = recSecs(r);
-    recSave(r); mindEnd(); r.paused = 1; r.why = why || ''; render(); if (why === 'mic') toast('⚠️ Mic bị ngắt. Phần đã ghi vẫn còn, bấm Ghi tiếp', 5000); };
+    recSave(r); mindEnd(); r.paused = 1; r.why = why || ''; render(); if (why === 'mic') toast('⚠️ Mic bị ngắt. Phần đã ghi vẫn còn, bấm Ghi tiếp', 5000); if (why === 'hidden') toast('⏸ Bạn đã rời app nên bản ghi tạm dừng (rời app thì không thu được tiếng). Bấm Ghi tiếp để đọc tiếp', 6000); };
   mr.onstop = fin; try { if (mr.state !== 'inactive') mr.stop(); else fin(); } catch(e){ fin(); }
 }
 function recCard(){
@@ -6161,6 +6161,7 @@ document.addEventListener('click', async e => {
   else if (b.dataset.obx === 'del'){ if (OBXDEL !== it.rid){ OBXDEL = it.rid; render(); setTimeout(() => { if (OBXDEL === it.rid){ OBXDEL = ''; render(); } }, 3000); return; } OBXDEL = ''; try { await OBX.del(it.rid); } catch(_){} obxRefresh(); }
 });
 window.addEventListener('online', () => obxFlush());
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden'){ try { const r = MREC; if (r && r.mr) recPause(r, 'hidden'); } catch(e){} } });   // v14.11.45: rời app khi đang ghi → tạm dừng, không tính thời gian rời app
 document.addEventListener('visibilitychange', () => { if (document.visibilityState !== 'visible') return;
   try { const r = MREC; if (r && r.mr && r.stream && r.stream.getAudioTracks()[0] && r.stream.getAudioTracks()[0].readyState === 'ended') recPause(r, 'mic'); } catch(e){}
   obxFlush(); });
