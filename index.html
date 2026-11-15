@@ -5980,7 +5980,7 @@ function mindDS(){
   const d = MIND.ds, rec = MREC && MREC.kind === 'docsach';
   return `<div class="card mcard"><div class="mhead"><b>📚 Đọc sách 10 phút</b><span>${d.done ? '✅ Hôm nay đã đạt' : 'Hôm nay chưa đọc'} · 🔥 ${d.streak} ngày · ${d.minutes} phút</span></div>
     ${MREC ? '' : dsSwitch()}${(DSMODE === 'listen' || (LSN && LSN.step === 'play')) && !MREC ? lsnUI() : mindRecUI('docsach')}${mindRes(d.last)}
-    <div class="rule">${DSMODE === 'listen' ? 'Nghe sách: dán link YouTube, app tự tính số phút bạn thật sự nghe. Không cần ghi âm.' : 'Đọc to: ghi âm giọng đọc của chính bạn (không phát sách nói rồi thu lại).'} Sách hay bất kỳ nội dung học hỏi, kỹ năng đều tính; nhạc, game, phim, giải trí thì không.</div>
+    <div class="rule">${DSMODE === 'listen' ? 'Phát trực tiếp: dán link YouTube, app tự tính số phút bạn thật sự nghe. Không cần ghi âm.' : 'Ghi âm: ghi âm giọng đọc của chính bạn (không phát sách nói rồi thu lại).'} Sách hay bất kỳ nội dung học hỏi, kỹ năng đều tính; nhạc, game, phim, giải trí thì không.</div>
     ${d.log.length ? `<details class="mlog"><summary>📒 Nhật ký đọc (${d.total} ngày)</summary>${d.books.length ? `<div class="mbooks">${d.books.map(b => `<span>📕 ${esc(b.b)} · ${b.min}′</span>`).join('')}</div>` : ''}${d.log.map(x => `<div class="mli"><b>${dm(x.date)} · ${esc(x.book)}</b>${x.mode ? ' · ' + esc(x.mode) : ''}${x.sum ? `<br><small>${esc(x.sum)}</small>` : ''}</div>`).join('')}</details>` : ''}</div>`;
 }
 async function mindStart(kind, from){
@@ -6254,7 +6254,7 @@ function confirmTwice(b){ if (b.dataset.sure) return true; b.dataset.sure = 1; b
 /* ===== v14.11.40: NGHE SÁCH (YouTube) – không ghi âm. Chỉ tính PHÚT THẬT: đang phát + app hiển thị + có tiếng + còn xác nhận (3 phút hỏi 1 lần, 1 phút không bấm → loại cả lượt). Tua không tính; đoạn video đã nghe trước đó máy chủ không tính lại. ===== */
 let DSMODE = (() => { try { return localStorage.getItem('rh_dsmode') || 'doc'; } catch(e){ return 'doc'; } })(), LSN = null;
 const LSN_ASK_EVERY = 300, LSN_ASK_WAIT = 60, LSN_NEED = 600;
-function dsSwitch(){ return `<div class="dsw"><button class="${DSMODE === 'doc' ? 'on' : ''}" data-dsmode="doc">🎙️ Đọc to</button><button class="${DSMODE === 'listen' ? 'on' : ''}" data-dsmode="listen">🎧 Nghe sách</button></div>`; }
+function dsSwitch(){ return `<div class="dsw"><button class="${DSMODE === 'doc' ? 'on' : ''}" data-dsmode="doc">🎙️ Ghi âm</button><button class="${DSMODE === 'listen' ? 'on' : ''}" data-dsmode="listen">🎧 Phát trực tiếp</button></div>`; }
 const lsnMerge = a => { const o = []; a.filter(x => x && x[1] > x[0]).sort((p, q) => p[0] - q[0]).forEach(x => { const l = o[o.length - 1]; if (l && x[0] <= l[1] + 1) l[1] = Math.max(l[1], x[1]); else o.push([x[0], x[1]]); }); return o; };
 function lsnUI(){
   const L = LSN || (LSN = {step: 'input'});
