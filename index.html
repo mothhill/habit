@@ -82,7 +82,7 @@ h1,h2,h3{margin:0}
 
 /* Tabs */
 .tabs{display:none;gap:8px;background:var(--card);padding:8px;border-radius:18px;box-shadow:var(--shadow);margin-bottom:16px}
-.tabs button{flex:1;padding:12px;border-radius:14px;font-weight:600;color:var(--muted)}
+.tabs button{flex:1;min-width:0;padding:12px 6px;border-radius:14px;font-weight:600;color:var(--muted);white-space:nowrap}
 .tabs button.on{background:var(--primary-soft);color:var(--primary)}
 @media(min-width:920px){.tabs{display:flex}}
 .bnav{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);display:flex;padding:6px 10px calc(8px + env(safe-area-inset-bottom));z-index:20}
@@ -829,7 +829,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.57';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.58';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -3098,7 +3098,7 @@ function render(){ if (typeof loadBS === 'function') loadBS(); if (typeof bdAsk 
   const s = summary();
   $('#root').innerHTML = `<div class="layout tab-${tab}"><aside class="side">${side(s)}</aside><main>
     <div class="tabs">${tabBtns()}</div>
-    ${tab === 'today' ? today() : tab === 'health' ? (typeof healthView === 'function' ? healthView() : '') : tab === 'mind' ? (typeof mindView === 'function' ? mindView() : '') : tab === 'work' ? workView() : tab === 'help' ? helpView() : tab === 'prog' ? progTabs() + progress(s) : tab === 'rank' ? progTabs() + rankView() : tab === 'pet' ? progTabs() + petView(s) : tab === 'admin' ? adminView() : progTabs() + badges(s)}</main></div>`;
+    ${tab === 'today' ? today() : tab === 'health' ? (typeof healthView === 'function' ? healthView() : '') : tab === 'mind' ? (typeof mindView === 'function' ? mindView() : '') : tab === 'work' ? workView() : tab === 'help' ? helpView() : tab === 'prog' ? progTabs() + progress(s) : tab === 'rank' ? rankView() : tab === 'pet' ? progTabs() + petView(s) : tab === 'admin' ? adminView() : progTabs() + badges(s)}</main></div>`;
   $('#bnav').innerHTML = tabBtns(true);
   const cur = document.querySelector('.ladder .cur'); if (cur) cur.parentNode.scrollLeft = cur.offsetLeft - cur.parentNode.offsetLeft - 70;
   if (tab === 'today') greetMasc();
