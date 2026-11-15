@@ -829,7 +829,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.59';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.60';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -5568,11 +5568,11 @@ function mindAdminSection(){
   if (MQ.error) return h + `<div class="card"><div class="empty">${esc(MQ.error)}</div></div>`;
   const mqRow = (r, showNo, why) => `<tr><td><label><input type="checkbox" data-mq-chk="${esc(r.rid)}"> <b>${esc(r.name)}</b></label><br><small>${esc(r.date.slice(5).split('-').reverse().join('/'))} · ${r.kind === 'docsach' ? 'Đọc sách' : 'Cam kết'} · ${Math.round(r.secs/60*10)/10} phút${why ? ' · ' + esc(why) : ''}</small></td>
     <td><a href="${esc(r.link)}" target="_blank" rel="noopener">Nghe</a></td>
-    <td><button class="lnk" data-mq-ok="${esc(r.rid)}">Đạt</button>${showNo ? ` · <button class="lnk" data-mq-no="${esc(r.rid)}">Chưa đạt</button>` : ''}</td></tr>`;
-  const mqTbl = (L, showNo, whyOf, ttl, hint) => `<div class="mqg"><div class="muted" style="margin:12px 0 4px"><b>${ttl}</b> (${L.length})</div>` + (L.length ? `<div style="margin:4px 0"><label><input type="checkbox" data-mq-all="1"> Chọn tất cả</label> · <button class="lnk" data-mq-bulk="Đạt">✅ Đạt các bài đã chọn</button>${showNo ? ` · <button class="lnk" data-mq-bulk="Chưa đạt">Chưa đạt các bài đã chọn</button>` : ''}</div><div class="tblwrap"><table class="tbl"><thead><tr><th>Bài</th><th></th><th>Chấm tay</th></tr></thead><tbody>${L.map(r => mqRow(r, showNo, whyOf(r))).join('')}</tbody></table></div>` : `<div class="rule">${hint}</div>`) + `</div>`;
+    <td><button class="lnk" data-mq-ok="${esc(r.rid)}">Đạt</button>${showNo ? ` · <button class="lnk" data-mq-no="${esc(r.rid)}">Không đạt</button>` : ''}</td></tr>`;
+  const mqTbl = (L, showNo, whyOf, ttl, hint) => `<div class="mqg"><div class="muted" style="margin:12px 0 4px"><b>${ttl}</b> (${L.length})</div>` + (L.length ? `<div style="margin:4px 0"><label><input type="checkbox" data-mq-all="1"> Chọn tất cả</label> · <button class="lnk" data-mq-bulk="Đạt">✅ Đạt các bài đã chọn</button>${showNo ? ` · <button class="lnk" data-mq-bulk="Chưa đạt">❌ Không đạt các bài đã chọn</button>` : ''}</div><div class="tblwrap"><table class="tbl"><thead><tr><th>Bài</th><th></th><th>Chấm tay</th></tr></thead><tbody>${L.map(r => mqRow(r, showNo, whyOf(r))).join('')}</tbody></table></div>` : `<div class="rule">${hint}</div>`) + `</div>`;
   const rows = mqTbl(MQ.list || [], true, r => r.reason ? '⏳ ' + r.reason : '⏳', '⏳ Chờ AI chấm (nghẽn AI, máy chủ tự chấm lại)', 'Không có bài nào đang chờ AI.')
     + mqTbl(MQ.revList || [], true, r => '✋ ' + r.note, '✋ Cần duyệt tay (bài có điểm lạ, bấm Đạt mới tính điểm)', 'Không có bài nào cần duyệt tay.')
-    + mqTbl(MQ.noList || [], false, r => '❌ ' + r.note, '❌ AI chấm Chưa đạt (hôm nay, hôm qua; bấm Đạt để chấm lại)', 'Không có bài AI chấm chưa đạt.');
+    + mqTbl(MQ.noList || [], true, r => '❌ ' + r.note, '❌ AI chấm Chưa đạt (hôm nay, hôm qua; bấm Đạt để chấm lại, Không đạt để xoá khỏi danh sách)', 'Không có bài AI chấm chưa đạt.');
   const aiTbl = (MQ.ai || []).length ? (MQ.ai || []).map(k => `<div class="muted" style="margin:10px 0 4px">Khóa …${esc(k.key)}${k.paid ? ' (trả phí)' : ''}</div><div class="tblwrap"><table class="tbl"><thead><tr><th>Model</th><th>✅</th><th>Hết ngày</th><th>Hết phút</th><th>Lỗi</th><th>Hết lượt lúc</th></tr></thead><tbody>${k.models.map(m => `<tr><td><small>${esc(m.m)}</small></td><td>${m.ok}</td><td>${m.day}</td><td>${m.min}</td><td>${m.err}</td><td>${esc(m.last || '–')}</td></tr>`).join('')}</tbody></table></div>`).join('') : '<div class="rule">Hôm nay chưa có số liệu dùng AI (có từ lần gọi AI kế tiếp).</div>';
   return h + `<div class="card"><div class="stats"><div class="stat"><div class="v">${MQ.waiting}</div><div class="l">Đang chờ chấm</div></div>
     <div class="stat"><div class="v">${MQ.review || 0}</div><div class="l">Cần duyệt tay</div></div>
@@ -5591,7 +5591,7 @@ document.addEventListener('click', e => {      // duyệt hàng loạt Tâm trí
   const b = e.target.closest('[data-mq-bulk]'); if (!b || MQBUSY) return;
   const g = b.closest('.mqg'), ids = [...g.querySelectorAll('[data-mq-chk]:checked')].map(c => c.dataset.mqChk), st = b.dataset.mqBulk;
   if (!ids.length){ toast('Chưa chọn bài nào'); return; }
-  const note = st === 'Chưa đạt' ? (prompt('Lý do chưa đạt cho ' + ids.length + ' bài (hiện cho người nộp, có thể bỏ trống):') || '') : '';
+  const note = st === 'Chưa đạt' ? (prompt('Lý do không đạt cho ' + ids.length + ' bài (hiện cho người nộp, có thể bỏ trống):') || '') : '';
   if (!confirm('Chấm ' + st + ' cho ' + ids.length + ' bài đã chọn?')) return;
   toast('Đang chấm ' + ids.length + ' bài…'); mqLoad('mindManualBulk', ids, st, note);
 });
@@ -5603,7 +5603,7 @@ document.addEventListener('click', async e => {
   const b = e.target.closest('[data-mq-retry],[data-mq-ok],[data-mq-no]'); if (!b) return;
   if (b.dataset.mqRetry){ toast('Đang chấm, có thể mất 1–2 phút…'); mqLoad('mindRetryNow'); return; }
   const rid = b.dataset.mqOk || b.dataset.mqNo, st = b.dataset.mqOk ? 'Đạt' : 'Chưa đạt';
-  const note = st === 'Chưa đạt' ? (prompt('Lý do chưa đạt (hiện cho người nộp, có thể bỏ trống):') || '') : '';
+  const note = st === 'Chưa đạt' ? (prompt('Lý do không đạt (hiện cho người nộp, có thể bỏ trống):') || '') : '';
   mqLoad('mindManual', rid, st, note);
 });
 function teamSection(){
