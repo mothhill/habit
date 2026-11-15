@@ -829,7 +829,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.63';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.64';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -5980,7 +5980,7 @@ function mindDS(){
   const d = MIND.ds, rec = MREC && MREC.kind === 'docsach';
   return `<div class="card mcard"><div class="mhead"><b>📚 Đọc sách 10 phút</b><span>${d.done ? '✅ Hôm nay đã đạt' : 'Hôm nay chưa đọc'} · 🔥 ${d.streak} ngày · ${d.minutes} phút</span></div>
     ${MREC ? '' : dsSwitch()}${(DSMODE === 'listen' || (LSN && LSN.step === 'play')) && !MREC ? lsnUI() : mindRecUI('docsach')}${mindRes(d.last)}
-    <div class="rule">${DSMODE === 'listen' ? 'Phát trực tiếp: dán link YouTube, app tự tính số phút bạn thật sự nghe. Không cần ghi âm.' : 'Ghi âm: ghi âm giọng đọc của chính bạn (không phát sách nói rồi thu lại).'} Sách hay bất kỳ nội dung học hỏi, kỹ năng đều tính; nhạc, game, phim, giải trí thì không.</div>
+    <div class="rule">${DSMODE === 'listen' ? 'Phát trực tiếp: dán link YouTube, app tự tính số phút bạn thật sự nghe. Không cần ghi âm.' : 'Ghi âm: tự đọc hoặc mở sách nói rồi ghi âm.'} Sách hay bất kỳ nội dung học hỏi, kỹ năng đều tính; nhạc, game, phim, giải trí thì không.</div>
     ${d.log.length ? `<details class="mlog"><summary>📒 Nhật ký đọc (${d.total} ngày)</summary>${d.books.length ? `<div class="mbooks">${d.books.map(b => `<span>📕 ${esc(b.b)} · ${b.min}′</span>`).join('')}</div>` : ''}${d.log.map(x => `<div class="mli"><b>${dm(x.date)} · ${esc(x.book)}</b>${x.mode ? ' · ' + esc(x.mode) : ''}${x.sum ? `<br><small>${esc(x.sum)}</small>` : ''}</div>`).join('')}</details>` : ''}</div>`;
 }
 async function mindStart(kind, from){
