@@ -2466,6 +2466,7 @@ async function loadData(pre){
   }
   const wal = walApply(d);
   RAWD = d; buildData(d, cached);
+  resyncCheck();
   const fl = wal.map(k => { dirty[k] = 1; return flush(k); });
   if (!BOARD){ try { const b = JSON.parse(LS.get('rh_bc') || 'null'); if (b && b.me === ME.id) BOARD = b; } catch(e){} }
   if (cached) Promise.all(fl).then(refreshData); else dcSave();
@@ -5090,6 +5091,14 @@ document.addEventListener('input', e => {
     const el = document.querySelector(`.habit[data-card="${ds.plan}"] .ha`); if (el) el.textContent = subline(ds.plan); return; }
   if (ds.note){ if (vi > T) return; if (!canEdit(ds.note,vi)){ lockMsg(); return; } const c = ds.note, pk = pkey(c,vi); ent(c,pk).n = t.value; markDirty(rowKeyOf(c,vi)); }
 });
+function resyncCheck(){   // 15/11/2026: luật 'đạt' đổi (vd. Không nên làm 2/3) → tự tick những ngày còn sửa được đã đủ điều kiện, chỉ thêm, không gỡ
+  if (!D || T < 0) return;
+  ['25'].forEach(c => { if (!byCode[c] || !tickArr(c)) return;
+    for (let i = 0; i <= T; i++){ if (!activeAt(c,i) || !canEdit(c,i)) continue;
+      const arr = tickArr(c), idx = tidx(c,i); if (arr[idx] || !satisfied(c,i)) continue;
+      arr[idx] = 1; markDirty(rowKeyOf(c,i));
+      if (D.daily['01'] && activeDay(byCode['01'], i) && !D.daily['01'][i] && satisfied('01', i)) D.daily['01'][i] = 1; } });
+}
 function syncAuto(c, i, live){
   if (kindOf(c) === 'note' && !planLines(c).length){ live ? liveUpdate(c,i) : render(); return; }
   if (T < 0 || i > T || !activeAt(c,i)) { live ? liveUpdate(c,i) : render(); return; }
