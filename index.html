@@ -771,6 +771,7 @@ html[data-theme=light] .banner{color:#5A4300}
 @media(min-width:920px){#lsnhost{bottom:14px}}
 .lsnin{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:transparent;color:inherit;font-size:14px;margin:6px 0}
 .mgo{width:100%;margin:6px 0}.mrec{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;border-radius:12px;background:var(--primary-soft);margin:6px 0}
+.mvu{height:10px;border-radius:99px;background:var(--line);overflow:hidden;margin:2px 0 4px}.mvu i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#4FC98A,#B8F061);transition:width .08s linear}.mvu.lo i{background:var(--pink)}.mvl{font-size:12px;color:var(--muted);margin-bottom:6px}
 .mrec b{font-size:22px;font-variant-numeric:tabular-nums}.mrec .btn{margin-left:auto}.mrec.busy{font-weight:600}
 .mdot{width:12px;height:12px;border-radius:50%;background:#E5484D;animation:mblink 1s infinite}@keyframes mblink{50%{opacity:.25}}
 .mres{padding:8px 10px;border-radius:10px;margin:6px 0;font-size:13.5px;border:1px solid var(--line)}.mres.ok{border-color:var(--primary)}.mres.no{border-color:#E5484D}
@@ -820,7 +821,7 @@ html[data-theme=light] .banner{color:#5A4300}
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.43';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.44';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -5928,6 +5929,7 @@ function mindRecUI(kind){
       <button class="btn mgo" data-mrec="${kind}">🎙️ Ghi tiếp</button><button class="btn" data-mstop="1" ${r.secs < need ? 'disabled' : ''}>📤 Nộp phần đã ghi</button><button class="lnk" data-mcancel="1">Huỷ</button></div>`;
   if (r) return codeBox + `<div class="mrec on"><span class="mdot"></span><b data-mclock>${mmss(r.secs)}</b>${kind === 'docsach' ? ` / 10:00` : ''}
       <button class="btn" data-mstop="1" ${r.secs < need ? 'disabled' : ''} data-mneed="${need}">${kind === 'docsach' ? '⏹ Dừng và nộp' : '⏹ Đọc xong, nộp bài'}</button><button class="lnk" data-mcancel="1">Huỷ</button></div>
+      <div class="mvu" data-mvu><i></i></div><div class="mvl" data-mvl>🎙️ Đang thu · nói thử để xem thanh âm lượng nhảy</div>
       ${r.quiet ? `<div class="mres no">🔇 Máy chưa nghe thấy giọng. Kiểm tra micro, đọc to hơn hoặc để máy gần loa hơn.</div>` : ''}`;
   return codeBox + `<button class="btn mgo" data-mrec="${kind}" ${MREC ? 'disabled' : ''}>🎙️ ${kind === 'camket' ? 'Bắt đầu đọc và ghi âm' : 'Bắt đầu ghi âm 10 phút'}</button>
     ${kind === 'docsach' ? mindFileUI() : ''}`;
@@ -5960,7 +5962,13 @@ async function mindStart(kind, from){
   mr.onerror = () => { if (MREC === r && r.mr === mr) recPause(r, 'mic'); };
   try { const tk = stream.getAudioTracks()[0]; if (tk) tk.onended = () => { if (MREC === r && r.mr === mr) recPause(r, 'mic'); }; } catch(e){}
   try { const AC = window.AudioContext || window.webkitAudioContext; r.ac = new AC(); const src = r.ac.createMediaStreamSource(stream); r.an = r.ac.createAnalyser(); r.an.fftSize = 1024; src.connect(r.an); } catch(e){ r.an = null; }
+  try { if (r.ac && r.ac.state === 'suspended') r.ac.resume(); } catch(e){}
   mr.start(1000);
+  r.vu = setInterval(() => { if (MREC !== r || !r.an) return; const bar = document.querySelector('[data-mvu]'); if (!bar) return;
+    try { const bf = new Float32Array(1024); r.an.getFloatTimeDomainData(bf); let q = 0; for (let k = 0; k < bf.length; k++) q += bf[k] * bf[k]; const rms = Math.sqrt(q / bf.length), db = 20 * Math.log10(rms + 1e-6), pc = Math.max(0, Math.min(1, (db + 60) / 45));
+      r.lv = Math.max(pc, (r.lv || 0) * 0.85); r.pk = rms > 0.004 ? Date.now() : (r.pk || 0);
+      bar.firstElementChild.style.width = Math.round(r.lv * 100) + '%'; const ok = Date.now() - r.pk < 1500; bar.classList.toggle('lo', !ok);
+      const lb = document.querySelector('[data-mvl]'); if (lb) lb.textContent = ok ? '🎙️ Đang thu · máy nghe thấy giọng' : '🔇 Chưa nghe thấy tiếng · đọc to hơn hoặc kiểm tra micro'; } catch(e){} }, 100);
   try { if (navigator.wakeLock) r.wake = await navigator.wakeLock.request('screen'); } catch(e){}
   r.timer = setInterval(() => { if (MREC !== r || !r.mr) return; r.curSecs = Math.floor((Date.now() - r.t0)/1000); r.secs = recSecs(r);
     const c = document.querySelector('[data-mclock]'); if (c) c.textContent = mmss(r.secs);
@@ -6012,7 +6020,7 @@ async function recItem(r, created){
   let sm = null; try { sm = r.kind === 'docsach' ? await mindSample(parts.map(p => p.blob)) : null; } catch(e){}
   return {rid: obxRid(), sid: r.sid, uid: ME && ME.id, kind: r.kind, blob: main.blob, mime: main.mime, more, secs: parts.reduce((a, p) => a + p.secs, 0), mode: r.mode || 'doc', upload: 0, fmod: 0, sample: sm ? sm.b64 : '', voiced: sm ? sm.voiced : 0, created: created || Date.now(), tried: 0};
 }
-function mindEnd(){ if (!MREC) return; clearInterval(MREC.timer); try { MREC.stream.getTracks().forEach(t => t.stop()); } catch(e){} try { MREC.wake && MREC.wake.release(); } catch(e){} try { MREC.ac && MREC.ac.close(); } catch(e){} MREC.ac = null; MREC.an = null; }
+function mindEnd(){ if (!MREC) return; clearInterval(MREC.timer); clearInterval(MREC.vu); try { MREC.stream.getTracks().forEach(t => t.stop()); } catch(e){} try { MREC.wake && MREC.wake.release(); } catch(e){} try { MREC.ac && MREC.ac.close(); } catch(e){} MREC.ac = null; MREC.an = null; }
 function mindCancel(){ if (!MREC) return; const sid = MREC.sid; try { if (MREC.mr){ MREC.mr.onstop = null; MREC.mr.stop(); } } catch(e){} mindEnd(); MREC = null; RECDB.del(sid).catch(() => {}).then(recRefresh); render(); }
 /* Đoạn mẫu bài đọc sách: điện thoại giải mã bản ghi, đo số phút có giọng, cắt 90 giây (30 giây đầu + 2 đoạn ngẫu nhiên) gửi AI thay vì cả 10 phút. Lỗi/máy yếu → trả null, gửi cả tệp như cũ. */
 async function mindSample(blobs){
