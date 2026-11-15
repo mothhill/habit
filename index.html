@@ -86,7 +86,7 @@ h1,h2,h3{margin:0}
 .tabs button.on{background:var(--primary-soft);color:var(--primary)}
 @media(min-width:920px){.tabs{display:flex}}
 .bnav{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);display:flex;padding:6px 10px calc(8px + env(safe-area-inset-bottom));z-index:20}
-.bnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;font-weight:600;color:var(--muted);padding:8px 0;border-radius:14px}
+.bnav button{flex:1;min-width:0;white-space:nowrap;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;color:var(--muted);padding:8px 0;border-radius:14px}
 .bnav button span{font-size:20px;filter:grayscale(1);opacity:.6}
 .bnav button.on{color:var(--primary)}
 .bnav button.on span{filter:none;opacity:1}
@@ -765,7 +765,8 @@ html[data-theme=light] .banner{color:#5A4300}
 .run-bug{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.run-bug input{flex:1 1 180px;min-height:42px}.run-bug .btn{min-height:42px}
 .run-cands{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 12px}.run-apkm{width:110px;min-height:40px}
 .run-km input[readonly],.run-min input[readonly]{opacity:.85;cursor:not-allowed}
-.ptabs{margin-bottom:16px}.ptabs button{font-size:12px;padding:8px 2px}
+.ptabs{margin-bottom:16px}.ptabs button{font-size:13px;padding:8px 2px;white-space:nowrap}
+.rseg button{font-size:12.5px;padding:10px 2px;white-space:nowrap}
 .run-news{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px;border-left:4px solid var(--primary)}
 .run-news.no{border-left-color:#E5484D}.run-news small{display:block;margin-top:4px;color:var(--ink);opacity:.8}.run-news .btns{display:flex;gap:8px;margin:0}
 .mcard .mhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:8px}.mcard .mhead span{font-size:13px;color:var(--muted)}
@@ -828,7 +829,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.55';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.57';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -2599,7 +2600,9 @@ async function flush(key){
   if (!dirty[key]) return; delete dirty[key];
   if (!D || !ME) return;   // chưa đăng nhập / đã thoát: không có gì để lưu (tránh lỗi 'meta' of null)
   pending++; renderSync();
-  try { const js = JSON.stringify(rowFor(key)); await call('saveRow', TOKEN, key, js, statsNow()); savedAt = Date.now(); if (!dirty[key]) walDel(key); if (RAWD){ RAWD.rows = RAWD.rows || {}; RAWD.rows[key] = JSON.parse(js); dcSave(); } }
+  try { const js = JSON.stringify(rowFor(key)); const r = await call('saveRow', TOKEN, key, js, statsNow()); savedAt = Date.now(); let jo = JSON.parse(js);
+    if (key === 'META' && r && r.sleep && !dirty[key] && D && JSON.stringify(r.sleep) !== JSON.stringify(D.meta.sleep || {})){ D.meta.sleep = r.sleep; jo.sleep = r.sleep; const ae = document.activeElement; if ((tab === 'today' || tab === 'health') && !(ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))) render(); }   // máy chủ đã giữ giờ ngủ từ máy khác
+    if (!dirty[key]) walDel(key); if (RAWD){ RAWD.rows = RAWD.rows || {}; RAWD.rows[key] = jo; dcSave(); } }
   catch(e){ if (isAuthErr(e)) { dropToken(); return showLogin('Phiên đăng nhập đã hết, hãy đăng nhập lại.'); } dirty[key] = 1; toast('⚠️ Chưa lưu được: ' + e.message); }
   finally { pending--; renderSync(); }
 }
@@ -3105,11 +3108,11 @@ function render(){ if (typeof loadBS === 'function') loadBS(); if (typeof bdAsk 
   if (tab === 'work') workInit();
 }
 function tabBtns(mobile){
-  const t = [['today','✅','Hôm nay'],['health','💚','Sức khỏe'],['mind','🧠','Tâm Trí'],['pet','🏆','Thành tích']];   // Thành tích = Thú cưng (pet) · Huy hiệu (badge) · Cá nhân (prog) · Xếp hạng (rank)
+  const t = [['today','✅','Hôm nay'],['health','💚','Sức khỏe'],['mind','🧠','Tâm Trí'],['pet','🏆','Thành tích'],['rank','🥇','Xếp hạng']];   // Thành tích = Thú cưng (pet) · Huy hiệu (badge) · Cá nhân (prog) · Xếp hạng (rank)
   if (ME && ME.work) t.splice(3, 0, ['work','🗂️','Công việc']);
   if (ME && ME.role === 'Quản lý') t.push(['admin','🛠️','Quản lý']);
   const dot = RP.info && RP.info.dot > 0 ? '<i class="tdot"></i>' : '';
-  return t.map(([k,e,n]) => `<button class="${tab===k || (k==='pet' && (tab==='badge' || tab==='prog' || tab==='rank'))?'on':''}" data-tab="${k}">${mobile?`<span>${e}</span>`:e+' '}${n}${k === 'work' ? dot : ''}</button>`).join('');
+  return t.map(([k,e,n]) => `<button class="${tab===k || (k==='pet' && (tab==='badge' || tab==='prog'))?'on':''}" data-tab="${k}">${mobile?`<span>${e}</span>`:e+' '}${n}${k === 'work' ? dot : ''}</button>`).join('');
 }
 function greet(){ const h = new Date().getHours(); return h < 11 ? 'Chào buổi sáng ☀️' : h < 14 ? 'Chào buổi trưa 🌤️' : h < 18 ? 'Chào buổi chiều 🌇' : 'Chào buổi tối 🌙'; }
 function side(s){
@@ -3534,7 +3537,7 @@ function itemStats(){
     return fold('it' + c, esc(SPEC[c].list.pin), '', `<div class="card">${rows}</div>`);
   }).join('');
 }
-function progTabs(){ const b = (k,l) => `<button class="${tab===k?'on':''}" data-tab="${k}">${l}</button>`; return `<div class="seg ptabs">${b('pet','🐾 Thú cưng')}${b('badge','🏅 Huy hiệu')}${b('prog','👤 Cá nhân')}${b('rank','🏆 Xếp hạng')}</div>`; }
+function progTabs(){ const b = (k,l) => `<button class="${tab===k?'on':''}" data-tab="${k}">${l}</button>`; return `<div class="seg ptabs">${b('pet','🐾 Thú cưng')}${b('badge','🏅 Huy hiệu')}${b('prog','👤 Cá nhân')}</div>`; }
 /* Lịch theo tuần tháng: mỗi hàng 1 tuần (1–7, 8–14, 15–21, 22–28), ngày nghỉ 29–31 thành hàng riêng */
 function heatGrid(d0, n, cell){
   const dN = addDays(d0, n-1); let h = `<div class="heat">`, b = blkStart(d0), w = 0;
@@ -3617,7 +3620,7 @@ function rankView(){
     list = rows.map((r,k) => `<div class="rk ${r.mine?'me':''}"><div class="pos">${k<3 ? ['🥇','🥈','🥉'][k] : k+1}</div>
       <div class="rn"><b>${esc(r.d)}</b><small>${r.n} người · điểm trung bình mỗi người</small></div><div class="rv">${r.v}<small>${unit}</small></div></div>`).join('');
   }
-  return `<div class="seg">${seg('total',rankMode,'XP','rmode')}${seg('streak',rankMode,'Chuỗi ngày','rmode')}<button class="${rankMode==='run'||rankMode==='gym'?'on':''}" data-rmode="${rankMode==='gym'?'gym':'run'}">🏅 Thể thao</button>${seg('track',rankMode,'📋 Theo dõi','rmode')}</div>
+  return `<div class="seg rseg">${seg('total',rankMode,'XP','rmode')}${seg('streak',rankMode,'Chuỗi','rmode')}<button class="${rankMode==='run'||rankMode==='gym'?'on':''}" data-rmode="${rankMode==='gym'?'gym':'run'}">🏅 Thể thao</button>${seg('track',rankMode,'📋 Theo dõi','rmode')}</div>
     <div class="card" style="padding:8px 10px">${list || '<div class="muted" style="padding:12px">Chưa có ai trên bảng xếp hạng. Tick thói quen đầu tiên để lên bảng!</div>'}</div>
     <div class="rule" style="margin-top:10px">${rankMode === 'total' ? `XP tuần tính từ ${dm(wk)}, 👑 là người nhiều XP tuần nhất. ` : ''}Chạm tên để xem tiến độ.</div>`;
 }
@@ -5478,7 +5481,7 @@ function runRankView(){
   const B = RUNB[RUNM]; if ((!B || Date.now() - B.at > 60000) && !RUNBBUSY[RUNM]) runLoadBoard(RUNM);
   const seg = (v, c, label, key) => `<button class="${c===v?'on':''}" data-${key}="${v}">${label}</button>`;
   const [y, m] = RUNM.split('-').map(Number);
-  let h = `<div class="seg">${seg('total',rankMode,'XP','rmode')}${seg('streak',rankMode,'Chuỗi ngày','rmode')}<button class="${rankMode==='run'||rankMode==='gym'?'on':''}" data-rmode="${rankMode==='gym'?'gym':'run'}">🏅 Thể thao</button>${seg('track',rankMode,'📋 Theo dõi','rmode')}</div><div class="seg small">${seg('run',rankMode,'🏃 Chạy','rmode')}${seg('gym',rankMode,'🏋️ Gym','rmode')}</div>
+  let h = `<div class="seg rseg">${seg('total',rankMode,'XP','rmode')}${seg('streak',rankMode,'Chuỗi','rmode')}<button class="${rankMode==='run'||rankMode==='gym'?'on':''}" data-rmode="${rankMode==='gym'?'gym':'run'}">🏅 Thể thao</button>${seg('track',rankMode,'📋 Theo dõi','rmode')}</div><div class="seg small">${seg('run',rankMode,'🏃 Chạy','rmode')}${seg('gym',rankMode,'🏋️ Gym','rmode')}</div>
     <div class="run-month"><button class="btn ghost" data-runmon="-1" aria-label="Tháng trước" title="Tháng trước">‹</button><b>Tháng ${m}/${y}</b><button class="btn ghost" data-runmon="1" aria-label="Tháng sau" title="Tháng sau" ${RUNM >= cur ? 'disabled' : ''}>›</button></div>`;
   if (!B) return h + `<div class="loading" style="min-height:30vh"><div class="spin"></div>Đang tải bảng chạy bộ…</div>`;
   if (B.error) return h + `<div class="empty">${esc(B.error)}</div>`;
@@ -5907,7 +5910,7 @@ function gymRankView(){
   const B = GYMB[GYMM]; if ((!B || Date.now() - B.at > 60000) && !GYMBBUSY[GYMM]) gymLoadBoard(GYMM);
   const seg = (v, c, label, key) => `<button class="${c===v?'on':''}" data-${key}="${v}">${label}</button>`;
   const [y, m] = GYMM.split('-').map(Number);
-  let h = `<div class="seg">${seg('total',rankMode,'XP','rmode')}${seg('streak',rankMode,'Chuỗi ngày','rmode')}<button class="${rankMode==='run'||rankMode==='gym'?'on':''}" data-rmode="${rankMode==='gym'?'gym':'run'}">🏅 Thể thao</button>${seg('track',rankMode,'📋 Theo dõi','rmode')}</div><div class="seg small">${seg('run',rankMode,'🏃 Chạy','rmode')}${seg('gym',rankMode,'🏋️ Gym','rmode')}</div>
+  let h = `<div class="seg rseg">${seg('total',rankMode,'XP','rmode')}${seg('streak',rankMode,'Chuỗi','rmode')}<button class="${rankMode==='run'||rankMode==='gym'?'on':''}" data-rmode="${rankMode==='gym'?'gym':'run'}">🏅 Thể thao</button>${seg('track',rankMode,'📋 Theo dõi','rmode')}</div><div class="seg small">${seg('run',rankMode,'🏃 Chạy','rmode')}${seg('gym',rankMode,'🏋️ Gym','rmode')}</div>
     <div class="seg small">${seg('top',GYMRK,'💪 Mạnh nhất','gymrk')}${seg('prog',GYMRK,'📈 Tiến bộ','gymrk')}${seg('active',GYMRK,'🔥 Chăm nhất','gymrk')}</div>
     <div class="run-month"><button class="btn ghost" data-gymmon="-1" aria-label="Tháng trước">‹</button><b>Tháng ${m}/${y}</b><button class="btn ghost" data-gymmon="1" aria-label="Tháng sau" ${GYMM >= cur ? 'disabled' : ''}>›</button></div>
     <div class="seg small run-gen">${['','Nam','Nữ'].map(g => `<button class="${RUNGEN === g ? 'on' : ''}" data-rungen="${g}">${g || 'Tất cả'}</button>`).join('')}</div>`;
@@ -6390,7 +6393,7 @@ const HELP = [
  {ic:'💪', t:'Tập gym', img:'gym', s:[
    'Chọn bài hay tập, mỗi set ghi kg × số lần.',
    'App tính sức mạnh ước tính, vẽ biểu đồ tiến bộ và đánh dấu kỷ lục.',
-   'Một buổi gym tự tích Thể dục 30 phút. Bảng xếp hạng ở 🏆 Thành tích → Xếp hạng → Gym.']},
+   'Một buổi gym tự tích Thể dục 30 phút. Bảng xếp hạng ở 🥇 Xếp hạng → Gym.']},
  {ic:'🤝', t:'7 điều cam kết từ tâm', img:'camket', s:[
    'Vào 🧠 Tâm Trí → 7 điều cam kết → bấm ghi âm.',
    'Đọc đúng câu mở đầu trong khung (tên, ngày tháng), rồi đọc to, rõ đủ 7 điều.',
@@ -6409,7 +6412,7 @@ const HELP = [
  {ic:'🏆', t:'Điểm, cấp độ, xếp hạng', s:[
    'Mỗi việc hằng ngày +10 XP, việc hằng tuần +30 XP, ngày đủ 100% được thưởng thêm.',
    'XP giúp nhân vật đồng hành lên cấp. Huy hiệu xem ở 🏆 Thành tích → Huy hiệu, nhân vật đồng hành ở 🏆 Thành tích → Thú cưng.',
-   '🏆 Thành tích → Xếp hạng theo người hoặc theo phòng, có bảng chạy bộ và gym riêng. Chạm tên để xem tiến độ.']},
+   '🥇 Xếp hạng theo người hoặc theo phòng, có bảng chạy bộ và gym riêng. Chạm tên để xem tiến độ.']},
  {ic:'🛠️', t:'Dành cho quản lý', admin:true, s:[
    'Quản lý → Chạy bộ: dán khóa Gemini để bật AI đọc ảnh và chấm ghi âm. Dán dấu - để tắt.',
    'Ảnh và ghi âm AI chưa chấm được nằm ở tab "Ảnh chờ AI đọc" và "Tâm trí" trong Sheet.',
@@ -6466,7 +6469,7 @@ async function loadTrack(force){
 function trackView(){
   if (!TRACK || Date.now() - TAT > 300000) setTimeout(() => loadTrack(), 50);
   const seg = (v, c, label, key) => `<button class="${c===v?'on':''}" data-${key}="${v}">${label}</button>`;
-  const top = `<div class="seg">${seg('total',rankMode,'XP','rmode')}${seg('streak',rankMode,'Chuỗi ngày','rmode')}${seg('run',rankMode,'🏅 Thể thao','rmode')}${seg('track',rankMode,'📋 Theo dõi','rmode')}</div>`;
+  const top = `<div class="seg rseg">${seg('total',rankMode,'XP','rmode')}${seg('streak',rankMode,'Chuỗi','rmode')}${seg('run',rankMode,'🏅 Thể thao','rmode')}${seg('track',rankMode,'📋 Theo dõi','rmode')}</div>`;
   const q = TRACK;
   if (!q) return top + `<div class="loading" style="min-height:30vh"><div class="spin"></div>Đang tải bảng theo dõi…</div>`;
   if (q.error) return top + `<div class="empty">${esc(q.error)}</div>`;
