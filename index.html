@@ -829,7 +829,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.67';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.68';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -5960,13 +5960,17 @@ function mindView(){
 }
 function mBookTag(x){ return x.kind === 'docsach' && x.book ? `📕 ${esc(x.book)} <button class="lnk" data-mbook="${esc(x.rid)}" title="Sửa tên sách">✏️</button>` : ''; }
 function mindRes(L){ return (L || []).map(x => `<div class="mres ${x.st === 'Đạt' ? 'ok' : x.st === 'Chưa đạt' ? 'no' : 'wait'}">${x.st === 'Đạt' ? '✅' : x.st === 'Chưa đạt' ? '❌' : '⏳'} <b>${esc(x.st === 'Chờ chấm' ? 'Đã nhận, đang chờ chấm' : x.st)}</b>${x.note && x.st !== 'Chờ chấm' ? ' · ' + esc(x.note) : ''}${mBookTag(x) ? '<br>' + mBookTag(x) : ''}${x.sum ? `<br><small>📖 ${esc(x.sum)}</small>` : ''}</div>`).join(''); }
+function yestOk(kind){ const ok = !!(MIND && MIND.canYest) && !(kind === 'camket' ? MIND.ckY : MIND.dsY); if (!ok) MYEST = 0; return ok; }
+function yestSw(kind){
+  if (MIND && MIND.canYest === undefined) return `<div class="rule">⚠️ Máy chủ chưa cập nhật Code.gs v14.11.67 nên chưa có nút Bù hôm qua.</div>`;
+  return yestOk(kind) && !MREC ? `<div class="dsw"><button class="${MYEST ? '' : 'on'}" data-myest="0">Hôm nay</button><button class="${MYEST ? 'on' : ''}" data-myest="1">Bù hôm qua (tới 12:00)</button></div>` : '';
+}
 function mindRecUI(kind){
   const r = MREC && MREC.kind === kind ? MREC : null;
   if (r && r.sending) return `<div class="mrec busy">⏳ Đang gửi bài… <b>đừng tắt app</b>. Bài đã được giữ trên máy, gửi chưa xong thì mở lại app sẽ tự gửi tiếp.</div>`;
-  const yOk = MIND.canYest && !(kind === 'camket' ? MIND.ckY : MIND.dsY); if (!yOk) MYEST = 0;
+  const yOk = yestOk(kind);
   const IN = MYEST && yOk ? MIND.yIntro : MIND.intro, intro = kind === 'camket' ? IN.camket : IN[MMODE === 'nghe' ? 'nghe' : 'doc'];
-  const ysw = yOk && !MREC ? `<div class="dsw"><button class="${MYEST ? '' : 'on'}" data-myest="0">Hôm nay</button><button class="${MYEST ? 'on' : ''}" data-myest="1">Bù hôm qua (tới 12:00)</button></div>` : '';
-  const codeBox = ysw + (MYEST && yOk ? `<div class="rule">📅 Bài này nộp cho ngày hôm qua, hãy đọc đúng câu mở đầu của hôm qua.</div>` : '') + `<div class="mcode"><small>🗣️ Câu mở đầu:</small><b>“${esc(intro)}”</b></div>`, need = kind === 'docsach' ? 600 : 30;
+  const codeBox = yestSw(kind) + (MYEST && yOk ? `<div class="rule">📅 Bài này nộp cho ngày hôm qua, hãy đọc đúng câu mở đầu của hôm qua.</div>` : '') + `<div class="mcode"><small>🗣️ Câu mở đầu:</small><b>“${esc(intro)}”</b></div>`, need = kind === 'docsach' ? 600 : 30;
   if (r && r.paused) return codeBox + `<div class="mrec"><b>${r.why === 'mic' ? '⚠️ Mic bị ngắt' : r.why === 'hidden' ? '⏸ Bạn đã rời app, bản ghi tạm dừng' : '⏸ Đã tạm dừng'} · đã ghi ${mmss(r.secs)}${kind === 'docsach' ? ' / 10:00' : ''}</b>
       <button class="btn mgo" data-mrec="${kind}">🎙️ Ghi tiếp</button><button class="btn" data-mstop="1" ${r.secs < need ? 'disabled' : ''}>📤 Nộp phần đã ghi</button><button class="lnk" data-mcancel="1">Huỷ</button></div>`;
   if (r) return codeBox + `<div class="mrec on"><span class="mdot"></span><b data-mclock>${mmss(r.secs)}</b>${kind === 'docsach' ? ` / 10:00` : ''}
@@ -5985,7 +5989,7 @@ function mindCK(){
 function mindDS(){
   const d = MIND.ds, rec = MREC && MREC.kind === 'docsach';
   return `<div class="card mcard"><div class="mhead"><b>📚 Đọc sách 10 phút</b><span>${d.done ? '✅ Hôm nay đã đạt' : 'Hôm nay chưa đọc'} · 🔥 ${d.streak} ngày · ${d.minutes} phút</span></div>
-    ${MREC ? '' : dsSwitch()}${(DSMODE === 'listen' || (LSN && LSN.step === 'play')) && !MREC ? lsnUI() : mindRecUI('docsach')}${mindRes(d.last)}
+    ${MREC ? '' : dsSwitch()}${(DSMODE === 'listen' || (LSN && LSN.step === 'play')) && !MREC ? ((!LSN || LSN.step === 'input') ? yestSw('docsach') : '') + lsnUI() : mindRecUI('docsach')}${mindRes(d.last)}
     <div class="rule">${DSMODE === 'listen' ? 'Phát trực tiếp: dán link YouTube, app tự tính số phút bạn thật sự nghe. Không cần ghi âm.' : 'Ghi âm: tự đọc hoặc mở sách nói rồi ghi âm.'} Sách hay bất kỳ nội dung học hỏi, kỹ năng đều tính; nhạc, game, phim, giải trí thì không.</div>
     ${d.log.length ? `<details class="mlog"><summary>📒 Nhật ký đọc (${d.total} ngày)</summary>${d.books.length ? `<div class="mbooks">${d.books.map(b => `<span>📕 ${esc(b.b)} · ${b.min}′</span>`).join('')}</div>` : ''}${d.log.map(x => `<div class="mli"><b>${dm(x.date)} · ${esc(x.book)}</b> <button class="lnk" data-mbook="${esc(x.rid)}" title="Sửa tên sách">✏️</button>${x.mode ? ' · ' + esc(x.mode) : ''}${x.sum ? `<br><small>${esc(x.sum)}</small>` : ''}</div>`).join('')}</details>` : ''}</div>`;
 }
@@ -6365,7 +6369,7 @@ async function lsnFinish(auto){
   const L = LSN; if (!L || L.step !== 'play') return; if (L.secs < 60 && !auto) return;
   L.step = 'sending'; const secs = Math.round(L.secs), ranges = lsnMerge(L.ranges).map(x => [Math.round(x[0]), Math.round(x[1])]), vid = L.vid, t0 = L.t0;
   clearInterval(L.timer); try { L.wake && L.wake.release(); } catch(e){} try { L.p && L.p.pauseVideo(); } catch(e){} render();
-  const it = {fn: 'listenSubmit', rid: obxRid(), uid: ME && ME.id, kind: 'docsach', secs, payload: {vid, secs, ranges, t0}, created: Date.now(), tried: 0};
+  const it = {fn: 'listenSubmit', rid: obxRid(), uid: ME && ME.id, kind: 'docsach', secs, payload: {vid, secs, ranges, t0, yest: MYEST && MIND && MIND.canYest && !MIND.dsY ? 1 : 0}, created: Date.now(), tried: 0};
   await mindSend(it);
   lsnClear(); render();
 }
@@ -6374,7 +6378,7 @@ async function lsnRecover(){
   try { const o = JSON.parse(localStorage.getItem('rh_lsn') || 'null'); if (!o || !ME || o.uid !== ME.id || (LSN && LSN.step === 'play')) return;
     if (o.ask || !(o.secs >= 60)){ localStorage.removeItem('rh_lsn'); if (o.ask) toast('⛔ Lượt nghe lần trước bị dừng khi đang hỏi “Vẫn đang nghe?” nên không được tính', 6000); return; }
     localStorage.removeItem('rh_lsn'); toast('🎧 Lượt nghe dở lần trước được gửi tiếp (' + mmss(o.secs) + ')', 5000);
-    await mindSend({fn: 'listenSubmit', rid: obxRid(), uid: ME.id, kind: 'docsach', secs: o.secs, payload: {vid: o.vid, secs: o.secs, ranges: o.ranges, t0: o.t0}, created: o.t, tried: 0}); } catch(e){}
+    await mindSend({fn: 'listenSubmit', rid: obxRid(), uid: ME.id, kind: 'docsach', secs: o.secs, payload: {vid: o.vid, secs: o.secs, ranges: o.ranges, t0: o.t0, yest: o.yest || 0}, created: o.t, tried: 0}); } catch(e){}
 }
 setTimeout(() => lsnRecover(), 6000);
 
