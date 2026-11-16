@@ -829,7 +829,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.66';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.67';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -2682,7 +2682,7 @@ const hFreezeLeft = (c,w) => Math.max(0, HFREEZE_PER_WEEK - hFreezeUsed(c,w));
 function canHFreeze(c,i){ const h = byCode[c]; return !!h && !!D.daily[c] && T > 0 && i > 0 && i < T && i >= T-7 && activeDay(h,i) && activeDay(h,i-1) && !hOk(c,i) && hOk(c,i-1) && hFreezeLeft(c,weekOf(i)) > 0; }
 function habitStreak(h){ const c0 = h.code; let n = 0, miss = 0;   // lỡ tối đa 3 ngày liên tiếp vẫn giữ chuỗi, ngày thứ 4 đứt
   for (let i = 0; i <= T; i++){ if (!activeDay(h,i)) continue;
-    if (hOk(c0,i)){ n++; miss = 0; } else if (inGrace(h,i) || i === T) continue; else { miss++; if (miss > MISS_MAX) n = 0; } }
+    if (hOk(c0,i)){ n++; miss = 0; } else if (inGrace(h,i) || i === T) continue; else { miss++; if (miss > MISS_MAX && c0 !== '04') n = 0; } }
   return n; }
 /* Ngày đã hết hạn bổ sung thì mới tính là lỡ (trừ XP) */
 const dayFinal = i => i < T - 1 || (i === T - 1 && !(new Date().getHours() < EDIT_NOON && ymd(new Date()) === D.today));
@@ -2696,7 +2696,7 @@ function penMap(){
       if (D.daily[c][i]){ alive = true; miss = 0; continue; }
       if (isNeutral(c,i) || hFrozen(c,i) || isBusy(i) || isRest(i) || isLazy(i) || inGrace(h,i) || !dayFinal(i)) continue;
       if (!alive) continue;
-      miss++; if (miss <= MISS_MAX) add(i, PEN_DAILY); else alive = false; } });
+      miss++; if (miss <= MISS_MAX || c === '04') add(i, PEN_DAILY); else alive = false; } });   // 17/11: Thể dục (04) lỡ chỉ trừ XP mỗi ngày, không đứt chuỗi
   WEEKLY.forEach(h => { const c = h.code; let alive = false, miss = 0;
     for (let w = 0; w <= weekOf(T); w++){ if (!activeWeek(h,w)) continue;
       if (D.weekly[c][w]){ alive = true; miss = 0; continue; }
@@ -3406,7 +3406,7 @@ function panel(c){
     }
   }
   x += `<div class="rule">🎯 ${esc(ruleOf(c))}</div>`;
-  if (isDailyCode(c) && T >= 0) x += `<div class="rule">🔥 Chuỗi: lỡ tối đa ${MISS_MAX} ngày liên tiếp vẫn giữ, mỗi ngày lỡ -${PEN_DAILY} XP. Lỡ ngày thứ ${MISS_MAX+1} thì đứt chuỗi.</div>`;
+  if (isDailyCode(c) && T >= 0) x += `<div class="rule">🔥 Chuỗi: lỡ tối đa ${MISS_MAX} ngày liên tiếp vẫn giữ, mỗi ngày lỡ -${PEN_DAILY} XP. ${c === "04" ? "Thể dục: lỡ chỉ trừ XP, không đứt chuỗi." : `Lỡ ngày thứ ${MISS_MAX+1} thì đứt chuỗi.`}</div>`;
   return x;
 }
 function futSection(d){
@@ -5757,7 +5757,7 @@ function gymCard(){
   const head = `<div class="gym-head"><b>🏋️ Tập gym</b><span>${GYM && GYM.items ? 'Ghi kg × số lần từng set' : ''}</span></div>`;
   if (!GYM) return `<div class="card gym-card">${head}<div class="loading" style="min-height:80px"><div class="spin"></div>Đang tải…</div></div>`;
   if (GYM.err) return `<div class="card gym-card">${head}<div class="run-msg bad">${esc(GYM.err)}</div><button class="btn ghost" data-gymreload="1">Thử lại</button></div>`;
-  const f = GYMF, td = GYM.today, yd = GYM.yest; if (f.date !== td && f.date !== yd) f.date = td;
+  const f = GYMF, td = GYM.today, yd = GYM.yest; if (f.date !== td && (f.date !== yd || GYM.canYest === false)) f.date = td;
   const pins = (D.meta.gym || []).filter(k => gymExList().some(x => x.k === k));
   const done = (GYM.items || []).filter(x => x.date === f.date);
   // Bài ghim: xếp theo nhóm cơ và đúng thứ tự trong thư viện
@@ -5780,7 +5780,7 @@ function gymCard(){
   const list = done.length ? `<div class="gym-done">${done.map(x => { const ex = gymExOf(x.ex);
     return `<div class="gym-row" data-gymex="${x.ex}"><b>${gymShort(ex)}</b><span>${x.sets.map(s => (ex.bw && !s[0] ? '' : gymTxt(s[0]) + '×') + s[1]).join(' · ')}</span><small>${ex.bw ? x.reps + ' lần' : 'e1RM ≈ ' + gymTxt(x.rm) + ' kg'}</small></div>`; }).join('')}</div>` : '';
   return `<div class="card gym-card">${head}
-    <div class="run-dates"><button class="run-date ${f.date === td ? 'on' : ''}" data-gymdate="${td}">Hôm nay ${dm(td)}</button><button class="run-date ${f.date === yd ? 'on' : ''}" data-gymdate="${yd}">Hôm qua ${dm(yd)}</button></div>
+    <div class="run-dates"><button class="run-date ${f.date === td ? 'on' : ''}" data-gymdate="${td}">Hôm nay ${dm(td)}</button>${GYM.canYest === false ? '' : `<button class="run-date ${f.date === yd ? 'on' : ''}" data-gymdate="${yd}">Hôm qua ${dm(yd)}</button>`}</div>
     ${gymWeek()}
     <div class="gym-pins">${chips}<button class="gym-chip add" data-gympick="1">${pins.length ? '✎ Sửa bài của tôi' : '＋ Chọn các bài bạn hay tập'}</button></div>
     ${lib}${form}
@@ -5940,12 +5940,15 @@ function mindNudge(){ const n = toolOpen().length; const ck = MIND && !MIND.erro
   const tags = [ck == null ? '🤝 Cam kết' : (ck ? '✅' : '⭕') + ' Cam kết', ds == null ? '📚 Đọc sách' : (ds ? '✅' : '⭕') + ' Đọc sách'].concat(n ? [n + ' công cụ'] : []).join(' · ');
   if (!MIND && !MINDBUSY) setTimeout(mindLoad, 600);
   return `<div class="card hnudge" data-tab="mind"><b>🧠 Tâm Trí</b><span>${tags}</span><em>Mở ›</em></div>`; }
+let MYEST = 0;   // 17/11: 1 = đang nộp bù cho hôm qua (tới 12:00)
 let MIND = null, MINDBUSY = false, MREC = null, MFALL = '', MBOOK = (() => { try { return localStorage.getItem('rh_book') || ''; } catch(e){ return ''; } })(), MMODE = 'doc', MSUB = '';
 async function mindLoad(){ if (MINDBUSY) return; MINDBUSY = true; try { MIND = await call('mindMine', TOKEN); mindAutoTick(); } catch(e){ MIND = {error: e.message}; } MINDBUSY = false; if (tab === 'mind') render(); }
 /** Cam kết đạt → tự tích Niềm tin tích cực (13) */
 function mindAutoTick(){ if (!MIND || typeof toolTick !== 'function') return;
   if (MIND.ck && MIND.ck.done && toolTick('13', MIND.today, /x/)) toast('🌤️ Đã tự tích thói quen Niềm tin tích cực');
-  if (MIND.ds && MIND.ds.done && toolTick('03', MIND.today, /x/)) toast('📖 Đã tự tích thói quen 30 phút nâng cao kiến thức'); }
+  if (MIND.ds && MIND.ds.done && toolTick('03', MIND.today, /x/)) toast('📖 Đã tự tích thói quen 30 phút nâng cao kiến thức');
+  if (MIND.ckY && toolTick('13', MIND.yest, /x/)) toast('🌤️ Đã tự tích Niềm tin tích cực cho hôm qua');
+  if (MIND.dsY && toolTick('03', MIND.yest, /x/)) toast('📖 Đã tự tích đọc sách cho hôm qua'); }
 const mmss = s => Math.floor(s/60) + ':' + ('0' + Math.floor(s%60)).slice(-2);
 function mindView(){
   if (!MIND && !MINDBUSY) mindLoad();
@@ -5960,8 +5963,10 @@ function mindRes(L){ return (L || []).map(x => `<div class="mres ${x.st === 'Đ�
 function mindRecUI(kind){
   const r = MREC && MREC.kind === kind ? MREC : null;
   if (r && r.sending) return `<div class="mrec busy">⏳ Đang gửi bài… <b>đừng tắt app</b>. Bài đã được giữ trên máy, gửi chưa xong thì mở lại app sẽ tự gửi tiếp.</div>`;
-  const intro = kind === 'camket' ? MIND.intro.camket : MIND.intro[MMODE === 'nghe' ? 'nghe' : 'doc'];
-  const codeBox = `<div class="mcode"><small>🗣️ Câu mở đầu:</small><b>“${esc(intro)}”</b></div>`, need = kind === 'docsach' ? 600 : 30;
+  const yOk = MIND.canYest && !(kind === 'camket' ? MIND.ckY : MIND.dsY); if (!yOk) MYEST = 0;
+  const IN = MYEST && yOk ? MIND.yIntro : MIND.intro, intro = kind === 'camket' ? IN.camket : IN[MMODE === 'nghe' ? 'nghe' : 'doc'];
+  const ysw = yOk && !MREC ? `<div class="dsw"><button class="${MYEST ? '' : 'on'}" data-myest="0">Hôm nay</button><button class="${MYEST ? 'on' : ''}" data-myest="1">Bù hôm qua (tới 12:00)</button></div>` : '';
+  const codeBox = ysw + (MYEST && yOk ? `<div class="rule">📅 Bài này nộp cho ngày hôm qua, hãy đọc đúng câu mở đầu của hôm qua.</div>` : '') + `<div class="mcode"><small>🗣️ Câu mở đầu:</small><b>“${esc(intro)}”</b></div>`, need = kind === 'docsach' ? 600 : 30;
   if (r && r.paused) return codeBox + `<div class="mrec"><b>${r.why === 'mic' ? '⚠️ Mic bị ngắt' : r.why === 'hidden' ? '⏸ Bạn đã rời app, bản ghi tạm dừng' : '⏸ Đã tạm dừng'} · đã ghi ${mmss(r.secs)}${kind === 'docsach' ? ' / 10:00' : ''}</b>
       <button class="btn mgo" data-mrec="${kind}">🎙️ Ghi tiếp</button><button class="btn" data-mstop="1" ${r.secs < need ? 'disabled' : ''}>📤 Nộp phần đã ghi</button><button class="lnk" data-mcancel="1">Huỷ</button></div>`;
   if (r) return codeBox + `<div class="mrec on"><span class="mdot"></span><b data-mclock>${mmss(r.secs)}</b>${kind === 'docsach' ? ` / 10:00` : ''}
@@ -5997,7 +6002,7 @@ async function mindStart(kind, from){
       await Promise.race([gc.resume(), new Promise(res => setTimeout(res, 1500))]);
       if (gc.state !== 'running') throw new Error('ac'); recStream = ds.stream; } catch(e){ recStream = stream; try { gc && gc.close(); } catch(e2){} gc = null; } }
   const mr = new MediaRecorder(recStream, Object.assign({audioBitsPerSecond: 24000}, mime ? {mimeType: mime} : {}));
-  const r = MREC || (MREC = {kind, sid: from ? from.sid : obxRid(), uid: ME && ME.id, mode: from ? from.mode : MMODE, date: from ? from.date : (MIND && MIND.today) || '', parts: from ? from.parts.slice() : [], secs: 0});
+  const r = MREC || (MREC = {kind, sid: from ? from.sid : obxRid(), uid: ME && ME.id, mode: from ? from.mode : MMODE, date: from ? from.date : (MYEST && MIND && MIND.yest ? MIND.yest : (MIND && MIND.today) || ''), parts: from ? from.parts.slice() : [], secs: 0});
   Object.assign(r, {mr, stream, chunks: [], t0: Date.now(), curSecs: 0, mime: mr.mimeType || mime || 'audio/webm', wake: null, paused: 0, why: '', quiet: 0, win: 0});
   r.secs = recSecs(r);
   mr.ondataavailable = e => { if (e.data && e.data.size && MREC === r && r.mr === mr) r.chunks.push(e.data); };
@@ -6060,7 +6065,7 @@ async function recItem(r, created){
   const parts = r.parts.filter(p => p.blob && p.blob.size > 0 && p.secs > 0); if (!parts.length) throw new Error('Không có bản ghi.');
   const main = parts.reduce((a, p) => p.blob.size > a.blob.size ? p : a, parts[0]), more = parts.filter(p => p !== main).map(p => ({blob: p.blob, mime: p.mime, secs: p.secs}));
   let sm = null; try { sm = r.kind === 'docsach' ? await mindSample(parts.map(p => p.blob)) : null; } catch(e){}
-  return {rid: obxRid(), sid: r.sid, uid: ME && ME.id, kind: r.kind, blob: main.blob, mime: main.mime, more, secs: parts.reduce((a, p) => a + p.secs, 0), mode: r.mode || 'doc', upload: 0, fmod: 0, sample: sm ? sm.b64 : '', voiced: sm ? sm.voiced : 0, created: created || Date.now(), tried: 0};
+  return {rid: obxRid(), sid: r.sid, uid: ME && ME.id, kind: r.kind, blob: main.blob, mime: main.mime, more, secs: parts.reduce((a, p) => a + p.secs, 0), mode: r.mode || 'doc', yest: MIND && MIND.yest && r.date === MIND.yest ? 1 : 0, upload: 0, fmod: 0, sample: sm ? sm.b64 : '', voiced: sm ? sm.voiced : 0, created: created || Date.now(), tried: 0};
 }
 function mindEnd(){ if (!MREC) return; clearInterval(MREC.timer); clearInterval(MREC.vu); try { MREC.stream.getTracks().forEach(t => t.stop()); } catch(e){} try { MREC.wake && MREC.wake.release(); } catch(e){} try { MREC.ac && MREC.ac.close(); } catch(e){} MREC.ac = null; MREC.an = null; }
 function mindCancel(){ if (!MREC) return; const sid = MREC.sid; try { if (MREC.mr){ MREC.mr.onstop = null; MREC.mr.stop(); } } catch(e){} mindEnd(); MREC = null; RECDB.del(sid).catch(() => {}).then(recRefresh); render(); }
@@ -6122,7 +6127,7 @@ async function mindSendFile(kind, f, inp){
   if (isFinite(dur) && dur < need - 5){ toast(kind === 'docsach' ? `⏱️ Bản ghi mới ${mmss(dur)}, cần đủ 10 phút` : '⏱️ Bản ghi quá ngắn, hãy đọc đủ 7 điều'); clr(); return false; }
   MREC = {kind, sending: true}; render();
   let ok = false, sm = null; try { sm = kind === 'docsach' ? await mindSample(f) : null; } catch(e){}
-  ok = await mindSend({rid: obxRid(), uid: ME && ME.id, kind, blob: f, mime: f.type || 'audio/mp4', secs: isFinite(dur) ? Math.round(dur) : 0, mode: MMODE, upload: 1, fmod: f.lastModified || 0, sample: sm ? sm.b64 : '', voiced: sm ? sm.voiced : 0, created: Date.now()});
+  ok = await mindSend({rid: obxRid(), uid: ME && ME.id, kind, blob: f, mime: f.type || 'audio/mp4', secs: isFinite(dur) ? Math.round(dur) : 0, mode: MMODE, yest: MYEST && MIND && MIND.canYest ? 1 : 0, upload: 1, fmod: f.lastModified || 0, sample: sm ? sm.b64 : '', voiced: sm ? sm.voiced : 0, created: Date.now()});
   MREC = null; render(); return ok;
 }
 /* ===== Hộp thư chờ gửi (v14.11.37): bản ghi lưu trên máy TRƯỚC khi gửi, máy chủ xác nhận mới xóa; tắt app / mất mạng thì tự gửi lại ===== */
@@ -6155,7 +6160,7 @@ async function mindDeliver(it){
   }
   const b64 = await blobB64(it.blob); if (!b64) throw new Error('Không đọc được bản ghi trên máy.');
   const more = []; for (const p of (it.more || [])){ const mb = await blobB64(p.blob); if (mb) more.push({b64: mb, mime: p.mime, secs: p.secs}); }
-  const x = await Promise.race([call('mindSubmit', TOKEN, {rid: it.rid, kind: it.kind, b64, mime: it.mime, secs: it.secs, mode: it.mode, upload: it.upload || 0, fmod: it.fmod || 0, sample: it.sample || '', voiced: it.voiced || 0, more, created: it.created || 0, tried: it.tried || 0}),
+  const x = await Promise.race([call('mindSubmit', TOKEN, {rid: it.rid, kind: it.kind, b64, mime: it.mime, secs: it.secs, mode: it.mode, yest: it.yest || 0, upload: it.upload || 0, fmod: it.fmod || 0, sample: it.sample || '', voiced: it.voiced || 0, more, created: it.created || 0, tried: it.tried || 0}),
     new Promise((_, no) => setTimeout(() => no(new Error('TIMEOUT')), 180000))]);
   try { await OBX.del(it.rid); } catch(e){}
   return x;
@@ -6251,6 +6256,7 @@ document.addEventListener('click', e => {
   else if (d.mcancel){ if (confirmTwice(b)) mindCancel(); }
   else if (d.mmode){ MMODE = d.mmode; render(); }
 });
+document.addEventListener('click', e => { const b = e.target.closest('[data-myest]'); if (!b) return; MYEST = +b.dataset.myest ? 1 : 0; render(); });
 document.addEventListener('click', async e => { const b = e.target.closest('[data-mbook]'); if (!b || !MIND || !MIND.ds) return;
   const rid = b.dataset.mbook, x = [...(MIND.ds.last || []), ...(MIND.ds.log || [])].find(y => y.rid === rid);
   const v = prompt('Tên sách đúng:', x ? x.book : ''); if (v == null || !v.trim() || (x && v.trim() === x.book)) return;
