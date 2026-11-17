@@ -831,7 +831,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.91';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.92';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -4595,18 +4595,18 @@ function workFormView(){
         <label class="wfile" style="margin-top:10px"><input type="checkbox" id="wboth" ${f.both ? 'checked' : ''}> <span>Dùng chung link này cho cả bài 1 và bài 2</span></label>
         ${f.both ? `<label class="muted" style="font-size:13px;display:block;margin-top:10px">Tên bài (Bài ${o})</label>${wLessonSelect('wl' + o, f.lesson[o], f.kind)}` : ''}`
       : `<div style="display:flex;gap:8px;margin-top:12px"><label class="wbtn" style="display:inline-flex;align-items:center;flex:1;justify-content:center">📷 Chụp ảnh<input type="file" id="wcam" accept="image/*" capture="environment" hidden></label>
-        <label class="wbtn ghost" style="display:inline-flex;align-items:center;flex:1;justify-content:center">📎 Chọn tệp<input type="file" id="wpick" accept="image/*,application/pdf" multiple hidden></label></div><small class="muted" style="display:block;margin-top:6px">Ảnh và PDF gửi nguyên bản gốc, tối đa 100 MB mỗi tệp. Chụp rõ nét nhé.</small>${files}
+        <label class="wbtn ghost" style="display:inline-flex;align-items:center;flex:1;justify-content:center">📎 Chọn tệp<input type="file" id="wpick" accept="image/*,application/pdf" multiple hidden></label></div><small class="muted" style="display:block;margin-top:6px">Ảnh và PDF gửi nguyên bản gốc, tối đa 50 MB mỗi tệp. Chụp rõ nét nhé.</small>${files}
         <label class="wfile" style="margin-top:10px"><input type="checkbox" id="wboth" ${f.both ? 'checked' : ''}> <span>Dùng chung file này cho cả bài 1 và bài 2</span></label>
         ${f.both ? `<label class="muted" style="font-size:13px;display:block;margin-top:10px">Tên bài (Bài ${o})</label>${wLessonSelect('wl' + o, f.lesson[o], f.kind)}` : ''}`}
       ${f.err ? `<div class="wfl red" style="margin-top:10px;white-space:normal">${esc(f.err)}</div>` : ''}
       <button class="wbtn" id="wsend" data-wsend="1" style="width:100%;margin-top:14px" ${ok ? '' : 'disabled'}>${f.sending ? esc(f.sending) : 'Gửi bài'}</button></div>`;
 }
 const wRead = (blob) => new Promise((ok, bad) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1] || ''); r.onerror = () => bad(new Error('Không đọc được tệp')); r.readAsDataURL(blob); });
-const W_MAX = 100 * 1048576, W_CHUNK = W_MAX;     // tối đa 100 MB/tệp; gửi MỘT lần trọn tệp (đo thật: nhanh hơn cắt khúc), rớt mạng mới gửi tiếp phần còn lại
+const W_MAX = 50 * 1048576, W_CHUNK = W_MAX;     // tối đa 50 MB/tệp; gửi MỘT lần trọn tệp (đo thật: nhanh hơn cắt khúc), rớt mạng mới gửi tiếp phần còn lại
 const wIsPdf = f => f.type === 'application/pdf' || (!f.type && /\.pdf$/i.test(f.name || ''));
 async function wPrep(file){
   if (!file.size) throw new Error('Tệp "' + file.name + '" trống (0 byte), hãy chọn lại.');
-  if (wIsPdf(file)) { if (file.size > W_MAX) throw new Error('PDF "' + file.name + '" quá lớn (tối đa 100 MB).'); return {name: file.name, mime: 'application/pdf', blob: file}; }
+  if (wIsPdf(file)) { if (file.size > W_MAX) throw new Error('PDF "' + file.name + '" quá lớn (tối đa 50 MB).'); return {name: file.name, mime: 'application/pdf', blob: file}; }
   if (/^image\/(heic|heif)$/i.test(file.type) || /\.(heic|heif)$/i.test(file.name || '')) {      // HEIC: đổi sang JPEG giữ nguyên kích thước để ai cũng mở được
     try {
       const bmp = await createImageBitmap(file), c = document.createElement('canvas'); c.width = bmp.width; c.height = bmp.height; c.getContext('2d').drawImage(bmp, 0, 0);
@@ -4614,7 +4614,7 @@ async function wPrep(file){
       if (blob && blob.size) return {name: file.name.replace(/\.\w+$/, '') + '.jpg', mime: 'image/jpeg', blob};
     } catch(e){}
   }
-  if (file.size > W_MAX) throw new Error('Ảnh "' + file.name + '" quá lớn (tối đa 100 MB).');
+  if (file.size > W_MAX) throw new Error('Ảnh "' + file.name + '" quá lớn (tối đa 50 MB).');
   const mt = file.type || (/\.(heic|heif)$/i.test(file.name || '') ? 'image/heic' : '');
   if (!/^image\/(jpeg|jpg|png|webp|heic|heif|gif)$/i.test(mt)) throw new Error('Chỉ nhận ảnh hoặc PDF ("' + file.name + '").');
   return {name: file.name, mime: mt, blob: file};
