@@ -830,7 +830,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.77';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.78';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -3769,7 +3769,7 @@ function adminView0(){
   <div class="pvbar ${SETTINGS.unlockAll?'on':''}" data-unlockall="1" style="margin-top:16px"><span>🔓 Mở khoá tất cả thói quen cho mọi người</span><b>${SETTINGS.unlockAll ? 'BẬT' : 'TẮT'}</b></div>
   <div class="rule" style="margin:-2px 2px 0">Bật: mở tất cả thói quen ngay. Tắt: mở dần theo tuần.</div>
   <div class="sec"><h3>Tình hình từng người</h3><span>chạm vào tên để xem tiến độ</span></div>
-  <div class="card tblwrap"><table class="tbl"><thead><tr><th>Họ tên</th><th>Phòng</th><th>Ngày</th><th>% 7 ngày</th><th>Chuỗi</th><th>XP</th><th>Lần cuối mở</th><th></th><th></th></tr></thead><tbody>${rows || '<tr><td colspan="9">Chưa có thành viên.</td></tr>'}</tbody></table></div>
+  <div class="card tblwrap"><table class="tbl"><thead><tr><th>Họ tên</th><th>Phòng</th><th>Ngày</th><th>% 7 ngày</th><th>Chuỗi</th><th>XP</th><th>Lần cuối mở</th><th></th><th></th></tr></thead><tbody>${rows || '<tr><td colspan="9">Chưa có thành viên.</td></tr>'}</tbody></table></div>` + teamSection() + (typeof runAdminSection === 'function' ? runAdminSection() : '') + mindAdminSection() + workTierCard() + `
   <div class="sec"><h3>Thêm thành viên</h3><span>PIN được tạo tự động</span></div>
   <form class="card" id="addf"><div class="grid2">
     <div class="fld"><label>Họ tên</label><input id="an" required placeholder="Ví dụ: Nguyễn Văn A"></div>
@@ -3777,7 +3777,7 @@ function adminView0(){
     <div class="fld"><label>Ngày bắt đầu 90 ngày</label><input id="as" type="date" value="${ADMIN.today}"></div>
     <div class="fld"><label>Vai trò</label><select id="ar"><option>Thành viên</option><option>Quản lý</option></select></div></div>
     <button class="btn" type="submit">+ Thêm và tạo PIN</button>
-    <div class="rule">Sửa thành viên ở tab "Thành viên" trong Sheet.</div></form>` + mindAdminSection() + workTierCard() + teamSection() + (typeof runAdminSection === 'function' ? runAdminSection() : '');
+    <div class="rule">Sửa thành viên ở tab "Thành viên" trong Sheet.</div></form>`;
 }
 
 /* ---- Huy hiệu ---- */
