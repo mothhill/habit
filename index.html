@@ -829,7 +829,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.75';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.76';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -5290,7 +5290,7 @@ function runCard(){
     <div class="run-hint">🙏 Nộp nghiêm túc: đúng ảnh của bạn, đúng buổi&nbsp;tập.</div>
     <div class="run-dyn">${runDyn()}</div>
     ${f.err ? `<div class="run-msg bad">${esc(f.err)}</div>` : f.msg ? `<div class="run-msg">${esc(f.msg)}</div>` : ''}
-    <button class="btn run-submit" data-runsubmit="1" ${f.sending || f.busy ? 'disabled' : ''}>${f.sending ? 'Đang nộp…' : 'Nộp bài'}</button>
+    <button class="btn run-submit" data-runsubmit="1" ${f.sending ? 'disabled' : ''}>${f.sending ? 'Đang nộp…' : f.busy && f.pend ? 'Chờ đọc xong sẽ tự nộp…' : 'Nộp bài'}</button>
     <div class="rule">Cả ngày từ 2 km mới được tính · Đạp xe km ÷ 4 · Mỗi hoạt động nộp một bài riêng (2 buổi thì nộp 2 lần, không ghép 2 ảnh)</div>
     ${items.length ? `<div class="run-list">${list}</div>` : ''}</div></div>`;
 }
@@ -5396,7 +5396,7 @@ async function runPick(file, live){
     if (r && r.minutes != null) f.min = String(Math.round(r.minutes*10)/10).replace('.', ',');
     if (runNoRead()) toast('⏳ Chưa đọc nhanh được số km, cứ nộp bài, số km sẽ cập nhật sau');
   } catch(e){ if (seq === f.seq){ f.err = e.message; f.ocr = {best: null}; } }
-  finally { if (seq === f.seq){ f.busy = false; runRefresh(); } }
+  finally { if (seq === f.seq){ f.busy = false; runRefresh(); if (f.pend){ f.pend = 0; runSend(); } } }
 }
 /* ---- Thông báo kết quả đọc lại ảnh chạy bộ ---- */
 function aiLbl(A){
@@ -5436,7 +5436,7 @@ async function runSubmitBox(payload){
   } finally { delete OBXBUSY[it.rid]; obxRefresh(); }
 }
 async function runSend(report){
-  const f = RUNF; if (f.sending || f.busy) return; f.err = ''; f.msg = '';
+  const f = RUNF; if (f.sending) return; if (f.busy){ f.pend = 1; f.err = ''; f.msg = ''; runRefresh(); return; } f.pend = 0; f.err = ''; f.msg = '';
   if (!report && f.img && f.ocr && runNoRead()) report = true;
   if (report){
     if (!f.img){ f.err = 'Hãy chọn ảnh trước.'; runRefresh(); return; }
