@@ -786,6 +786,7 @@ html[data-theme=light] .banner{color:#5A4300}
 .mbook{font-weight:600;margin:4px 0 8px}.mlog summary{cursor:pointer;font-weight:600;margin-top:8px}.mli{padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}
 .mbooks{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}.mbooks span{font-size:13px;padding:4px 8px;border-radius:99px;background:var(--primary-soft)}
 .bnav button{font-size:12px}
+@media(max-width:919px){.bnav{padding-left:2px;padding-right:2px}.bnav button{font-size:clamp(8.5px,2.6vw,12px);letter-spacing:-.3px;overflow:hidden;text-overflow:ellipsis}.bnav button span{font-size:clamp(16px,5vw,20px)}}
 .rcam{position:fixed;inset:0;z-index:100;background:#000;display:flex;flex-direction:column}.rcam video{flex:1;width:100%;object-fit:cover;min-height:0}
 .rcam-frame{position:absolute;left:8%;right:8%;top:22%;bottom:28%;border:2px dashed rgba(156,203,99,.85);border-radius:14px;pointer-events:none}
 .rcam-tip{position:absolute;top:calc(12px + env(safe-area-inset-top));left:12px;right:12px;text-align:center;color:#fff;font-size:14px;background:rgba(0,0,0,.45);padding:8px;border-radius:10px}
@@ -830,7 +831,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.78';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.79';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
