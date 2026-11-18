@@ -793,7 +793,7 @@ html[data-theme=light] .banner{color:#5A4300}
 .rcam-bar{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:16px 20px calc(18px + env(safe-area-inset-bottom));background:#000}.rcam-bar .btn{justify-self:start;color:#fff}
 .rcam-shot{width:72px;height:72px;border-radius:50%;background:#fff;border:5px solid #9CCB63;box-shadow:0 0 0 3px #000 inset}
 .mcode{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;padding:8px 12px;border-radius:14px;border:1px dashed var(--primary);margin:8px 0;font-size:14px}
-.mcode b{font-size:17px;color:var(--primary)}.mcode small{width:100%;color:var(--muted);font-size:12px}.mfile{display:block;text-align:center;margin:8px 0;font-size:13px;cursor:pointer}.mhow{font-size:12px;margin:2px 0 8px;color:var(--muted)}.mhow summary{cursor:pointer;text-align:center}.mhow ol{padding-left:20px;margin:8px 0}.mhow li{margin:4px 0}.msh{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 12px;border-radius:14px;background:rgba(127,127,127,.12);margin:8px 0}.msh small{color:var(--muted)}
+.mcode b{font-size:17px;color:var(--primary)}.mcode.first{animation:mblink .8s 6;border-style:solid;border-width:2px}.mcode .mfirst{width:100%;font-weight:700;color:var(--primary);font-size:13px}@keyframes mblink{50%{background:rgba(255,193,7,.35)}}.bigwarn{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px}.bigwarn>div{background:var(--card,#fff);color:var(--text,#222);border-radius:18px;padding:20px 18px;max-width:420px;width:100%;text-align:center;font-size:16px;line-height:1.5}.bigwarn b{font-size:19px;display:block;margin-bottom:8px}.bigwarn .btn{margin:12px 6px 0}.mcode small{width:100%;color:var(--muted);font-size:12px}.mfile{display:block;text-align:center;margin:8px 0;font-size:13px;cursor:pointer}.mhow{font-size:12px;margin:2px 0 8px;color:var(--muted)}.mhow summary{cursor:pointer;text-align:center}.mhow ol{padding-left:20px;margin:8px 0}.mhow li{margin:4px 0}.msh{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 12px;border-radius:14px;background:rgba(127,127,127,.12);margin:8px 0}.msh small{color:var(--muted)}
 .fam{padding:12px 12px 12px;margin-bottom:12px}.fam.done{border-color:var(--primary)}
 .famh{display:flex;align-items:center;gap:8px;margin:0 2px 8px}.famh .fic{font-size:20px}.famh b{font-size:17px}.flv{margin-left:auto;font-size:12px;font-weight:700;color:var(--muted);background:var(--primary-soft);padding:4px 8px;border-radius:99px}
 .fup{font-size:12px;font-weight:800;color:#0B1F14;background:#9CCB63;padding:4px 8px;border-radius:99px;animation:fupp 1.6s ease-in-out infinite}@keyframes fupp{50%{transform:scale(1.06)}}
@@ -831,7 +831,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.93';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.94';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -5291,6 +5291,7 @@ function runCard(){
     ${f.busy ? '<div class="run-busy">⏳ Đang đọc số km từ ảnh…</div>' : ''}
     ${f.ocr && f.ocr.raw !== undefined && !f.busy ? `<details class="run-raw"><summary>🔍 Xem chữ app đọc được (chỉ quản lý thấy)</summary><pre>${esc(f.ocr.raw || '(trống)')}</pre></details>` : ''}
     ${f.ocr && f.ocr.nameBad && f.type !== 'tread' && !f.busy && !runNoRead() ? `<div class="run-msg">ℹ️ Tên trên ảnh khác tên trong app, quản lý sẽ xác nhận.</div>` : ''}
+    ${runWarnHtml()}
     ${f.ocr && f.ocr.noWhen && f.type !== 'tread' && !f.busy && !runNoRead() ? `<div class="run-msg bad">⚠️ Ảnh không có ngày giờ chạy (ví dụ "Hôm nay lúc 7:19") nên sẽ <b>không được tính</b>. Hãy chụp màn hình trang chi tiết hoạt động có tên và ngày giờ.</div>` : ''}
     ${f.ocr && !f.busy && runNoRead() ? `<div class="run-msg">⏳ Chưa đọc nhanh được số km. Cứ nộp, số km sẽ cập nhật sau.</div>
     <div class="run-bug"><input type="text" maxlength="200" placeholder="Ghi chú thêm, ví dụ: chạy 5,2 km lúc 6h (không bắt buộc)" value="${esc(f.bugmsg || '')}" data-runbugmsg="1"></div>` : ''}
@@ -5312,6 +5313,20 @@ function runDyn(){
 function runLive(){ const d = document.querySelector('.run-card .run-dyn'); if (d) d.innerHTML = runDyn();
   const o = document.querySelector('.run-card .run-ocr'), raw = runNum(RUNF.km), b = RUNF.ocr && RUNF.ocr.best;
   if (o) o.hidden = !(b != null && raw > 0 && Math.abs(raw - b) <= 0.05); }
+/** 18/11 (C3): ảnh khác ngày đang chọn / pace chậm → báo đỏ trước khi nộp */
+function runWarn(){
+  const f = RUNF, o = f.ocr; if (!o || f.busy || runNoRead() || f.type === 'tread') return null;
+  const w = {};
+  if (o.wc === 'wrong' && f.date === f.ocrDate) w.day = 1;
+  if (o.slow && f.type !== 'bike') w.slow = o.slow;
+  if (o.noWhen) w.none = 1;
+  return (w.day || w.slow || w.none) ? w : null;
+}
+function runWarnHtml(){
+  const w = runWarn(), o = RUNF.ocr; if (!w) return '';
+  return (w.day ? `<div class="run-msg bad">⛔ Ngày trên ảnh${o.whenTxt ? ' (' + esc(o.whenTxt) + ')' : ''} không khớp ngày nộp ${dm(RUNF.date)} → nộp sẽ bị loại "Ảnh khác ngày".${o.alt ? ` <button class="btn" data-rundate="${o.alt}">Đổi sang ngày ${dm(o.alt)}</button>` : ''}</div>` : '')
+    + (w.slow ? `<div class="run-msg bad">⛔ ${esc(w.slow)}</div>` : '');
+}
 function runRefresh(){ const el = document.querySelector('.run-card'); if (el) el.outerHTML = runCard(); }
 async function runLoadMine(){
   RUNSBUSY = true;
@@ -5395,8 +5410,8 @@ async function runPick(file, live){
   try {
     const url = await runCompress(file); if (seq !== f.seq) return;
     f.img = url; runRefresh();
-    const r = await call('runOcr', TOKEN, url.split(',')[1], f.type); if (seq !== f.seq) return;
-    f.ocr = r || {};
+    const r = await call('runOcr', TOKEN, url.split(',')[1], f.type, f.date); if (seq !== f.seq) return;
+    f.ocr = r || {}; f.ocrDate = f.date; f.warnOk = 0;
     if (r && r.act && RUN_TYPES[r.act] && r.act !== f.type && (f.type !== 'tread' || r.act === 'bike')){ f.type = r.act; toast(RUN_TYPES[r.act][0] + ' Ảnh là ' + RUN_TYPES[r.act][1].toLowerCase() + ', app đã chọn loại này'); }
     if (r && r.rel && r.rel.length === 1 && f.type !== 'tread'){ const td = (RUNS && RUNS.today) || D.today, want = r.rel[0] === 1 ? addDays(td, -1) : td;
       if (want !== f.date && (r.rel[0] === 0 || runCanYest())){ f.date = want; toast(r.rel[0] === 1 ? '📅 Ảnh ghi "hôm qua", app đã chọn ngày hôm qua' : '📅 Ảnh ghi "hôm nay", app đã chọn ngày hôm nay'); } }
@@ -5438,7 +5453,7 @@ async function runSubmitBox(payload){
   OBXBUSY[it.rid] = 1;
   try { return await mindDeliver(it); }
   catch(e){
-    if (obxNet(e) && stored){ it.err = String(e.message || e); try { await OBX.put(it); } catch(_){} const k = new Error('📮 Chưa gửi được. Bài đã được giữ trên máy trong mục "Bài chưa gửi", sẽ tự gửi lại khi có mạng.'); k.kept = true; throw k; }
+    if (obxNet(e) && stored){ it.err = String(e.message || e); try { await OBX.put(it); } catch(_){} if (isAuthErr(e)) authLost(); const k = new Error(isAuthErr(e) ? AUTH_KEEP : '📮 Chưa gửi được. Bài đã được giữ trên máy trong mục "Bài chưa gửi", sẽ tự gửi lại khi có mạng.'); k.kept = true; throw k; }
     if (stored) { try { await OBX.del(it.rid); } catch(_){} }
     throw e;
   } finally { delete OBXBUSY[it.rid]; obxRefresh(); }
@@ -5462,11 +5477,14 @@ async function runSend(report){
   else if (f.busy || !f.ocr) f.err = 'App đang đọc ảnh, chờ chút nhé.';
   else if (!(raw > 0)) f.err = (f.ocr.cands || []).length ? 'Hãy bấm chọn số km đúng trong các số app đọc được.' : 'App chưa đọc được số km trên ảnh. Hãy bấm "Gửi ảnh báo lỗi" để quản lý xử lý.';
   if (f.err){ runRefresh(); return; }
+  const wn = runWarn();
+  if (wn && f.warnOk !== f.seq){ f.warnOk = f.seq; f.err = (wn.none ? 'Ảnh không có ngày giờ chạy nên bài sẽ KHÔNG được tính. ' : wn.day ? 'Ngày trên ảnh khác ngày nộp nên bài sẽ KHÔNG được tính. ' : 'Pace chậm hơn mức tối thiểu nên bài sẽ KHÔNG được tính. ') + 'Nên chọn ảnh khác' + (wn.day ? ' hoặc đổi ngày' : '') + '. Vẫn muốn nộp thì bấm Nộp lần nữa.'; runRefresh(); return; }
   f.sending = true; runRefresh();
   try {
     const min = runNum(f.min);
     const r = await runSubmitBox({date: f.date, type: f.type, km: raw, min: min > 0 ? min : '', img: f.img.split(',')[1], shot: f.type === 'tread' ? f.shot || 0 : 0, live: f.type === 'tread' && f.live ? 1 : 0, pick: f.pick || 0});
     if (r.rejected){ f.err = r.msg; toast('⛔ ' + r.msg); }
+    else if (r.pending){ f.msg = r.msg; toast('⏳ Ảnh này đang chờ đọc số km, không cần gửi lại', 5000); }
     else { f.msg = r.msg; toast(r.flagged ? '⚠️ Đã nhận, quản lý sẽ xem lại' : '✅ Đã nộp ' + runKmTxt(r.item.km) + ' km');
       if (r.dayOk !== false && toolTick('04', f.date, RE_EXER)) setTimeout(() => toast('💪 Đã tự tích thói quen Thể dục 30 phút'), 1600); }
     f.img = ''; f.ocr = null; f.km = ''; f.min = '';
@@ -5988,14 +6006,16 @@ function mindRecUI(kind){
   if (r && r.sending) return `<div class="mrec busy">⏳ Đang gửi bài… <b>đừng tắt app</b>. Bài đã được giữ trên máy, gửi chưa xong thì mở lại app sẽ tự gửi tiếp.</div>`;
   const yOk = yestOk(kind);
   const IN = MYEST && yOk ? MIND.yIntro : MIND.intro, intro = kind === 'camket' ? IN.camket : IN[MMODE === 'nghe' ? 'nghe' : 'doc'];
-  const codeBox = yestSw(kind) + (MYEST && yOk ? `<div class="rule">📅 Bài này nộp cho ngày hôm qua, hãy đọc đúng câu mở đầu của hôm qua.</div>` : '') + `<div class="mcode"><small>🗣️ Câu mở đầu:</small><b>“${esc(intro)}”</b></div>`, need = kind === 'docsach' ? 600 : 30;
+  const codeBox = yestSw(kind) + (MYEST && yOk ? `<div class="rule">📅 Bài này nộp cho ngày hôm qua, hãy đọc đúng câu mở đầu của hôm qua.</div>` : '') + `<div class="mcode${r && !r.paused && r.secs < 5 ? ' first' : ''}"><small>🗣️ Câu mở đầu:</small><b>“${esc(intro)}”</b>${r && !r.paused && r.secs < 15 ? '<span class="mfirst">👉 Đọc câu này trước</span>' : ''}</div>`, need = kind === 'docsach' ? 600 : 30;
+  const forDay = MYEST && yOk ? 'hôm qua ' + dm(MIND.yest) : 'hôm nay' + (MIND && MIND.today ? ' ' + dm(MIND.today) : '');
   if (r && r.paused) return codeBox + `<div class="mrec"><b>${r.why === 'mic' ? '⚠️ Mic bị ngắt' : r.why === 'hidden' ? '⏸ Bạn đã rời app, bản ghi tạm dừng' : '⏸ Đã tạm dừng'} · đã ghi ${mmss(r.secs)}${kind === 'docsach' ? ' / 10:00' : ''}</b>
       <button class="btn mgo" data-mrec="${kind}">🎙️ Ghi tiếp</button><button class="btn" data-mstop="1" ${r.secs < need ? 'disabled' : ''}>📤 Nộp phần đã ghi</button><button class="lnk" data-mcancel="1">Huỷ</button></div>`;
   if (r) return codeBox + `<div class="mrec on"><span class="mdot"></span><b data-mclock>${mmss(r.secs)}</b>${kind === 'docsach' ? ` / 10:00` : ''}
       <button class="btn" data-mstop="1" ${r.secs < need ? 'disabled' : ''} data-mneed="${need}">${kind === 'docsach' ? '⏹ Dừng và nộp' : '⏹ Đọc xong, nộp bài'}</button><button class="lnk" data-mcancel="1">Huỷ</button></div>
       <div class="mvu" data-mvu><i></i></div><div class="mvl" data-mvl>🎙️ Đang thu · nói thử để xem thanh âm lượng nhảy</div>
       ${r.quiet ? `<div class="mres no">🔇 Máy chưa nghe thấy giọng. Kiểm tra micro, đọc to hơn hoặc để máy gần loa hơn.</div>` : ''}`;
-  return codeBox + `<button class="btn mgo" data-mrec="${kind}" ${MREC ? 'disabled' : ''}>🎙️ ${kind === 'camket' ? 'Bắt đầu đọc và ghi âm' : 'Bắt đầu ghi âm 10 phút'}</button>
+  return codeBox + `<button class="btn mgo" data-mrec="${kind}" ${MREC ? 'disabled' : ''}>🎙️ ${kind === 'camket' ? 'Bắt đầu đọc và ghi âm' : 'Bắt đầu ghi âm 10 phút'} · nộp cho ${forDay}</button>
+    <div class="mhow">💡 Trước khi ghi: tắt tự khoá màn hình (hoặc đặt thời gian khoá ≥ 15 phút) và đừng mở app khác. Màn hình tắt hoặc rời app thì bản ghi tạm dừng.</div>
     ${kind === 'docsach' ? mindFileUI() : ''}`;
 }
 function mindCK(){
@@ -6062,10 +6082,20 @@ function recSnap(r){ const parts = r.parts.slice(); if (r.mr && r.chunks.length)
 function recSave(r){ if (r.parts.length || r.chunks.length) RECDB.put(recSnap(r)).catch(() => {}); }
 async function recRefresh(){ try { RECLIST = ((await RECDB.all()) || []).filter(x => !ME || x.uid === ME.id).sort((a, b) => a.t - b.t); } catch(e){ RECLIST = []; } if (tab === 'mind' && !MREC) render(); }
 /** Tạm dừng đoạn đang ghi (mic bị ngắt): giữ phần đã ghi, cho phép Ghi tiếp hoặc Nộp phần đã ghi */
+/** 18/11 (U3): quay lại app khi bản ghi đã tạm dừng → rung + hộp lớn, không để người dùng tưởng vẫn đang ghi */
+function recWarn(r){
+  if (!r || !r.needWarn || !r.paused) return; r.needWarn = 0;
+  try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch(e){}
+  document.querySelectorAll('.bigwarn').forEach(x => x.remove());
+  const d = document.createElement('div'); d.className = 'bigwarn';
+  d.innerHTML = `<div><b>⏸ Bản ghi đã DỪNG ở ${mmss(r.secs)}</b>Lúc bạn rời app hoặc màn hình tắt, app không thu được tiếng. Phần đã ghi vẫn còn.<br><button class="btn mgo" data-mrec="${r.kind}">🎙️ Ghi tiếp</button><button class="btn ghost" data-bwclose="1">Để sau</button></div>`;
+  d.addEventListener('click', e => { if (e.target === d || e.target.closest('[data-bwclose],[data-mrec]')) setTimeout(() => d.remove(), 0); });
+  document.body.appendChild(d);
+}
 function recPause(r, why){
   if (!r.mr) return; const mr = r.mr;
   const fin = () => { if (r.mr !== mr) return; r.mr = null; if (r.chunks.length) r.parts.push({blob: new Blob(r.chunks, {type: r.mime}), secs: r.curSecs, mime: r.mime}); r.chunks = []; r.curSecs = 0; r.secs = recSecs(r);
-    recSave(r); mindEnd(); r.paused = 1; r.why = why || ''; render(); if (why === 'mic') toast('⚠️ Mic bị ngắt. Phần đã ghi vẫn còn, bấm Ghi tiếp', 5000); if (why === 'hidden') toast('⏸ Bạn đã rời app nên bản ghi tạm dừng (rời app thì không thu được tiếng). Bấm Ghi tiếp để đọc tiếp', 6000); };
+    recSave(r); mindEnd(); r.paused = 1; r.why = why || ''; render(); if (why === 'mic') toast('⚠️ Mic bị ngắt. Phần đã ghi vẫn còn, bấm Ghi tiếp', 5000); if (why === 'hidden'){ r.needWarn = 1; toast('⏸ Bạn đã rời app nên bản ghi tạm dừng (rời app thì không thu được tiếng). Bấm Ghi tiếp để đọc tiếp', 6000); if (document.visibilityState === 'visible') recWarn(r); } };
   mr.onstop = fin; try { if (mr.state !== 'inactive') mr.stop(); else fin(); } catch(e){ fin(); }
 }
 function recCard(){
@@ -6164,6 +6194,9 @@ const OBX = {
 let OBXLIST = [], OBXBUSY = {}, OBXDEL = '', OBXFLUSH = 0;
 const obxRid = () => Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4);
 const obxNet = e => /Failed to fetch|NetworkError|Load failed|TIMEOUT|AUTH|Lỗi máy chủ|network|offline/i.test(String(e && e.message || e));
+const AUTH_KEEP = '🔑 Phiên đăng nhập trên máy này đã hết. Hãy đăng nhập lại, bài vẫn được giữ trên máy và sẽ tự gửi sau khi đăng nhập.';
+let AUTHLOST = 0;
+function authLost(){ if (AUTHLOST) return; AUTHLOST = 1; setTimeout(() => { AUTHLOST = 0; dropToken(); showLogin(AUTH_KEEP); }, 1500); }
 const blobB64 = b => new Promise(res => { const fr = new FileReader(); fr.onload = () => res(String(fr.result).split(',')[1] || ''); fr.onerror = () => res(''); fr.readAsDataURL(b); });
 async function obxRefresh(){
   try { OBXLIST = (await OBX.all() || []).filter(x => !ME || x.uid === ME.id).sort((a, b) => a.created - b.created); } catch(e){ OBXLIST = []; }
@@ -6194,13 +6227,14 @@ async function mindSend(it){
   try {
     const x = await mindDeliver(it);
     if (it.fn === 'submitRun'){ RUNS = null; RUNB = {}; loadQuota(true); toast(x.again ? '✅ Bài chạy bộ đã được nhận' : x.pending ? '⏳ Đã gửi ảnh chạy bộ, đang chờ kiểm tra' : x.rejected ? '⛔ ' + x.msg : '✅ Đã gửi bài chạy bộ', 4000); return true; }
-    MIND = x.data; mindAutoTick(); loadQuota(true);
+    MIND = x.data; mindAutoTick(); loadQuota(true); MYEST = 0;   // 18/11 (U2): nộp xong tự về Hôm nay
     if (it.fn === 'listenSubmit'){ toast(x.st === 'Đạt' ? '✅ Đạt! Đã nghe đủ 10 phút' : x.st === 'Chờ duyệt tay' ? '⏳ Đã nhận, chờ quản lý duyệt' : '❌ Chưa đạt: ' + String(x.note || '').split(' · ')[0], 5000); return true; }
     toast(x.st === 'Đạt' ? '✅ Đạt! ' + (it.kind === 'camket' ? 'Đã đọc đủ 7 điều cam kết' : 'Đã ghi nhận 10 phút đọc sách') : x.st === 'Chưa đạt' ? '❌ Chưa đạt: ' + x.note : '⏳ Đã nhận bản ghi, đang chờ chấm');
     return true;
   } catch(e){
     if (!it.tried && obxNet(e)) it.tried = Date.now();
     it.err = String(e.message || e); it.fatal = !obxNet(e) ? 1 : 0; if (stored) { try { await OBX.put(it); } catch(_){} }
+    if (isAuthErr(e) && stored){ toast(AUTH_KEEP, 6000); authLost(); return false; }
     toast(obxNet(e) ? (stored ? '📮 Chưa gửi được. Bài được giữ trên máy, sẽ tự gửi lại khi có mạng' : '⚠️ Chưa gửi được, hãy bấm Gửi lại') : '⚠️ ' + it.err + (stored ? ' (bài vẫn giữ trên máy)' : ''), 5000);
     return false;
   } finally { delete OBXBUSY[it.rid]; obxRefresh(); }
@@ -6210,7 +6244,9 @@ async function obxFlush(){
   OBXFLUSH = 1;
   try {
     await obxRefresh();
-    for (const it of OBXLIST.slice()) { if (it.fatal || OBXBUSY[it.rid]) continue; await mindSend(it); }
+    let nv = false; try { nv = localStorage.getItem('rh_obxv') !== APP_VER; } catch(e){}   // 18/11 (M2): bản mới → thử lại bài lỗi một lần (máy chủ có thể đã sửa lỗi)
+    for (const it of OBXLIST.slice()) { if (it.fatal && nv) it.fatal = 0; if (it.fatal || OBXBUSY[it.rid]) continue; await mindSend(it); }
+    try { localStorage.setItem('rh_obxv', APP_VER); } catch(e){}
   } catch(e){} finally { OBXFLUSH = 0; }
 }
 function obxCard(only){
@@ -6233,6 +6269,8 @@ window.addEventListener('online', () => obxFlush());
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden'){ try { const r = MREC; if (r && r.mr) recPause(r, 'hidden'); } catch(e){} } });   // v14.11.45: rời app khi đang ghi → tạm dừng, không tính thời gian rời app
 document.addEventListener('visibilitychange', () => { if (document.visibilityState !== 'visible') return;
   try { const r = MREC; if (r && r.mr && r.stream && r.stream.getAudioTracks()[0] && r.stream.getAudioTracks()[0].readyState === 'ended') recPause(r, 'mic'); } catch(e){}
+  try { if (MREC) recWarn(MREC); } catch(e){}
+  try { const L = LSN; if (L && L.step === 'play' && L.p && L.ready && L.p.getPlayerState() !== 1){ navigator.vibrate && navigator.vibrate([200, 100, 200]); toast('⏸ Video đã dừng khi bạn rời app hoặc khoá máy, phần đó không được tính. Bấm ▶ trên khung video để nghe tiếp', 7000); } } catch(e){}
   obxFlush(); });
 window.addEventListener('beforeunload', e => { if (Object.keys(OBXBUSY).length || MREC || (LSN && LSN.step === 'play' && LSN.secs > 0)) { e.preventDefault(); e.returnValue = ''; } });
 try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){}
@@ -6303,7 +6341,7 @@ function lsnUI(){
     return `<div class="mcode"><small>🎧 Đang nghe</small><b>${esc(L.title || '')}</b></div>
       <div class="mrec on"><span class="mdot"></span><b data-lclock>${mmss(tot)}</b> / 10:00 <small data-lstate style="flex-basis:100%">${esc(L.why || 'Đang tính phút nghe')}</small>
       <button class="btn" data-lsn="stop" ${L.step === 'sending' || L.secs < 60 ? 'disabled' : ''}>⏹ Dừng và nộp</button><button class="lnk" data-lsn="cancel">Huỷ</button></div>
-      <div class="rule">Được chạy ngầm, chuyển tab, tắt màn hình; chỉ tính khi video <b>đang phát và có tiếng</b>.</div>`;
+      <div class="rule">${/iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ? '📱 iPhone/iPad: <b>giữ màn hình mở</b>, không khoá máy, không chuyển app (Safari dừng video khi khoá máy)' : 'Được chuyển tab, tắt màn hình; nếu video tự dừng thì mở lại app và bấm ▶'}; chỉ tính khi video <b>đang phát và có tiếng</b>.</div>`;
   }
   const head = `<input class="lsnin" data-lsnurl placeholder="Dán link YouTube sách nói / tóm tắt sách…" value="${esc(L.url || '')}" ${L.step === 'checking' ? 'disabled' : ''}>
     ${L.err ? `<div class="mres no">❌ ${esc(L.err)}</div>` : ''}`;
@@ -6335,7 +6373,7 @@ function lsnApi(){ return new Promise(ok => { if (window.YT && YT.Player) return
   if (!document.getElementById('ytapi')){ const sc = document.createElement('script'); sc.id = 'ytapi'; sc.src = 'https://www.youtube.com/iframe_api'; sc.onerror = () => ok(false); document.head.appendChild(sc); } setTimeout(() => ok(!!(window.YT && YT.Player)), 15000); }); }
 async function lsnStart(){
   const L = LSN; if (!L || !L.ok || !L.vid) return;
-  Object.assign(L, {step: 'play', secs: 0, ranges: [], lastPos: null, lastT: Date.now(), t0: Date.now(), ask: null, askBase: 0, why: 'Đang tải trình phát…', ready: false}); render();
+  Object.assign(L, {step: 'play', secs: 0, ranges: [], lastPos: null, lastT: Date.now(), t0: Date.now(), ask: null, askBase: 0, why: 'Đang tải trình phát…', ready: false, yest: MYEST && yestOk('docsach') ? 1 : 0}); render();
   const h = lsnHost(); h.style.display = 'block'; h.classList.remove('big'); h.innerHTML = '<button id="lsnzoom" onclick="var h=document.getElementById(\'lsnhost\');h.classList.toggle(\'big\');this.textContent=h.classList.contains(\'big\')?\'🗗 Thu nhỏ\':\'⤢ Phóng to\'">⤢ Phóng to</button><div id="lsnp"></div><div id="lsnbar"></div>';
   if (!await lsnApi()){ toast('⚠️ Không tải được trình phát YouTube, kiểm tra mạng rồi thử lại', 5000); lsnClear(); render(); return; }
   try { L.p = new YT.Player('lsnp', {width: '230', height: '130', videoId: L.vid, playerVars: {playsinline: 1, rel: 0, modestbranding: 1, autoplay: 1}, events: {
@@ -6380,12 +6418,12 @@ function lsnTick(){
   lsnPaint();
   if (L.secs + (L.todaySecs || 0) >= LSN_NEED && !L.ask) lsnFinish(true);
 }
-function lsnSave(){ const L = LSN; if (!L || L.step !== 'play') return; try { localStorage.setItem('rh_lsn', JSON.stringify({uid: ME && ME.id, vid: L.vid, title: L.title, secs: Math.round(L.secs), ranges: lsnMerge(L.ranges), t0: L.t0, t: Date.now(), ask: L.ask ? 1 : 0})); } catch(e){} }
+function lsnSave(){ const L = LSN; if (!L || L.step !== 'play') return; try { localStorage.setItem('rh_lsn', JSON.stringify({uid: ME && ME.id, vid: L.vid, title: L.title, secs: Math.round(L.secs), ranges: lsnMerge(L.ranges), t0: L.t0, t: Date.now(), ask: L.ask ? 1 : 0, yest: L.yest || 0})); } catch(e){} }
 async function lsnFinish(auto){
   const L = LSN; if (!L || L.step !== 'play') return; if (L.secs < 60 && !auto) return;
   L.step = 'sending'; const secs = Math.round(L.secs), ranges = lsnMerge(L.ranges).map(x => [Math.round(x[0]), Math.round(x[1])]), vid = L.vid, t0 = L.t0;
   clearInterval(L.timer); try { L.wake && L.wake.release(); } catch(e){} try { L.p && L.p.pauseVideo(); } catch(e){} render();
-  const it = {fn: 'listenSubmit', rid: obxRid(), uid: ME && ME.id, kind: 'docsach', secs, payload: {vid, secs, ranges, t0, yest: MYEST && yestOk('docsach') ? 1 : 0}, created: Date.now(), tried: 0};
+  const it = {fn: 'listenSubmit', rid: obxRid(), uid: ME && ME.id, kind: 'docsach', secs, payload: {vid, secs, ranges, t0, yest: L.yest || 0}, created: Date.now(), tried: 0};
   await mindSend(it);
   lsnClear(); render();
 }
