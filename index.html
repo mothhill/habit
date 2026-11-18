@@ -831,7 +831,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.94';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.95';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -3521,7 +3521,7 @@ function today(){
   const wAct = wl.filter(h => activeWeek(h,w)), wdone = wAct.filter(h => D.weekly[h.code][w]).length;
   const futHtml = PRACTICE ? `<div class="card prestart" style="margin-top:14px"><div class="muted">🔒 Các thói quen còn lại sẽ mở khi hành trình bắt đầu (${dm(D.days[0])}).</div></div>` : futSection(d);
   const pw = progW(i), wk = isRest(i) ? `<div class="card weekcard"><div class="wkt">💤 Ngày nghỉ</div><div class="muted">Làm thì vẫn được tính, không làm cũng không đứt chuỗi.</div></div>` : WEEKS[pw] ? `<div class="card weekcard"><div class="wkt">Tuần ${pw+1} · ${esc(WEEKS[pw][0])}</div><div class="muted">${esc(WEEKS[pw][1])}</div></div>` : '';
-  return mascotHtml() + runNewsCard() + nav + pv + wk +
+  return mascotHtml() + runNewsCard() + runYestCard() + nav + pv + wk +
     (FAM_ON ? `<div class="sec"><h3>Thói quen của tôi</h3><span>Chạm thẻ để điền</span></div>` + familyView(i, w, d, dt, isT, dEd) :
     `<div class="sec"><h3>Thói quen hằng ngày</h3><span>Chạm thẻ để điền</span></div><div class="list two${dEd ? '' : ' ro'}">${dHtml}</div>` +
     (wl.length ? `<div class="sec"><h3>Thói quen của tuần</h3><span>${dm(D.days[wa])} – ${dm(D.days[wb])} · ${wdone}/${wAct.length}</span></div><div class="list two${wEd ? '' : ' ro'}">${wHtml}</div>` : '')) +
@@ -5426,6 +5426,13 @@ function aiLbl(A){
   if (A.ai) return '✅ đang bật' + (A.aiModel ? ' · ' + esc(A.aiModel) : '');
   return '⚪ chưa bật · lấy khóa tại aistudio.google.com';
 }
+/** 18/11 (C7): 11:00–12:00 mà hôm qua chưa đủ 2 km thì nhắc nộp bù (sau 12:00 không nộp được nữa) */
+function runYestCard(){
+  const Y = RAWD && RAWD.runY, h = new Date().getHours(); if (!Y || !Y.date || h !== 11 || Y.km >= 2) return '';
+  try { const k = 'rh_ryt_' + Y.date; if (!localStorage.getItem(k)){ localStorage.setItem(k, 1); setTimeout(() => { try { navigator.vibrate && navigator.vibrate(200); } catch(e){} toast('⏰ Hôm qua bạn chưa nộp đủ 2 km chạy bộ. Nộp bù trước 12:00 nhé!', 6000); }, 1500); } } catch(e){}
+  return `<div class="card run-news no"><div><b>⏰ Hôm qua ${dm(Y.date)} bạn ${Y.km > 0 ? 'mới nộp ' + runKmTxt(Y.km) + ' km' : 'chưa nộp chạy bộ'}</b><small>Cả ngày đủ 2 km mới được tính. Chỉ nộp bù được tới <b>12:00</b> hôm nay.</small></div><div class="btns"><button class="btn" data-runyest="${Y.date}">🏃 Nộp bù ngay</button></div></div>`;
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-runyest]'); if (!b) return; RUNF.open = true; RUNF.date = b.dataset.runyest; RUNS = null; HSUB = 'run'; tab = 'health'; render(); });
 function runNewsCard(){
   const L = (typeof RAWD !== 'undefined' && RAWD && RAWD.runNews) || []; if (!L.length) return '';
   L.forEach(n => { if (n.ok && n.mind && typeof toolTick === 'function') toolTick(n.mind === 'camket' ? '13' : '03', n.date, /x/); });
@@ -5485,7 +5492,8 @@ async function runSend(report){
     const r = await runSubmitBox({date: f.date, type: f.type, km: raw, min: min > 0 ? min : '', img: f.img.split(',')[1], shot: f.type === 'tread' ? f.shot || 0 : 0, live: f.type === 'tread' && f.live ? 1 : 0, pick: f.pick || 0});
     if (r.rejected){ f.err = r.msg; toast('⛔ ' + r.msg); }
     else if (r.pending){ f.msg = r.msg; toast('⏳ Ảnh này đang chờ đọc số km, không cần gửi lại', 5000); }
-    else { f.msg = r.msg; toast(r.flagged ? '⚠️ Đã nhận, quản lý sẽ xem lại' : '✅ Đã nộp ' + runKmTxt(r.item.km) + ' km');
+    else { if (RAWD && RAWD.runY && RAWD.runY.date === f.date && r.dayKm != null) RAWD.runY.km = r.dayKm;
+      f.msg = r.msg; toast(r.flagged ? '⚠️ Đã nhận, quản lý sẽ xem lại' : '✅ Đã nộp ' + runKmTxt(r.item.km) + ' km');
       if (r.dayOk !== false && toolTick('04', f.date, RE_EXER)) setTimeout(() => toast('💪 Đã tự tích thói quen Thể dục 30 phút'), 1600); }
     f.img = ''; f.ocr = null; f.km = ''; f.min = '';
     RUNS = null; RUNB = {}; loadQuota(true);
