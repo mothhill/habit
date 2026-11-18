@@ -943,7 +943,8 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v18.11.114';   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
+const APP_VER = 'v18.11.115';
+try { if (localStorage.getItem('rh_fx') === '0') document.documentElement.classList.add('no-fx'); } catch(e){}   // v18.11.115: Chế độ đơn giản   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -6299,6 +6300,7 @@ function moreSheet(){
   el.classList.toggle('dk', dk); el.style.top = el.style.right = '';
   if (dk){ const b = document.querySelector('.tabs [data-more]'); if (b){ const r = b.getBoundingClientRect(); el.style.top = Math.round(r.bottom + 8) + 'px'; el.style.right = Math.max(8, Math.round(innerWidth - r.right)) + 'px'; } }
   el.innerHTML = t.map(([k,e,n]) => `<button class="${tab===k || (k==='pet' && (tab==='badge' || tab==='prog' || tab==='rank'))?'on':''}" data-tab="${k}"><span>${e}</span>${n}${k === 'work' ? dot : ''}</button>`).join('')
+    + `<button data-fx="1"><span>${document.documentElement.classList.contains('no-fx') ? '✨' : '🧘'}</span>${document.documentElement.classList.contains('no-fx') ? 'Bật lại hiệu ứng' : 'Chế độ đơn giản'}</button>`
     + `<button data-mlogout="1"><span>🚪</span>Đăng xuất</button>`;
 }
 document.addEventListener('click', e => {
@@ -7972,7 +7974,7 @@ function trackView(){
 <script>
 /* ===== v18.11.110: Tổng quan dạng cuộn – màn mở đầu (xếp hạng, tiến độ, sức khỏe, tâm trí). Ý tưởng từ scroll-craft, không nhúng engine ===== */
 const OVSEEN = new Set(), OVK = {}; let OVIO = null, OVFAB = null, OVT = 0;
-const ovRM = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e){ return false; } };
+const ovRM = () => { if (document.documentElement.classList.contains('no-fx')) return true; try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e){ return false; } };
 const ovNum = (n, d) => (d ? (Math.round(n*Math.pow(10,d))/Math.pow(10,d)).toFixed(d) : String(Math.round(n))).replace('.', ',');
 function ovRe(){ clearTimeout(OVT); OVT = setTimeout(() => { if (tab === 'overview' && D) render(); }, 250); }
 function ovKick(){   // nạp dữ liệu còn thiếu, mỗi loại tối đa 1 lần/phút, xong thì vẽ lại
@@ -8147,7 +8149,7 @@ addEventListener('scroll', ovSc, {passive: true}); addEventListener('resize', ov
    Tắt hết khi máy bật giảm chuyển động. */
 const SV = {y: 0, v: 0, dir: 0, raf: 0, io: null, vis: new Set(), tab: '', tick: ''};
 const SV_SEL = 'main .card, main .habit, main .sec, main .banner, main .qbox, main .hstrip > div, main .wst > div, main .stats > *, main .badges > *, main .seg, main .rk, main .tkp';
-const svRM = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e){ return false; } };
+const svRM = () => { if (document.documentElement.classList.contains('no-fx')) return true; try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e){ return false; } };
 function svBurst(host, n){
   if (!host) return; n = n || 12; const C = ['var(--primary)','var(--gold)','var(--peach)','var(--ink)'], b = document.createElement('span'); b.className = 'sv-burst'; b.setAttribute('aria-hidden', 'true');
   b.innerHTML = Array.from({length: n}, (_, j) => `<i style="--a:${Math.round(j*360/n + Math.random()*20)}deg;--d:${22 + Math.round(Math.random()*22)}px;--c:${C[j % C.length]}"></i>`).join('');
@@ -8192,6 +8194,23 @@ function svFrame(){
 addEventListener('scroll', () => { if (!SV.raf && !svRM()) SV.raf = requestAnimationFrame(svFrame); }, {passive: true});
 document.addEventListener('click', e => { if (!e.target.closest('[data-tick],[data-chk],[data-bchk],[data-st],[data-li]')) return; const c = e.target.closest('[data-card]');   // tick cả việc hoặc tick từng ý
   if (c) SV.tick = {code: c.dataset.card, was: c.classList.contains('done')}; }, true);
+</script>
+<style>
+/* v18.11.115: Chế độ đơn giản */
+html.no-fx :not(.spin):not(#_fx_),html.no-fx :not(#_fx_)::before,html.no-fx :not(#_fx_)::after{animation:none!important;transition:none!important}
+html.no-fx .ov-burst,html.no-fx .sv-burst{display:none!important}
+html.no-fx .ov-big,html.no-fx .ov-pos .ov-big{transform:none!important}
+html.no-fx .bnav,html.no-fx .ov-fab{translate:none!important}
+</style>
+<script>
+/* v18.11.115: Chế độ đơn giản – tắt hiệu ứng cho máy yếu hoặc người dễ chóng mặt */
+document.addEventListener('click', e => { if (!e.target.closest('[data-fx]')) return;
+  const off = !document.documentElement.classList.contains('no-fx');
+  document.documentElement.classList.toggle('no-fx', off);
+  try { if (off) localStorage.setItem('rh_fx', '0'); else localStorage.removeItem('rh_fx'); } catch(er){}
+  document.querySelectorAll('.sv').forEach(x => { x.classList.remove('sv'); x.style.translate = ''; }); document.body.classList.remove('sv-hide');
+  if (typeof OVSEEN !== 'undefined') OVSEEN.clear(); if (typeof SV !== 'undefined') SV.tab = '';
+  if (D) render(); toast(off ? '🧘 Đã bật chế độ đơn giản: không hiệu ứng' : '✨ Đã bật lại hiệu ứng'); });
 </script>
 </body>
 </html>
