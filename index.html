@@ -783,6 +783,7 @@ html[class*=mau-] .hnudge em{color:var(--primary)!important}
 html[class*=mau-][data-theme=light]{--primary-soft:color-mix(in srgb,var(--primary) 9%,#fff);--mint:color-mix(in srgb,var(--primary) 80%,#000);--mint-soft:color-mix(in srgb,var(--primary) 9%,#fff)}
 html[class*=mau-][data-theme=light] :is(.pill2,.flv,.quote .k,.pill){color:color-mix(in srgb,var(--primary) 70%,var(--ink))}
 html[class*=mau-] .brand{background:linear-gradient(120deg,color-mix(in srgb,var(--primary) 30%,var(--card)) 0%,var(--card) 70%);border-color:var(--line)}
+@media(max-width:919px){body.v2 .side .who [data-logout]{display:none}}   /* v18.11.108: Đăng xuất nằm trong ☰ Thêm */
 /* v14.11.106: nút tick 44 px, mô tả thẻ việc 2 dòng */
 body .fsteps .habit .chk{width:44px;height:44px;font-size:19px}
 body .fsteps .habit .ha{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;line-height:1.35}
@@ -875,7 +876,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v18.11.107';   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
+const APP_VER = 'v18.11.108';   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -3168,7 +3169,7 @@ function tabBtns(mobile){
   if (ME && ME.work) t.splice(3, 0, ['work','🗂️','Công việc']);
   if (ME && ME.role === 'Quản lý') t.push(['admin','🛠️','Quản lý']);
   const dot = RP.info && RP.info.dot > 0 ? '<i class="tdot"></i>' : '';
-  if (V2 && mobile && t.length > 5){
+  if (V2 && mobile){   // v18.11.108: điện thoại luôn có ☰ Thêm (chứa Đăng xuất)
     const main = t.filter(x => !MORE_K.includes(x[0])), on = MORE_K.includes(tab), wd = ME && ME.work ? dot : '';
     return main.map(([k,e,n]) => `<button class="${tab===k || (k==='pet' && (tab==='badge' || tab==='prog'))?'on':''}" data-tab="${k}"><span>${e}</span>${n}</button>`).join('')
       + `<button class="${on?'on':''}" data-more="1"><span>☰</span>Thêm${wd}</button>`;
@@ -5498,11 +5499,13 @@ function moreSheet(){
   if (ME && ME.role === 'Quản lý') t.push(['admin','🛠️','Quản lý']);
   t.push(['help','❓','Hướng dẫn']);
   const dot = RP.info && RP.info.dot > 0 ? '<i class="tdot"></i>' : '';
-  el.innerHTML = t.map(([k,e,n]) => `<button class="${tab===k?'on':''}" data-tab="${k}"><span>${e}</span>${n}${k === 'work' ? dot : ''}</button>`).join('');
+  el.innerHTML = t.map(([k,e,n]) => `<button class="${tab===k?'on':''}" data-tab="${k}"><span>${e}</span>${n}${k === 'work' ? dot : ''}</button>`).join('')
+    + `<button data-mlogout="1"><span>🚪</span>Đăng xuất</button>`;
 }
 document.addEventListener('click', e => {
   const sh = $('#moresheet'); if (!sh) return;
   if (e.target.closest('[data-more]')){ moreSheet(); sh.classList.toggle('open'); return; }
+  if (e.target.closest('[data-mlogout]')){ sh.classList.remove('open'); if (confirm('Đăng xuất khỏi app?')) doLogout(); return; }
   if (e.target.closest('[data-mside]')){ const sd = document.querySelector('.side'); if (sd) sd.scrollIntoView({behavior:'smooth'}); return; }
   sh.classList.remove('open');
 }, true);
