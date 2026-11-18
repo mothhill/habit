@@ -1053,7 +1053,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v18.11.121';
+const APP_VER = 'v18.11.122';
 try { if (localStorage.getItem('rh_fx') === '0') document.documentElement.classList.add('no-fx'); } catch(e){}   // v18.11.115: Chế độ đơn giản   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
@@ -5607,7 +5607,7 @@ function artFox(k){
   return '';
 }
 
-const FOX_ST = ['', 'Tiểu hồ ly', 'Tam vĩ hồ', 'Ngũ vĩ hồ', 'Thất vĩ yêu hồ', 'Kurami - Cửu vĩ yêu cơ'];
+const FOX_ST = ['', 'Tiểu hồ ly', 'Linh hồ', 'Yêu hồ', 'Thiên hồ', 'Kurami - Cửu vĩ yêu cơ'];
 
 
 /* ===== TÀ TU · 5 NHÁNH CÒN LẠI (18/11/2026) =====
@@ -5847,7 +5847,7 @@ function artJiang(k){
 
 /* =================== khung chung =================== */
 const TA_BR = {
-  dragon_d:{n:'Hắc long',ic:'🐉',art:artDragonD,st:['','Cá chép trượt môn','Hắc giao','Thôn lôi giao','Hắc lôi long','Thôn nhật ma long'],tag:'Rơi xuống vực sâu, rồi nuốt cả mặt trời.'},
+  dragon_d:{n:'Hắc long',ic:'🐉',art:artDragonD,st:['','Cá chép tạch môn','Hắc giao','Thôn lôi giao','Hắc lôi long','Thôn nhật ma long'],tag:'Rơi xuống vực sâu, rồi nuốt cả mặt trời.'},
   satan:{n:'Satan',ic:'😈',art:artSatan,st:['','Lucifer','Fallen Angel','Mephisto','Abaddon','Satan'],tag:'Mỗi việc làm xong là một điều khoản giao kèo.'},
   matu:{n:'Ma tôn',ic:'👤',art:artMatu,st:['','Đạo sĩ cấm thư','Tâm ma','Ma ảnh','Vực ngoại thiên ma','Ma tôn'],tag:'Cái bóng của ngươi biết nói, và nó nói nhiều hơn ngươi.'},
   fox:{n:'Hồ ly tinh',ic:'🦊',art:k => artFox(k),st:FOX_ST,tag:'Tiểu hồ ly, mỗi đêm trăng thêm đuôi, đến chín đuôi thì hóa người.'},
