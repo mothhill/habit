@@ -889,7 +889,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v18.11.112';   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
+const APP_VER = 'v18.11.113';   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -3171,6 +3171,7 @@ function render(){ if (typeof loadBS === 'function') loadBS(); if (typeof bdAsk 
     ${tab === 'overview' ? ovView(s) : tab === 'today' ? today() : tab === 'health' ? (typeof healthView === 'function' ? healthView() : '') : tab === 'mind' ? (typeof mindView === 'function' ? mindView() : '') : tab === 'work' ? workView() : tab === 'help' ? helpView() : tab === 'prog' ? progTabs() + progress(s) : tab === 'rank' ? (MOB() ? progTabs() : '') + rankView() : tab === 'pet' ? progTabs() + petView(s) : tab === 'admin' ? adminView() : progTabs() + badges(s)}</main></div>`;
   $('#bnav').innerHTML = tabBtns(true);
   if (tab === 'overview') { ovAfter(); ovKick(); }
+  if (typeof svAfter === 'function') svAfter();
   const cur = document.querySelector('.ladder .cur'); if (cur) cur.parentNode.scrollLeft = cur.offsetLeft - cur.parentNode.offsetLeft - 70;
   if (tab === 'today') greetMasc();
   if (focusLeft() && !FOCUST) focusTick();
@@ -7237,9 +7238,12 @@ function ovAfter(){
   if (cur) rail.scrollLeft = Math.max(0, cur.offsetLeft - rail.offsetLeft - 24);
   ovSc();
   if (still) return;
-  OVIO = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; const a = e.target; OVIO.unobserve(a); OVSEEN.add(a.dataset.ov);
-    a.classList.add('in'); a.querySelectorAll('[data-ovc]').forEach(ovCount); ovFx(a); }), {threshold: 0.15, rootMargin: '0px 0px -8% 0px'});
-  acts.forEach(a => { if (!a.classList.contains('in')) OVIO.observe(a); });
+  OVIO = new IntersectionObserver(es => es.forEach(e => { const a = e.target;
+    if (!e.isIntersecting){ if (a.classList.contains('in')){ a.classList.remove('in', 'ov-now'); OVSEEN.delete(a.dataset.ov);   // ra khỏi màn hình: lần sau cuộn tới chạy lại
+        a.querySelectorAll('[data-ovc]').forEach(c => { if (!c.dataset.ovt) c.dataset.ovt = c.textContent; c.textContent = ovNum(+(c.dataset.ovf || 0), +(c.dataset.ovd || 0)); }); } return; }
+    if (e.intersectionRatio < 0.15 || a.classList.contains('in')) return; OVSEEN.add(a.dataset.ov);
+    a.classList.add('in'); a.querySelectorAll('[data-ovc]').forEach(ovCount); ovFx(a); }), {threshold: [0, 0.15]});
+  acts.forEach(a => OVIO.observe(a));
   const fab = root.querySelector('.ov-fab'), end = root.querySelector('.ov-end');
   if (fab && end){ OVFAB = new IntersectionObserver(es => fab.classList.toggle('hide', es[0].isIntersecting), {threshold: 0.2}); OVFAB.observe(end); }
 }
@@ -7344,6 +7348,86 @@ function ovSc(){ if (OVSF || tab !== 'overview' || ovRM()) return; OVSF = reques
   document.querySelectorAll('.ov-big').forEach(a => { const r = a.getBoundingClientRect(); if (r.bottom < -80 || r.top > H + 80) return;
     a.style.setProperty('--sp', Math.max(0, Math.min(1, (H - r.top)/(H + r.height))).toFixed(2)); }); }); }
 addEventListener('scroll', ovSc, {passive: true}); addEventListener('resize', ovSc, {passive: true});
+</script>
+<style>
+/* v18.11.113: hiệu ứng theo cử chỉ vuốt cho mọi trang */
+.habit .chk{position:relative}
+.sv-burst{position:absolute;left:50%;top:50%;width:0;height:0;pointer-events:none;z-index:3}
+.sv-burst i{position:absolute;left:-3px;top:-5px;width:6px;height:10px;border-radius:2px;background:var(--c);opacity:0}
+@media(prefers-reduced-motion:no-preference){
+  .sv{transition:opacity .45s ease var(--svd,0ms),transform .6s cubic-bezier(.2,.9,.25,1.12) var(--svd,0ms),border-color .2s,background .2s}
+  .sv:not(.sv-in){opacity:0;transform:translateY(32px) scale(.96)}
+  html.sv-up .sv:not(.sv-in){transform:translateY(-32px) scale(.96)}
+  .sv.sv-now{transition:border-color .2s,background .2s}
+  main :is(.badges,.stats) > .sv:not(.sv-in){transform:scale(.6) rotate(-6deg)}
+  .sv-pop{animation:svPop .55s cubic-bezier(.34,1.56,.64,1)}
+  .sv-pop .chk{animation:svChk .6s cubic-bezier(.34,1.8,.64,1)}
+  .sv-burst i{animation:svBoom .9s cubic-bezier(.15,.7,.3,1) both}
+  .bnav{transition:translate .3s cubic-bezier(.2,.8,.2,1)}
+  .ov-fab{transition:transform .3s ease,opacity .3s ease,translate .3s cubic-bezier(.2,.8,.2,1)}
+}
+@media(prefers-reduced-motion:no-preference) and (max-width:919px){
+  body.sv-hide .bnav{translate:0 110%}
+  body.sv-hide .ov-fab{translate:0 64px}
+}
+@keyframes svPop{40%{transform:scale(1.03)}100%{transform:none}}
+@keyframes svChk{0%{transform:scale(.4) rotate(-30deg)}100%{transform:none}}
+@keyframes svBoom{0%{opacity:1;transform:rotate(var(--a)) translateY(0) scale(.4)}70%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) translateY(calc(-1*var(--d))) rotate(200deg) scale(1)}}
+</style>
+<script>
+/* ===== v18.11.113: hiệu ứng theo cử chỉ vuốt cho mọi trang =====
+   - Thẻ hiện ra mỗi lần cuộn tới (cả khi cuộn ngược), hướng hiện theo chiều vuốt.
+   - Danh sách "dẻo": thẻ đang thấy trễ nhẹ theo tốc độ vuốt rồi bật về (dùng thuộc tính translate, không đụng transform).
+   - Điện thoại: vuốt xuống thì thanh dưới thu lại, vuốt lên thì hiện ra.
+   - Tick thói quen: nút tick nảy + pháo giấy. Số trong ô thống kê đếm lên khi hiện ra.
+   Tắt hết khi máy bật giảm chuyển động. */
+const SV = {y: 0, v: 0, dir: 0, raf: 0, io: null, vis: new Set(), tab: '', tick: ''};
+const SV_SEL = 'main .card, main .habit, main .sec, main .banner, main .qbox, main .hstrip > div, main .wst > div, main .stats > *, main .badges > *, main .seg, main .rk, main .tkp';
+const svRM = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e){ return false; } };
+function svBurst(host, n){
+  if (!host) return; n = n || 12; const C = ['var(--primary)','var(--gold)','var(--peach)','var(--ink)'], b = document.createElement('span'); b.className = 'sv-burst'; b.setAttribute('aria-hidden', 'true');
+  b.innerHTML = Array.from({length: n}, (_, j) => `<i style="--a:${Math.round(j*360/n + Math.random()*20)}deg;--d:${22 + Math.round(Math.random()*22)}px;--c:${C[j % C.length]}"></i>`).join('');
+  host.appendChild(b); setTimeout(() => b.remove(), 1300);
+}
+function svCount(el){
+  el.querySelectorAll('b').forEach(b => { const t = b.textContent.trim(); if (!/^\d{1,5}$/.test(t) || +t < 2) return; const to = +t, t0 = performance.now();
+    const step = n => { const k = Math.min(1, (n - t0)/900), e = 1 - Math.pow(1 - k, 3); b.textContent = k < 1 ? String(Math.round(to*e)) : t; if (k < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step); });
+}
+function svAfter(){
+  if (svRM() || !('IntersectionObserver' in window)) return;
+  const same = SV.tab === tab; SV.tab = tab;
+  if (SV.io) SV.io.disconnect(); SV.vis.clear();
+  const els = [...document.querySelectorAll(SV_SEL)].filter(e => !e.closest('.ov'));
+  const H = innerHeight; let k = 0;
+  els.forEach(e => { e.classList.add('sv'); const r = e.getBoundingClientRect(), inView = r.bottom > 0 && r.top < H;
+    if (inView && same) e.classList.add('sv-in', 'sv-now');               // vẽ lại cùng trang (tick, đồng bộ): không chạy lại
+    else if (inView) e.style.setProperty('--svd', Math.min(420, (k++)*45) + 'ms'); });
+  const jelly = e => !e.parentElement.closest(SV_SEL);
+  SV.io = new IntersectionObserver(es => es.forEach(en => { const e = en.target;
+    if (en.isIntersecting){ if (jelly(e)) SV.vis.add(e);
+      if (!e.classList.contains('sv-in')){ e.classList.remove('sv-now'); e.classList.add('sv-in'); svCount(e); setTimeout(() => e.style.removeProperty('--svd'), 900); } }
+    else { SV.vis.delete(e); e.style.translate = ''; const r = en.boundingClientRect; if (r.bottom < -40 || r.top > innerHeight + 40) e.classList.remove('sv-in', 'sv-now'); } }), {rootMargin: '40px 0px 40px 0px'});
+  els.forEach(e => SV.io.observe(e));
+  document.querySelectorAll('.ov-act').forEach(a => SV.vis.add(a));
+  if (SV.tick){ const t = SV.tick, c = document.querySelector(`[data-card="${t.code}"]`); SV.tick = '';
+    if (c){ c.classList.remove('sv-pop'); void c.offsetWidth; c.classList.add('sv-pop');
+      if (c.classList.contains('done') && !t.was) svBurst(c.querySelector('.chk'), 16); } }
+}
+function svFrame(){
+  SV.raf = 0; const y = scrollY, dy = y - SV.y; SV.y = y;
+  const d = dy > 3 ? 1 : dy < -3 ? -1 : 0;
+  if (d && d !== SV.dir){ SV.dir = d; document.documentElement.classList.toggle('sv-up', d < 0); }
+  if (d) document.body.classList.toggle('sv-hide', d > 0 && y > 140);
+  if (y < 60) document.body.classList.remove('sv-hide');
+  SV.v += (Math.max(-50, Math.min(50, dy)) - SV.v)*0.35;
+  const L = [...SV.vis], n = L.length;
+  L.forEach((e, i) => { const off = Math.abs(SV.v) < 0.4 ? 0 : SV.v*(0.12 + 0.28*(i + 1)/n); e.style.translate = off ? `0 ${off.toFixed(1)}px` : ''; });
+  if (Math.abs(SV.v) >= 0.4) SV.raf = requestAnimationFrame(svFrame); else SV.v = 0;
+}
+addEventListener('scroll', () => { if (!SV.raf && !svRM()) SV.raf = requestAnimationFrame(svFrame); }, {passive: true});
+document.addEventListener('click', e => { if (!e.target.closest('[data-tick],[data-chk],[data-bchk],[data-st],[data-li]')) return; const c = e.target.closest('[data-card]');   // tick cả việc hoặc tick từng ý
+  if (c) SV.tick = {code: c.dataset.card, was: c.classList.contains('done')}; }, true);
 </script>
 </body>
 </html>
