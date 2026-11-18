@@ -433,20 +433,20 @@ html:not([data-theme=light]) .sbadd input{background:#0F1914;border-color:#2F403
 .evfx.lv4::after,.evfx.lv5::after,.evfx.lv6::after,.evfx.lv7::after,.evfx.lv8::after,.evfx.lv9::after{content:"";position:absolute;inset:8%;border-radius:50%;z-index:3;pointer-events:none;background:linear-gradient(115deg,transparent 42%,rgba(255,255,255,.38) 50%,transparent 58%);background-size:260% 100%;animation:evShine 5s ease-in-out infinite;mix-blend-mode:screen}
 .evfx.lv9::before{content:"";position:absolute;inset:-3%;border-radius:50%;z-index:0;pointer-events:none;background:conic-gradient(#ff6a6a,#ffc83a,#b8f061,#4fe0ff,#8a6aff,#ff6ac8,#ff6a6a);-webkit-mask:radial-gradient(circle,transparent 63%,#000 64.5%,#000 68.5%,transparent 70%);mask:radial-gradient(circle,transparent 63%,#000 64.5%,#000 68.5%,transparent 70%);animation:evSpin 5s linear infinite;opacity:.9}
 .rk .evfx .ev{animation-duration:9s,3.4s}
-/* ---- Chuyển động từng bộ phận (Thần miêu, Chiến thần, 19/11) ---- */
-.evfx .ev:is(.l-cat,.l-hero) .pt-tl,.evfx .ev:is(.l-cat,.l-hero) .pt-ear,.evfx .ev:is(.l-cat,.l-hero) .pt-eye,.evfx .ev:is(.l-cat,.l-hero) .pt-sp,.evfx .ev:is(.l-cat,.l-hero) .pt-fl,.evfx .ev:is(.l-cat,.l-hero) .pt-wg{transform-box:fill-box}
-.evfx .ev:is(.l-cat,.l-hero) .pt-tl{transform-origin:0% 100%;animation:ptWag 2.6s ease-in-out infinite}
-.evfx .ev:is(.l-cat,.l-hero) .pt-tl.r{transform-origin:100% 100%;animation-name:ptWagR;animation-delay:-1.3s}
-.evfx .ev:is(.l-cat,.l-hero) .pt-eye{transform-origin:50% 50%;animation:ptBlink 4.8s infinite}
-.evfx.lv3 .ev:is(.l-cat,.l-hero) .pt-ear,.evfx.lv4 .ev:is(.l-cat,.l-hero) .pt-ear,.evfx.lv5 .ev:is(.l-cat,.l-hero) .pt-ear,.evfx.lv6 .ev:is(.l-cat,.l-hero) .pt-ear,.evfx.lv7 .ev:is(.l-cat,.l-hero) .pt-ear,.evfx.lv8 .ev:is(.l-cat,.l-hero) .pt-ear,.evfx.lv9 .ev:is(.l-cat,.l-hero) .pt-ear{transform-origin:50% 100%;animation:ptEar 5.4s ease-in-out infinite}
-.evfx .ev:is(.l-cat,.l-hero) .pt-ear.r{animation-duration:7s;animation-delay:1.6s}
-.evfx .ev:is(.l-cat,.l-hero) .pt-sp{transform-origin:50% 50%;animation:ptTw 1.9s ease-in-out infinite}
-.evfx .ev:is(.l-cat,.l-hero) .pt-sp:nth-of-type(2n){animation-delay:-.7s;animation-duration:2.3s}
-.evfx .ev:is(.l-cat,.l-hero) .pt-sp:nth-of-type(3n){animation-delay:-1.4s;animation-duration:2.8s}
-.evfx .ev:is(.l-cat,.l-hero) .pt-fl{transform-origin:50% 100%;animation:ptFl .55s ease-in-out infinite alternate}
-.evfx .ev:is(.l-cat,.l-hero) .pt-fl:nth-of-type(2n){animation-duration:.7s;animation-delay:-.3s}
-.evfx .ev:is(.l-cat,.l-hero) .pt-cl{animation:ptDrift 5s ease-in-out infinite alternate}
-.evfx .ev:is(.l-cat,.l-hero) .pt-cl:nth-of-type(2n){animation-duration:6.5s;animation-direction:alternate-reverse}
+/* ---- Chuyển động từng bộ phận (mọi nhánh chính đạo, 19/11) ---- */
+:is(.evfx .ev,.ev.tafx) .pt-tl,:is(.evfx .ev,.ev.tafx) .pt-ear,:is(.evfx .ev,.ev.tafx) .pt-eye,:is(.evfx .ev,.ev.tafx) .pt-sp,:is(.evfx .ev,.ev.tafx) .pt-fl,.evfx .ev:is(.l-cat,.l-hero) .pt-wg{transform-box:fill-box}
+:is(.evfx .ev,.ev.tafx) .pt-tl{transform-origin:0% 100%;animation:ptWag 2.6s ease-in-out infinite}
+:is(.evfx .ev,.ev.tafx) .pt-tl.r{transform-origin:100% 100%;animation-name:ptWagR;animation-delay:-1.3s}
+:is(.evfx .ev,.ev.tafx) .pt-eye{transform-origin:50% 50%;animation:ptBlink 4.8s infinite}
+.evfx.lv3 .ev .pt-ear,.evfx.lv4 .ev .pt-ear,.evfx.lv5 .ev .pt-ear,.evfx.lv6 .ev .pt-ear,.evfx.lv7 .ev .pt-ear,.evfx.lv8 .ev .pt-ear,.evfx.lv9 .ev .pt-ear{transform-origin:50% 100%;animation:ptEar 5.4s ease-in-out infinite}
+:is(.evfx .ev,.ev.tafx) .pt-ear.r{animation-duration:7s;animation-delay:1.6s}
+:is(.evfx .ev,.ev.tafx) .pt-sp{transform-origin:50% 50%;animation:ptTw 1.9s ease-in-out infinite}
+:is(.evfx .ev,.ev.tafx) .pt-sp:nth-of-type(2n){animation-delay:-.7s;animation-duration:2.3s}
+:is(.evfx .ev,.ev.tafx) .pt-sp:nth-of-type(3n){animation-delay:-1.4s;animation-duration:2.8s}
+:is(.evfx .ev,.ev.tafx) .pt-fl{transform-origin:50% 100%;animation:ptFl .55s ease-in-out infinite alternate}
+:is(.evfx .ev,.ev.tafx) .pt-fl:nth-of-type(2n){animation-duration:.7s;animation-delay:-.3s}
+:is(.evfx .ev,.ev.tafx) .pt-cl{animation:ptDrift 5s ease-in-out infinite alternate}
+:is(.evfx .ev,.ev.tafx) .pt-cl:nth-of-type(2n){animation-duration:6.5s;animation-direction:alternate-reverse}
 .evfx .ev:is(.l-cat,.l-hero) .pt-wg{transform-origin:0% 70%;animation:ptFlap 1.6s ease-in-out infinite}
 @keyframes ptWag{0%,100%{transform:rotate(0)}30%{transform:rotate(-8deg)}65%{transform:rotate(5deg)}}
 @keyframes ptWagR{0%,100%{transform:rotate(0)}30%{transform:rotate(8deg)}65%{transform:rotate(-5deg)}}
@@ -474,6 +474,60 @@ html:not([data-theme=light]) .sbadd input{background:#0F1914;border-color:#2F403
 @keyframes ptFlagR{0%,100%{transform:skewY(0) scaleX(1)}50%{transform:skewY(-5deg) scaleX(.93)}}
 @keyframes ptWp{0%,100%{transform:rotate(0)}50%{transform:rotate(2.4deg)}}
 @keyframes ptRb{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2px) rotate(3deg)}}
+:is(.evfx .ev.l-cat,.ev.tafx.l-fox) :is(.pt-hd,.pt-pu,.pt-wk,.pt-paw,.pt-all){transform-box:fill-box}
+:is(.evfx .ev.l-cat,.ev.tafx.l-fox) .pt-hd{transform-origin:50% 95%;animation:ptTilt 8s ease-in-out infinite}
+:is(.evfx .ev.l-cat,.ev.tafx.l-fox) .pt-pu{animation:ptLook 6s ease-in-out infinite}
+:is(.evfx .ev.l-cat,.ev.tafx.l-fox) .pt-wk{transform-origin:50% 50%;animation:ptWk 4.4s ease-in-out infinite}
+:is(.evfx .ev.l-cat,.ev.tafx.l-fox) .pt-paw{transform-origin:50% 100%;animation:ptLick 15s ease-in-out 5s infinite}
+:is(.evfx .ev.l-cat,.ev.tafx.l-fox) .pt-all{transform-origin:50% 100%;animation:ptStretch 13s ease-in-out 2s infinite}
+@keyframes ptTilt{0%,55%,88%,100%{transform:rotate(0)}62%,80%{transform:rotate(-9deg)}}
+@keyframes ptLook{0%,25%,92%,100%{transform:translateX(0)}32%,50%{transform:translateX(-1.3px)}58%,82%{transform:translateX(1.3px)}}
+@keyframes ptWk{0%,86%,100%{transform:translateY(0) scaleY(1)}89%{transform:translateY(-.7px) scaleY(1.25)}92%{transform:translateY(.3px) scaleY(.85)}95%{transform:translateY(-.4px) scaleY(1.12)}}
+@keyframes ptLick{0%,68%,90%,100%{transform:translate(0,0) rotate(0)}73%,77%,81%,85%{transform:translate(-3px,-15px) rotate(-18deg)}75%,79%,83%{transform:translate(-3px,-13px) rotate(-12deg)}}
+@keyframes ptStretch{0%,78%,96%,100%{transform:scale(1,1)}82%{transform:scale(1.05,.9)}88%{transform:scale(.96,1.08)}92%{transform:scale(1.02,.97)}}
+:is(.evfx .ev,.ev.tafx) :is(.pt-hd,.pt-bw,.pt-tf,.pt-dh,.pt-mk,.pt-lf,.pt-st,.pt-all){transform-box:fill-box}
+.evfx .ev.l-wolf .pt-hd{transform-origin:50% 95%;animation:ptTilt 9s ease-in-out 1s infinite}
+.evfx .ev.l-phoenix .pt-hd{transform-origin:60% 60%;animation:ptBob 2.6s ease-in-out infinite}
+:is(.evfx .ev,.ev.tafx) .pt-bw{transform-origin:50% 100%;animation:ptBw 1.4s ease-in-out infinite}
+:is(.evfx .ev,.ev.tafx) .pt-tf{transform-origin:0% 50%;animation:ptTf 2.8s ease-in-out infinite}
+:is(.evfx .ev,.ev.tafx) .pt-tf:nth-of-type(2n){animation-delay:-1.1s}
+:is(.evfx .ev,.ev.tafx) .pt-dh{transform-origin:100% 50%;animation:ptDh 3.4s ease-in-out infinite}
+:is(.evfx .ev,.ev.tafx) .pt-mk{animation:ptFloat 3.6s ease-in-out infinite}
+:is(.evfx .ev,.ev.tafx) .pt-lf{transform-origin:50% 50%;animation:ptLf 2.6s ease-in-out infinite}
+:is(.evfx .ev,.ev.tafx) .pt-lf:nth-of-type(2n){animation-delay:-.9s;animation-duration:3.2s}
+:is(.evfx .ev,.ev.tafx) .pt-lf:nth-of-type(3n){animation-delay:-1.7s}
+:is(.evfx .ev,.ev.tafx) .pt-st{transform-origin:50% 50%;animation:ptSt 3s ease-in-out infinite}
+.evfx .ev:is(.l-phoenix,.l-dragon,.l-star) .pt-all{animation:ptFloat 3.8s ease-in-out infinite}
+.evfx .ev.l-tree .pt-all{transform-origin:50% 100%;animation:ptSway 5s ease-in-out infinite}
+@keyframes ptBob{0%,100%{transform:rotate(0)}50%{transform:rotate(-7deg)}}
+@keyframes ptBw{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(.9,.84) rotate(-5deg)}}
+@keyframes ptTf{0%,100%{transform:rotate(0)}50%{transform:rotate(3.5deg)}}
+@keyframes ptDh{0%,100%{transform:rotate(0) translateY(0)}50%{transform:rotate(4deg) translateY(-1px)}}
+@keyframes ptFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.6px)}}
+@keyframes ptLf{0%,100%{transform:rotate(0) scale(1)}50%{transform:rotate(6deg) scale(1.06)}}
+@keyframes ptSt{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.06) rotate(4deg)}}
+@keyframes ptSway{0%,100%{transform:rotate(0)}50%{transform:rotate(1.4deg)}}
+.ev.tafx .pt-ear{transform-origin:50% 100%;animation:ptEar 5.4s ease-in-out infinite}
+.ev.tafx :is(.pt-th,.pt-sw,.pt-qi,.pt-tal,.pt-ft,.ta-shd){transform-box:fill-box}
+.ev.tafx .pt-th{transform-origin:50% 100%;animation:ptTilt 8s ease-in-out 1s infinite}
+.ev.tafx .pt-sw{transform-origin:0% 100%;animation:ptSw 1.8s ease-in-out infinite}
+.ev.tafx .pt-qi{transform-origin:50% 50%;animation:evSpin 5s linear infinite}
+.ev.tafx .pt-qi:nth-of-type(2n){animation-direction:reverse;animation-duration:6.5s}
+.ev.tafx .pt-tal{transform-origin:50% 0%;animation:ptTal 1.3s ease-in-out infinite}
+.ev.tafx .pt-ft{transform-origin:50% 100%;animation:ptFt 2.4s ease-in-out infinite}
+.ev.tafx .pt-ft:nth-of-type(2n){animation-delay:-.8s;animation-duration:2.9s}
+.ev.tafx .pt-ft:nth-of-type(3n){animation-delay:-1.6s}
+.ev.tafx .ta-shd{transform-origin:50% 100%;animation:ptShd 3.2s ease-in-out infinite}
+.ev.tafx:is(.l-dragon_d,.l-satan,.l-matu) .pt-all{animation:ptFloat 3.6s ease-in-out infinite}
+.ev.tafx.l-blackhole .pt-all{transform-origin:50% 50%;animation:ptPulse 3s ease-in-out infinite}
+.ev.tafx.l-jiang .pt-all{transform-origin:50% 100%;animation:ptHop 1.6s ease-in-out infinite}
+.ev.tafx.l-jiang.k1 .pt-all{animation:ptFloat 4s ease-in-out infinite}
+@keyframes ptSw{0%,100%{transform:rotate(0) scale(1)}50%{transform:rotate(-10deg) scale(1.04,.92)}}
+@keyframes ptTal{0%,100%{transform:skewX(0) rotate(0)}50%{transform:skewX(-8deg) rotate(5deg)}}
+@keyframes ptFt{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(5deg)}}
+@keyframes ptShd{0%,100%{transform:skewX(0) scale(1);opacity:1}50%{transform:skewX(4deg) scale(1.03);opacity:.8}}
+@keyframes ptPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+@keyframes ptHop{0%,100%{transform:translateY(0) scale(1,1)}12%{transform:translateY(0) scale(1.05,.94)}40%{transform:translateY(-7px) scale(.97,1.04)}68%{transform:translateY(0) scale(1.04,.95)}80%{transform:translateY(0) scale(1,1)}}
 @keyframes evJump{0%{transform:translateY(0)}30%{transform:translateY(-16px) scale(1.04)}55%{transform:translateY(0) scale(1.06,.94)}75%{transform:translateY(-4px)}100%{transform:none}}
 .evbig.jump .evfx{animation:evJump .7s ease-out}
 .evbig{transition:transform .15s}
@@ -932,7 +986,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 @keyframes taDrip{0%{height:0;opacity:1}55%{height:var(--h,.6em);opacity:1}85%{opacity:1}100%{height:var(--h,.6em);opacity:0}}
 @media (prefers-reduced-motion:reduce){.blood i{animation:none;height:var(--h,.6em)}}
 .btn.blood-btn{background:#14060a!important;border:1px solid #6a0016!important;overflow:visible;padding:10px 16px 16px;font-size:18px;white-space:nowrap;flex:none;box-shadow:0 0 14px rgba(200,0,30,.35)}
-.btn.blood-btn:disabled{opacity:.45}
+.btn.blood-btn:disabled{opacity:.9;box-shadow:none;filter:saturate(.8)}
 .btn.ta-btn{background:linear-gradient(135deg,#c8323a,#7a1fa0)!important;color:#fff!important}
 .ta-word{font-family:Georgia,"Times New Roman",serif!important;font-style:italic;font-weight:900;color:#ff2a40!important}
 .ta-card{position:relative;overflow:hidden;margin:10px 0;padding:12px;border-radius:18px;background:linear-gradient(160deg,#241226,#120a18);color:#f3e8f0;border:1px solid #5a2038;box-shadow:0 6px 22px rgba(120,20,50,.25)}
@@ -999,7 +1053,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v18.11.120';
+const APP_VER = 'v18.11.121';
 try { if (localStorage.getItem('rh_fx') === '0') document.documentElement.classList.add('no-fx'); } catch(e){}   // v18.11.115: Chế độ đơn giản   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
@@ -1052,8 +1106,8 @@ const _e = (x,y,rx,ry,c,o) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}
 const _c = (x,y,r,c,o) => `<circle cx="${x}" cy="${y}" r="${r}" class="${_n(c,o)}"${o||''}/>`;
 const _p = (d,c,o) => `<path d="${d}" class="${_n(c,o)}"${o||''}/>`;
 const _l2 = (d,c,w) => `<path d="${d}" class="ol" style="stroke-width:${w+2.8}"/><path d="${d}" class="s${c}" style="stroke-width:${w}"/>`;
-const _eyes = (x,y,g,r) => [-1,1].map(s => _c(x+s*g,y,r,'k n') + _c(x+s*g+r*.3,y-r*.35,r*.38,'w n')).join('');
-const _geyes = (x,y,g,r) => [-1,1].map(s => `<ellipse cx="${x+s*g}" cy="${y}" rx="${r*.75}" ry="${r}" class="k n"/><ellipse cx="${x+s*g}" cy="${y}" rx="${r*.42}" ry="${r*.68}" class="ey n"/>`).join('');
+const _eyes = (x,y,g,r) => '<g class="pt-eye">' + [-1,1].map(s => _c(x+s*g,y,r,'k n') + _c(x+s*g+r*.3,y-r*.35,r*.38,'w n')).join('') + '</g>';
+const _geyes = (x,y,g,r) => '<g class="pt-eye">' + [-1,1].map(s => `<ellipse cx="${x+s*g}" cy="${y}" rx="${r*.75}" ry="${r}" class="k n"/><ellipse cx="${x+s*g}" cy="${y}" rx="${r*.42}" ry="${r*.68}" class="ey n"/>`).join('') + '</g>';
 const _smile = (x,y,w) => _p(`M${x-w},${y} Q${x},${y+w*.9} ${x+w},${y}`,'ln');
 const _spark = (x,y,r,c) => _p(`M${x},${y-r} Q${x},${y} ${x+r},${y} Q${x},${y} ${x},${y+r} Q${x},${y} ${x-r},${y} Q${x},${y} ${x},${y-r}Z`,(c||'g') + ' n pt-sp');
 const _crown = (x,y,s) => `<g transform="translate(${x},${y}) scale(${s})">${_p('M-10,0 L-12,-10 L-5,-5 L0,-13 L5,-5 L12,-10 L10,0Z','g')}${_c(0,-13,1.8,'w n')}${_c(-12,-10,1.4,'w n')}${_c(12,-10,1.4,'w n')}</g>`;
@@ -1066,7 +1120,7 @@ function artTree(k){
   const can = (L) => L.map(b => _c(b[0],b[1],b[2]+1.7,'k n')).join('') + L.map(b => _c(b[0],b[1],b[2],'b n')).join('')
     + L.map(b => _c(b[0]-b[2]*.16,b[1]-b[2]*.2,b[2]*.78,'a n')).join('') + L.slice(0,3).map(b => _c(b[0]-b[2]*.3,b[1]-b[2]*.38,b[2]*.42,'c n',' opacity=".3"')).join('');
   const ground = (w) => _e(50,90,w,4.4,'sh n') + _p(`M${50-w},90 Q50,${82-w*.08} ${50+w},90Z`,'wd') + _p(`M${50-w*.6},86.6 l1.6,-4 l1,4 M${50+w*.5},86 l1.4,-3.6 l1.2,3.6 M${50-w*.15},84.6 l1.2,-3 l1,3`,'sa2',' style="stroke-width:1.4"');
-  const leaf = (x,y,r,s,c) => `<path transform="translate(${x},${y}) rotate(${r}) scale(${s})" d="M0,0 Q5,-8 16,-7 Q12,3 0,0Z" class="${c}"/>` + `<path transform="translate(${x},${y}) rotate(${r}) scale(${s})" d="M1,-.6 Q8,-4 14,-6" class="ln" style="stroke-width:.8;opacity:.4"/>`;
+  const leaf = (x,y,r,s,c) => `<g class="pt-lf">` + `<path transform="translate(${x},${y}) rotate(${r}) scale(${s})" d="M0,0 Q5,-8 16,-7 Q12,3 0,0Z" class="${c}"/>` + `<path transform="translate(${x},${y}) rotate(${r}) scale(${s})" d="M1,-.6 Q8,-4 14,-6" class="ln" style="stroke-width:.8;opacity:.4"/>` + '</g>';
   const stem = (d,w) => _l2(d,'b',w);
   let o = '';
   if (k === 0) return ground(24) + _e(50,80,8,10,'wd') + _p('M50,70 Q53,76 51,88','ln',' style="stroke-width:.9;opacity:.4"') + _e(47.4,76,2.2,3.6,'c n',' opacity=".35"');
@@ -1181,7 +1235,7 @@ function _dhead(o){
   if (o.wh) h += _l2('M-35,0 Q-52,-6 -58,8 Q-60,17 -52,19','g',1.5) + _l2('M-33,3 Q-46,13 -41,25','g',1.5);
   if (o.beard) h += _p('M-20,11 L-24,23 L-15,13 L-14,25 L-7,13Z', o.mc);
   if (o.crown) h += _crown(-6,-12,.55);
-  return h;
+  return `<g class="pt-dh">${h}</g>`;
 }
 const _dh = (h,x,y,rot,sc) => `<g transform="translate(${x},${y}) rotate(${rot}) scale(${sc})">${h}</g>`;
 const _wave = (y,o) => `<g clip-path="url(#evc)"><path d="M0,${y} Q8,${y-6} 16,${y} T32,${y} T48,${y} T64,${y} T80,${y} T96,${y} T112,${y} L112,110 L0,110Z" class="w n" opacity="${o}"/></g>`;
@@ -1279,19 +1333,19 @@ function _bhead(o){
   h += _p('M-7.5,-2 L-17,1.5 L-7.5,4.4Z','bk') + _p('M-7,3.4 L-14,5.2 L-6.5,6.8Z','bk');
   h += _c(-3,-2.5,2.1,'k n') + _c(-3.7,-3.2,.7,'w n') + _p('M-6.5,-5.6 L0,-4.4','ln',' style="stroke-width:1.2"');
   if (o.wt) h += _p('M-6,6 Q-6,11 -2,10Z','mn');
-  return h;
+  return `<g class="pt-hd">${h}</g>`;
 }
 function _bwing(n, spread, len, c1, c2, tip){
   let f = '';
   for (let r = 0; r < 2; r++){ const L = len*(r ? .62 : 1), m = r ? n-1 : n;
     for (let q = 0; q < m; q++){ const a = -spread/2 + (m > 1 ? q*spread/(m-1) : 0) + (r ? spread/(2*(n-1)) : 0), w = len*.17*(r ? .9 : 1);
       f += `<g transform="rotate(${a.toFixed(1)})">${_p(`M0,0 Q${w.toFixed(1)},${(-L*.5).toFixed(1)} 0,${-L.toFixed(1)} Q${(-w).toFixed(1)},${(-L*.5).toFixed(1)} 0,0Z`, (q+r) % 2 ? c1 : c2)}${tip ? _c(0,-L*.9,w*.45,tip + ' n') : ''}</g>`; } }
-  return f;
+  return `<g class="pt-bw">${f}</g>`;
 }
 function _bfeather(P, w0, w1, cls, ec){
   const T = _dt(P, w0, w1); let g = _dbody(T, cls, false) + `<path d="${T.poly(T.pts)}" class="ln" style="stroke-width:.8;opacity:.45"/>`;
   const e = T.pts[T.n-1];
-  return g + _e(e[0],e[1],w1*1.5+2.4,w1*1.8+3,ec || 'g') + _e(e[0],e[1],w1*.8+1.3,w1+1.8,'a n') + _c(e[0],e[1],.9,'k n');
+  return '<g class="pt-tf">' + g + _e(e[0],e[1],w1*1.5+2.4,w1*1.8+3,ec || 'g') + _e(e[0],e[1],w1*.8+1.3,w1+1.8,'a n') + _c(e[0],e[1],.9,'k n') + '</g>';
 }
 const _bfire = (x,y,s,o) => _flame(x,y,s,'mn',o) + _flame(x,y,s*.62,'a') + _flame(x,y,s*.3,'g');
 
@@ -1524,7 +1578,7 @@ function _monk(o){
   g += _p('M-7,-54.5 L-2,-53.6 M7,-54.5 L2,-53.6','ln',' style="stroke-width:1.2"') + _p('M-1.6,-46 L1.6,-46','ln',' style="stroke-width:1"');
   if (o.third) g += _p('M0,-60 l-2,3.4 l2,3.4 l2,-3.4Z','g') + _c(0,-57,5,'g n',' opacity=".3"');
   if (o.crown) g += _p('M-7,-63 L-8.5,-72 L-3.5,-67 L0,-75 L3.5,-67 L8.5,-72 L7,-63Z','g');
-  return g;
+  return `<g class="pt-mk">${g}</g>`;
 }
 const _lotus = (x,y,s,c1,c2) => `<g transform="translate(${x},${y}) scale(${s})">${[-52,-26,26,52].map(a => `<path transform="rotate(${a})" d="M0,0 Q-9,-8 0,-22 Q9,-8 0,0Z" class="${c2}"/>`).join('')}${_p('M0,0 Q-10,-9 0,-26 Q10,-9 0,0Z',c1)}${_p('M-16,0 Q0,6 16,0 Q10,-3 0,-2 Q-10,-3 -16,0Z',c2)}</g>`;
 const _bolt = (x,y,s) => `<path transform="translate(${x},${y}) scale(${s})" d="M0,0 L-6,12 L0,12 L-5,26 L9,8 L2,8 L6,0Z" class="g"/>`;
@@ -1606,7 +1660,7 @@ function artSage(k){
 }
 
 function artStar(k){
-  const star = (x,y,R,c,n) => { n = n || 5; let d = ''; for (let j = 0; j < n*2; j++){ const r = j % 2 ? R*.5 : R, a = Math.PI*j/n - Math.PI/2; d += (j ? 'L' : 'M') + (x+r*Math.cos(a)).toFixed(1) + ',' + (y+r*Math.sin(a)).toFixed(1); } return `<path d="${d}Z" class="${c}" stroke-linejoin="round" style="stroke:var(--${c === 'g' ? 'g' : c});stroke-width:${(R*.22).toFixed(1)}"/>`; };
+  const star = (x,y,R,c,n) => { n = n || 5; let d = ''; for (let j = 0; j < n*2; j++){ const r = j % 2 ? R*.5 : R, a = Math.PI*j/n - Math.PI/2; d += (j ? 'L' : 'M') + (x+r*Math.cos(a)).toFixed(1) + ',' + (y+r*Math.sin(a)).toFixed(1); } return `<path d="${d}Z" class="${c} pt-st" stroke-linejoin="round" style="stroke:var(--${c === 'g' ? 'g' : c});stroke-width:${(R*.22).toFixed(1)}"/>`; };
   const face = (x,y,s) => `<g transform="translate(${x},${y}) scale(${s})">${_eyes(0,0,5,2.4)}${_smile(0,5,2.4)}</g>`;
   const dust = [[30,62,1.6],[42,48,2.4],[58,58,1.8],[66,44,1.4],[48,70,1.2],[36,40,1.2],[62,72,2],[52,36,1.6],[72,60,1.1],[26,50,1]];
   if (k === 0) return dust.map((d,j) => _c(d[0],d[1],d[2],j % 3 ? 'c' : 'g',` opacity="${.5+(j%4)*.15}"`)).join('');
@@ -1632,21 +1686,22 @@ function _stars(n, seed){ let o = ''; for (let j = 0; j < n; j++){ const x = 10 
 /* ---------- Sói: một con sói lớn dần qua 10 cấp ---------- */
 function _whead(o){
   o = o || {}; let h = '';
-  h += _mir(_p('M-15,-6 L-13,-29 L-2,-15Z', o.fur || 'a') + _p('M-12,-10 L-11.6,-23 L-5,-15Z', o.inner || 'mn'));
+  h += _mir('<g class="pt-ear">' + _p('M-15,-6 L-13,-29 L-2,-15Z', o.fur || 'a') + _p('M-12,-10 L-11.6,-23 L-5,-15Z', o.inner || 'mn') + '</g>');
   h += _mir(_p('M-15,-6 L-23,0 L-17,2 L-21,8 L-13,7Z', o.fur || 'a'));
   h += _p('M-16,-6 Q-18,-17 -8,-19 L8,-19 Q18,-17 16,-6 Q14,8 6,14 L0,16 L-6,14 Q-14,8 -16,-6Z', o.fur || 'a');
   h += _p('M-4,-19 L0,-5 L4,-19Z', o.mark || 'b');
   h += _p('M-7.6,-1 Q-9,10 0,15.6 Q9,10 7.6,-1 Q0,-4 -7.6,-1Z', o.muz || 'c');
+  h += '<g class="pt-eye">';
   if (o.pup) h += [-1,1].map(s => _e(s*6.4,-6,3.4,4,'k') + _e(s*6.4,-5.6,2.4,3,'ey n') + _c(s*6.4+1,-7.4,1.1,'w n')).join('');
   else if (o.shut) h += _p('M-10,-6 Q-6.4,-3.6 -3,-6 M3,-6 Q6.4,-3.6 10,-6','ln',' style="stroke-width:1.6"');
   else h += [-1,1].map(s => _p(`M${s*11},-8 L${s*3},-5 L${s*5},-2 L${s*10},-4Z`,'k') + _p(`M${s*9.6},-7 L${s*4.4},-5 L${s*5.6},-3.2 L${s*9},-4.6Z`,'ey n')).join('') + (o.glow ? _c(-6.6,-5,4,'ey n',' opacity=".3"') + _c(6.6,-5,4,'ey n',' opacity=".3"') : '');
-  h += _e(0,6,3.2,2.3,'k') + _p('M0,8.4 L0,11 M0,11 Q-3,13 -5,11 M0,11 Q3,13 5,11','ln',' style="stroke-width:1.2"');
+  h += '</g>' + _e(0,6,3.2,2.3,'k') + _p('M0,8.4 L0,11 M0,11 Q-3,13 -5,11 M0,11 Q3,13 5,11','ln',' style="stroke-width:1.2"');
   if (o.fang) h += _p('M-3.4,11.6 L-2.6,14 L-1.8,11.8Z M3.4,11.6 L2.6,14 L1.8,11.8Z','w');
-  return h + (o.hat || '');
+  return `<g class="pt-hd">${h + (o.hat || '')}</g>`;
 }
 function _wolf(o){
   o = o || {}; let g = o.back || '';
-  g += o.tail || _l2('M10,-6 Q30,-4 28,-22 Q27,-32 20,-30', o.fur || 'a', 7.6);
+  g += `<g class="pt-tl">${o.tail || _l2('M10,-6 Q30,-4 28,-22 Q27,-32 20,-30', o.fur || 'a', 7.6)}</g>`;
   g += _e(0,-18,15,16, o.fur || 'a');
   g += _p(_spiky(0,-30,15,10,9,Math.PI/2), o.ruff || o.fur || 'a');
   g += _p('M-8,-34 Q0,-20 8,-34 Q6,-14 0,-8 Q-6,-14 -8,-34Z', o.muz || 'c');
@@ -1749,19 +1804,19 @@ function _chead(o){
   s += '<g class="pt-eye">';
   [-1,1].forEach(d => {
     const x = d*7;
-    if (o.eye === 'round') s += _e(x,ey,4.2,4.8,'k') + _e(x,ey+.3,3.1,3.8,'ey n') + _e(x,ey+.3,1.3,2.7,'k n') + _c(x+1.3,ey-1.6,1.15,'w n');
+    if (o.eye === 'round') s += _e(x,ey,4.2,4.8,'k') + _e(x,ey+.3,3.1,3.8,'ey n') + `<g class="pt-pu">${_e(x,ey+.3,1.3,2.7,'k n') + _c(x+1.3,ey-1.6,1.15,'w n')}</g>`;
     else if (o.eye === 'happy') s += _p(`M${d*3.4},${ey+1} Q${d*7.4},${ey-4.6} ${d*11.4},${ey+1}`,'ln',' style="stroke-width:2.1"');
     else {
       const g = o.eye === 'glow';
       if (g) s += _c(x,ey,6.6,'ey n',' opacity=".28"');
-      s += _p(`M${d*3},${ey+.2} Q${d*7},${ey-5.2} ${d*12},${ey-1.8} Q${d*8},${ey+3} ${d*3},${ey+.2}Z`,'k') + _p(`M${d*4.2},${ey} Q${d*7},${ey-3.4} ${d*10},${ey-1.5} Q${d*7.4},${ey+1.8} ${d*4.2},${ey}Z`,'ey n') + _e(x+d*.4,ey-.8,.95,2.1,'k n');
+      s += _p(`M${d*3},${ey+.2} Q${d*7},${ey-5.2} ${d*12},${ey-1.8} Q${d*8},${ey+3} ${d*3},${ey+.2}Z`,'k') + _p(`M${d*4.2},${ey} Q${d*7},${ey-3.4} ${d*10},${ey-1.5} Q${d*7.4},${ey+1.8} ${d*4.2},${ey}Z`,'ey n') + `<g class="pt-pu">${_e(x+d*.4,ey-.8,.95,2.1,'k n')}</g>`;
     }
   });
   s += '</g>';
   if (o.brow) s += _p('M-13,-5.5 L-4.5,-3 M13,-5.5 L4.5,-3','ln',' style="stroke-width:2"');
   if (o.hb) s += _p('M-18.4,-7 Q0,-12.5 18.4,-7 L18.4,-2.4 Q0,-8 -18.4,-2.4Z','cp') + _p('M-6.5,-10 L6.5,-10 L6.5,-3.4 L-6.5,-3.4Z','hm') + _p('M-3,-6.7 L3,-6.7 M0,-9 L0,-4.5','ln');
-  s += _wsk(o,'M-10,6 L-24,3.5 M-10,8 L-24,9 M10,6 L24,3.5 M10,8 L24,9');
-  return s;
+  s += `<g class="pt-wk">${_wsk(o,'M-10,6 L-24,3.5 M-10,8 L-24,9 M10,6 L24,3.5 M10,8 L24,9')}</g>`;
+  return `<g class="pt-hd">${s}</g>`;
 }
 /* đầu mèo nhìn nghiêng (hướng trái), gốc ở sọ */
 function _chs(o){
@@ -1780,7 +1835,7 @@ function _cbody(o){
   o = o || {}; const bs = o.bs || 1; let s = '';
   s += o.tail ? '<g class="pt-tl">' + o.tail + '</g>' : '';
   s += _e(35,78,10,11,'a') + _e(65,78,10,11,'a') + _e(50,70,16.5,19,'a') + _e(50,74,8.6,13,o.belly || 'c');
-  s += _cpaw(43,o.leg || 'a') + _cpaw(57,o.leg || 'a');
+  s += _cpaw(43,o.leg || 'a') + `<g class="pt-paw">${_cpaw(57,o.leg || 'a')}</g>`;
   if (o.more) s += o.more;
   return `<g transform="translate(50,88) scale(${bs}) translate(-50,-88)">${s}</g>`;
 }
@@ -1870,7 +1925,7 @@ function evo(line, skin, k, cls){
   if (k >= 8 && line !== 'tree'){ const F = k === 9 ? [[10,1.5],[24,2.3],[38,2.9],[50,3.3],[62,2.9],[76,2.3],[90,1.5]] : [[18,1.6],[34,2.3],[50,2.7],[66,2.3],[82,1.6]];
     aura += `<g class="fla">${F.map(f => _flame(f[0],95,f[1],'g n',' opacity=".5"')).join('')}${F.map(f => _flame(f[0],95,f[1]*.62,'a n',' opacity=".55"')).join('')}</g>`; }
   if (k === 9 && line !== 'tree') aura += `<g class="rays">${Array.from({length:12}, (_,j) => `<path transform="rotate(${j*30} 50 52)" d="M48.6,6 L50,-2 L51.4,6Z" class="g n"/>`).join('')}</g>`;
-  return `<svg class="ev l-${line} k${k} s-${skin || 'base'} ${cls || ''}" viewBox="-4 -6 108 108" aria-hidden="true">${aura}<defs><clipPath id="evc"><circle cx="50" cy="52" r="44"/></clipPath></defs><g class="bd">${ART[line](k)}</g></svg>`;
+  return `<svg class="ev l-${line} k${k} s-${skin || 'base'} ${cls || ''}" viewBox="-4 -6 108 108" aria-hidden="true">${aura}<defs><clipPath id="evc"><circle cx="50" cy="52" r="44"/></clipPath></defs><g class="bd"><g class="pt-all">${ART[line](k)}</g></g></svg>`;
 }
 const look = () => { const m = (D && D.meta.look) || {}; return {l: LINES[m.l] ? m.l : 'tree', s: 'base'}; };
 const mySkin = () => 'base';
@@ -5475,10 +5530,10 @@ function toast(m, ms){ const el = $('#toast'); el.textContent = m; el.classList.
    Khi vào mã: dán artFox vào cạnh ART, thêm khóa 'fox' cho LINES_TA, CSS .ev.l-fox.kN như fox-art.css. */
 
 /* đuôi cáo xù, gốc (0,0) chĩa lên; c1 = màu lông, c2 = màu chóp */
-const _ftail = (x,y,ang,s,c1,c2) => `<g transform="translate(${x},${y}) rotate(${ang}) scale(${s})">`
+const _ftail = (x,y,ang,s,c1,c2) => `<g class="pt-ft"><g transform="translate(${x},${y}) rotate(${ang}) scale(${s})">`
   + _p('M-3.5,0 C-12,-8 -14,-24 -8,-36 C-5,-42 -1,-46 2,-47 C5,-42 10,-34 10,-24 C10,-12 6,-4 3.5,0Z', c1 || 'a')
   + _p('M-7.6,-35 C-5,-42 -1,-46 2,-47 C5,-42 8.4,-37 9.4,-31 C3,-28 -3,-30 -7.6,-35Z', c2 || 'c')
-  + _p('M-2,-12 Q1,-20 0,-28 M4,-10 Q6,-18 5,-24', 'wk') + '</g>';
+  + _p('M-2,-12 Q1,-20 0,-28 M4,-10 Q6,-18 5,-24', 'wk') + '</g></g>';
 /* quạt n đuôi sau lưng, từ góc a0 tới a1 */
 const _ffan = (angs,s,c1,c2) => angs.map(a => _ftail(50 + a * .06, 84, a, s, c1, c2)).join('');
 /* trăng: tròn (full) hoặc khuyết */
@@ -5566,6 +5621,7 @@ function _tface(o){
   o = o || {}; let s = '';
   const ey = o.ey == null ? 2 : o.ey;
   [-1,1].forEach(d => { const x = d*5.6;
+    s += '<g class="pt-eye">';
     if (o.eye === 'round') s += _e(x,ey,2.4,2.9,'k') + _c(x+.8,ey-1,.9,'w n');
     else if (o.eye === 'shut') s += _p(`M${x-2.6},${ey} Q${x},${ey+2} ${x+2.6},${ey}`,'ln',' style="stroke-width:1.4"');
     else if (o.eye === 'swirl') s += _c(x,ey,2.6,'w') + _p(`M${x},${ey} m-1.6,0 a1.6,1.6 0 1 1 1.6,1.6 a.9,.9 0 1 1 -.9,-.9`,'ln',' style="stroke-width:.8"');
@@ -5576,6 +5632,7 @@ function _tface(o){
         + _e(x+d*.3,ey-.5,.55,1.4,'k n');
       if (o.glow) s += _c(x,ey-.4,4.2,'ey n',' opacity=".25"');
     }
+    s += '</g>';
     if (o.brow) s += _p(`M${d*2.4},${ey-3.4} L${d*8.2},${ey-5.2}`,'ln',' style="stroke-width:1.5"');
   });
   if (o.glasses) s += _c(-5.6,ey,3.6,'ln n',' style="fill:none;stroke:#0e1814;stroke-width:1.1"') + _c(5.6,ey,3.6,'ln n',' style="fill:none;stroke:#0e1814;stroke-width:1.1"') + _p(`M-2,${ey} L2,${ey}`,'ln',' style="stroke-width:1.1"');
@@ -5601,11 +5658,11 @@ function _hum(o){
   if (o.hands !== false) s += _c(31,85,3.2,sk) + _c(69,85,3.2,sk);
   s += _p('M47.5,55 L52.5,55 L52.5,61.5 L47.5,61.5Z',sk);
   if (o.hairBack) s += o.hairBack;
-  s += _e(50,44,13,12.4,sk);
-  if (o.hair) s += o.hair;
-  s += _G(50,44,1,0,_tface(o.face));
-  if (o.top) s += o.top;
-  return s;
+  let hd = _e(50,44,13,12.4,sk);
+  if (o.hair) hd += o.hair;
+  hd += _G(50,44,1,0,_tface(o.face));
+  if (o.top) hd += o.top;
+  return s + `<g class="pt-th">${hd}</g>`;
 }
 const _shd = t => `<g class="ta-shd">${t}</g>`;   // bản đen của cùng hình (cái bóng)
 
@@ -5659,8 +5716,8 @@ function artDragonD(k){
 }
 
 /* =================== 2. SATAN =================== */
-const _fwing = c => `<g transform="translate(56,64)">${_p('M0,0 Q14,-24 36,-28 Q31,-19 38,-15 Q29,-10 34,-4 Q25,-2 29,5 Q16,5 0,6Z',c)}${_p('M8,-8 Q20,-16 32,-20 M8,-2 Q20,-6 30,-8','wk')}</g>`;
-const _tbwing = c => `<g transform="translate(56,62)">${_p('M0,0 L10,-24 L38,-30 Q32,-20 36,-11 Q28,-13 27,-3 Q20,-7 17,4 Q10,0 0,6Z',c)}${_p('M10,-24 L36,-11 M10,-24 L27,-3 M10,-24 L17,4','ln',' style="stroke-width:1"')}</g>`;
+const _fwing = c => `<g class="pt-sw"><g transform="translate(56,64)">${_p('M0,0 Q14,-24 36,-28 Q31,-19 38,-15 Q29,-10 34,-4 Q25,-2 29,5 Q16,5 0,6Z',c)}${_p('M8,-8 Q20,-16 32,-20 M8,-2 Q20,-6 30,-8','wk')}</g></g>`;
+const _tbwing = c => `<g class="pt-sw"><g transform="translate(56,62)">${_p('M0,0 L10,-24 L38,-30 Q32,-20 36,-11 Q28,-13 27,-3 Q20,-7 17,4 Q10,0 0,6Z',c)}${_p('M10,-24 L36,-11 M10,-24 L27,-3 M10,-24 L17,4','ln',' style="stroke-width:1"')}</g></g>`;
 const _halo = (y,broken) => broken
   ? _p(`M40,${y} A10,3 0 0 1 48,${y-2.9}`,'sg2',' style="stroke-width:2.2"') + _p(`M53,${y-2.8} A10,3 0 0 1 60,${y}`,'sg2',' style="stroke-width:2.2"') + _p(`M58,${y+2} A10,3 0 0 1 44,${y+2.8}`,'sg2',' style="stroke-width:2.2;opacity:.6"')
   : _e(50,y,10,3,'sg2 n',' style="fill:none;stroke-width:2.2"');
@@ -5688,7 +5745,7 @@ function artSatan(k){
 const TAO_HAIR = _p('M37,44 Q36,31 50,30 Q64,31 63,44 Q58,37 50,38 Q42,37 37,44Z','hr') + _c(50,29,4.6,'hr') + _p('M43,28 L57,30','swd',' style="stroke-width:1.4"');
 const TAO_HAIR_W = _p('M37,44 Q36,30 50,29 Q64,30 63,44 Q59,37 50,38 Q41,37 37,44Z','w') + _p('M37,44 Q33,58 36,70 L40,68 Q38,56 40,46Z M63,44 Q67,58 64,70 L60,68 Q62,56 60,46Z','w');
 const _book = (x,y,c) => _p(`M${x-9},${y} L${x},${y+2} L${x+9},${y} L${x+9},${y+9} L${x},${y+11} L${x-9},${y+9}Z`,c) + _p(`M${x},${y+2} L${x},${y+11}`,'ln',' style="stroke-width:1"');
-const _qi = (x,y,s,c) => `<g transform="translate(${x},${y}) scale(${s})">${_p('M0,0 Q8,-6 4,-14 Q-2,-20 -8,-12 Q-10,-6 -4,-6','s' + (c || 'm'),' style="stroke-width:2.4;fill:none"')}</g>`;
+const _qi = (x,y,s,c) => `<g class="pt-qi"><g transform="translate(${x},${y}) scale(${s})">${_p('M0,0 Q8,-6 4,-14 Q-2,-20 -8,-12 Q-10,-6 -4,-6','s' + (c || 'm'),' style="stroke-width:2.4;fill:none"')}</g></g>`;
 const _sdEyes = (x,y) => _e(x-4,y,1.8,1.1,'red n') + _e(x+4,y,1.8,1.1,'red n') + _p(`M${x-4},${y+5} Q${x},${y+8} ${x+4},${y+5}`,'red-l');
 function artMatu(k){
   const sh = _e(50,89,26,4.6,'sh');
@@ -5738,9 +5795,9 @@ function artBlackhole(k){
 /* =================== 5. CƯƠNG THI (thay Hắc pháp sư, 18/11) =================== */
 /* màu: --a áo quan, --b mũ + viền, --c da xác, --g bùa vàng, --m điểm nhấn */
 const _jhat = () => _p('M38,34 Q38,21 50,20 Q62,21 62,34Z','b') + _p('M38.6,30.4 L61.4,30.4','sg2') + _e(50,34.6,16,3.4,'b') + _c(50,18.4,2.6,'mn');
-const _jtal = (torn) => torn
+const _jtal = (torn) => '<g class="pt-tal">' + (torn
   ? _p('M47,32 L53,32 L53,39 L51.5,37.5 L50,40 L48.5,37.6 L47,39Z','g') + _p('M50,33.4 L50,37','red-l')
-  : _p('M47,32 L53,32 L53,50 L47,50Z','g') + _p('M50,33.6 L50,48 M48.2,37 L51.8,37 M48.4,41.6 Q50,40 51.6,42.4 M48.6,45.6 L51.4,45.6','red-l');
+  : _p('M47,32 L53,32 L53,50 L47,50Z','g') + _p('M50,33.6 L50,48 M48.2,37 L51.8,37 M48.4,41.6 Q50,40 51.6,42.4 M48.6,45.6 L51.4,45.6','red-l')) + '</g>';
 const _jfang = _p('M47.4,51.6 L48.2,54.4 L49,51.6Z M51,51.6 L51.8,54.4 L52.6,51.6Z','w');
 const _jarm = (c) => _mirX(_p('M42,62 Q30,57.5 20,59.5 L20,69 Q30,67.5 40,72Z',c || 'a') + _p('M20,59.5 L16.6,60 L16.6,69.4 L20,69Z','b')
   + _p('M16.8,61 Q11,61.4 10.6,65.6 L11.6,71 L13,67.2 L13.6,72.4 L15,68 L15.8,72 L16.8,68.4Z','c'));
@@ -5791,7 +5848,7 @@ function artJiang(k){
 /* =================== khung chung =================== */
 const TA_BR = {
   dragon_d:{n:'Hắc long',ic:'🐉',art:artDragonD,st:['','Cá chép trượt môn','Hắc giao','Thôn lôi giao','Hắc lôi long','Thôn nhật ma long'],tag:'Rơi xuống vực sâu, rồi nuốt cả mặt trời.'},
-  satan:{n:'Satan',ic:'😈',art:artSatan,st:['','Lucifer','Thiên thần sa ngã','Ác ma','Quỷ vương','Satan'],tag:'Mỗi việc làm xong là một điều khoản giao kèo.'},
+  satan:{n:'Satan',ic:'😈',art:artSatan,st:['','Lucifer','Fallen Angel','Mephisto','Abaddon','Satan'],tag:'Mỗi việc làm xong là một điều khoản giao kèo.'},
   matu:{n:'Ma tôn',ic:'👤',art:artMatu,st:['','Đạo sĩ cấm thư','Tâm ma','Ma ảnh','Vực ngoại thiên ma','Ma tôn'],tag:'Cái bóng của ngươi biết nói, và nó nói nhiều hơn ngươi.'},
   fox:{n:'Hồ ly tinh',ic:'🦊',art:k => artFox(k),st:FOX_ST,tag:'Tiểu hồ ly, mỗi đêm trăng thêm đuôi, đến chín đuôi thì hóa người.'},
   blackhole:{n:'Hố đen',ic:'🕳️',art:artBlackhole,st:['','Jack','Sao khổng lồ đỏ','Supernova','Pulsar','Hố đen nuốt sao'],tag:'Vòng đời thật của một ngôi sao, đến tận hư vô.'},
@@ -5929,7 +5986,7 @@ function evoTaB(br, k, cls){
   k = Math.max(1, Math.min(5, k | 0)); const B = TA_BR[br] || TA_BR.fox;
   const aura = `<circle cx="50" cy="52" r="46" class="ta-bg n"/><circle cx="50" cy="52" r="46" class="ta-rg" opacity="${(.35 + k * .12).toFixed(2)}"/>`;
   const art = (br === 'blackhole' || br === 'matu') ? `<g clip-path="url(#tac)">${B.art(k)}</g>` : B.art(k);
-  return `<svg class="ev l-${br} k${k} ${cls || ''}" viewBox="-4 -6 108 108" aria-hidden="true"><defs><clipPath id="tac"><circle cx="50" cy="52" r="45"/></clipPath></defs>${aura}<g class="bd">${art}</g></svg>`;
+  return `<svg class="ev l-${br} k${k} ${cls || ''}${/big/.test(cls || '') ? ' tafx' : ''}" viewBox="-4 -6 108 108" aria-hidden="true"><defs><clipPath id="tac"><circle cx="50" cy="52" r="45"/></clipPath></defs>${aura}<g class="bd"><g class="pt-all">${art}</g></g></svg>`;
 }
 /* đồng bộ: khôi phục khi máy cũ ghi đè META, chốt tẩu hỏa vào lịch sử sau 1 ngày */
 let TA_SRV = false, TA_PUSH = false;
@@ -6021,7 +6078,7 @@ const bloodTxt = t => `<span class="blood">${esc(t)}${[[10,0,.5],[30,1.3,.85],[5
 function taEntryHtml(s){
   if (taMeta().a) return '';
   const e = taEligible(s);
-  return `<div class="card ta-door ${e.ok ? '' : 'off'}"><div><b>😈 Tà tu</b><small>${e.ok ? 'Chế độ khó: thưởng x3, lỡ trừ x6, đứt chuỗi mất 300 XP.' : e.wait ? `Vừa tẩu hỏa: còn ${e.wait} ngày nữa mới được nhập ma lại.` : `Cần cấp 5 hoặc chuỗi 21 ngày (đang: cấp ${e.lv}, chuỗi ${e.cur}).`}</small></div><button class="btn ${e.ok ? 'blood-btn' : 'ghost'}" ${e.ok ? 'data-ta-open="1"' : 'disabled'}>${e.ok ? bloodTxt('Nhập ma') : 'Nhập ma'}</button></div>`;
+  return `<div class="card ta-door ${e.ok ? '' : 'off'}"><div><b>😈 Tà tu</b><small>${e.ok ? 'Chế độ khó: thưởng x3, lỡ trừ x6, đứt chuỗi mất 300 XP.' : e.wait ? `Vừa tẩu hỏa: còn ${e.wait} ngày nữa mới được nhập ma lại.` : `Cần cấp 5 hoặc chuỗi 21 ngày (đang: cấp ${e.lv}, chuỗi ${e.cur}).`}</small></div><button class="btn blood-btn" ${e.ok ? 'data-ta-open="1"' : 'disabled'}>${bloodTxt('Nhập ma')}</button></div>`;
 }
 let TA_PICK = null, TA_STEP = 1;
 function taOpen(){ TA_PICK = null; TA_STEP = 1; taDraw(); }
