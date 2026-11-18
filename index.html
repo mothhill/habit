@@ -927,6 +927,11 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 @keyframes taJump{40%{transform:translateY(-10px) rotate(-3deg)}}
 @keyframes taBolt{0%,86%,100%{opacity:0}88%{opacity:1}90%{opacity:.2}92%{opacity:.9}}
 @keyframes taIn{from{opacity:0}}
+.ta-note.zap::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;background:#fff;animation:taZap 1.1s ease-out forwards}
+.ta-note.zap.hit .luc{animation:taShake .5s .15s}
+.ta-note.zap .luc{position:relative;z-index:2}
+@keyframes taZap{0%{opacity:0}6%{opacity:.95}14%{opacity:.1}22%{opacity:.8}40%,100%{opacity:0}}
+@keyframes taShake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 @media (prefers-reduced-motion:reduce){.ta-card .ta-storm,.ta-card .ta-kiep.now{animation:none}}
 .ta-note .btn.ta-btn{background:linear-gradient(135deg,#c8323a,#7a1fa0);color:#fff}
 .ta-note .luc{border-radius:20px;max-width:420px}
@@ -3519,7 +3524,7 @@ function petView(s){
       Lỡ thói quen đang có chuỗi: -${PEN_DAILY} XP/ngày (việc tuần -${PEN_WEEKLY} XP/tuần), lỡ tối đa ${MISS_MAX} lần liên tiếp vẫn giữ chuỗi, lần thứ ${MISS_MAX+1} đứt chuỗi và hết trừ. XP có thể làm tụt cấp.<br>
       Cả ngày làm dưới 2/3 thói quen: -${PEN_DAY} XP/ngày, cũng lỡ tối đa ${MISS_MAX} ngày liên tiếp vẫn giữ chuỗi chung.<br>
       Giữ lửa = làm từ 2/3 thói quen trong ngày.<br>
-      😈 Tà tu (cần cấp 5 hoặc chuỗi 21 ngày): thưởng x3, lỡ trừ x6; ngày nào dưới 2/3 thói quen hoặc không có bài nào là tẩu hỏa -300 XP. Thiên kiếp mỗi 10 ngày: vượt +150, trượt -200.</div></div>`;
+      😈 Tà tu (cần cấp 5 hoặc chuỗi 21 ngày): thưởng x3, lỡ trừ x6; ngày nào dưới 2/3 thói quen hoặc không có bài nào là tẩu hỏa -300 XP. Thiên kiếp mỗi 10 ngày (báo trước 3 ngày): vượt +150/+250/+400, trượt -200 và tụt 1 tà cấp, trượt 2 kiếp liền là tẩu hỏa. Kiếp thứ 6: chạy 10 km. Trượt -200.</div></div>`;
 }
 
 function badges(s){
@@ -5736,14 +5741,16 @@ const TA_SAY = {"dragon_d": {"v": [["Đừng nhắc chuyện Long Môn. Bổn v�
    Trạng thái lưu ở META.ttu = {a: {br, S, ts} | null, h: [{br, S, E, r}]}; mọi con số tính lại từ dữ liệu như XP chính đạo. */
 const TA_ORDER = ['dragon_d','satan','matu','fox','blackhole','jiang'];
 const TA_LET = 'abcdefghijklmnopqrstuvwxyz';
-const TA_PEN_D = 30, TA_PEN_W = 90, TA_PEN_SUB = 30, TA_FALL = 300, TA_KOK = 150, TA_KFAIL = 200;
+const TA_PEN_D = 30, TA_PEN_W = 90, TA_PEN_SUB = 30, TA_FALL = 300, TA_KFAIL = 200;
+const taKOk = n => n >= 6 ? 400 : n >= 3 ? 250 : 150;   // thưởng vượt kiếp tăng dần (18/11)
+const TA_WARN = 3;   // báo trước 3 ngày
 const TA_TA = {fox: 'bổn cô nương', dragon_d: 'bổn vương', jiang: 'bổn thi'};
 const TA_TITLE = {dragon_d: ['Hắc giao','Long vương vực sâu','Long đế bóng tối'], satan: ['Ác ma ký sự','Quân chủ địa ngục','Chúa tể địa ngục'], matu: ['Tâm ma thành hình','Ma quân','Ma tôn'],
   fox: ['Mị hồ','Hồ vương','Cửu vĩ thiên hồ'], blackhole: ['Sao neutron','Kỳ dị điểm','Chân trời sự kiện'], jiang: ['Huyết thi vương','Dạ xoa vương','Thi tổ Hạn bạt']};
 const TA_LURE = {dragon_d: 'Rơi xuống vực sâu, rồi nuốt cả mặt trời.', satan: 'Mỗi việc làm xong là một điều khoản giao kèo.', matu: 'Cái bóng của ngươi biết nói, và nó nói nhiều hơn ngươi.',
   fox: 'Mỗi đêm trăng thêm một đuôi, chín đuôi thì hóa người.', blackhole: 'Vòng đời thật của một ngôi sao, đến tận hư vô.', jiang: 'Tà thi tỉnh dậy, khát huyết, bay đêm, đến Hạn bạt thì đất trời khô hạn.'};
 const TA_TEST = {t1: 'hoàn thành 100% thói quen trong ngày', t2e: 'xong hết thói quen trước 12:00', t2h: 'xong hết thói quen trước 9:00', t3e: 'chạy bộ ít nhất 3 km', t3h: 'chạy bộ ít nhất 5 km',
-  t5: 'nộp đủ cả ba loại bài: chạy bộ hoặc đi bộ, đọc sách, cam kết', t6e: 'đi ngủ trước 23:00 (ghi giờ ngủ sáng hôm sau)', t7: 'có cả đọc sách và cam kết trong ngày'};
+  t5: 'nộp đủ cả ba loại bài: chạy bộ hoặc đi bộ, đọc sách, cam kết', t6e: 'đi ngủ trước 23:00 (ghi giờ ngủ sáng hôm sau)', t7: 'có cả đọc sách và cam kết trong ngày', t10: 'chạy bộ ít nhất 10 km trong một ngày, vào 1 trong 3 ngày (ngày trụ 58, 59 hoặc 60)'};
 const TA_EASY = ['t1','t2e','t3e','t6e'], TA_HARD = ['t1','t2h','t3h','t5','t7'];
 let TA_GEN = 0, TA_C = null, TA_CK = '', TA_CD = null, TA_BUSY = false;
 const TA_EMPTY = {per: [], inP: [], fall: {}, kiep: {}, act: null, best: 0};
@@ -5761,6 +5768,7 @@ function taSubs(d){
 const taKm = d => (((typeof BSTAT !== 'undefined' && BSTAT) || {}).runs || []).filter(r => r.d === d).reduce((a, r) => a + (+r.km || 0), 0);
 /* thử thách của kiếp n (bốc cố định theo mã người + n) */
 function taTests(n){
+  if (n === 6) return ['t10'];   // kiếp thứ 6: chạy 10 km (thầy chốt 18/11)
   const id = (ME && ME.id) || 'x', pool = (n <= 2 ? TA_EASY : TA_HARD).slice(), k = n >= 6 ? 2 : 1, out = [];
   const prev = n > 1 ? taTestsRaw(n - 1, id) : [];
   let h = taHash(id + '|' + n);
@@ -5778,6 +5786,7 @@ function taTestOk(t, i){
     return DAILY.every(h => !activeDay(h, i) || isNeutral(h.code, i) || !D.daily[h.code][i] || arr.some(x => { const p = String(x).split(':'); return p[1] === h.code && p[2] !== 'L' && p[0] < G; })); }
   if (t === 't3e') return taKm(d) >= 3 - 1e-9;
   if (t === 't3h') return taKm(d) >= 5 - 1e-9;
+  if (t === 't10') return taKm(d) >= 10 - 1e-9;
   if (t === 't5') return taSubs(d).n === 3;
   if (t === 't7'){ const s = taSubs(d); return s.rd && s.ck; }
   if (t === 't6e'){ const v = ((D.meta.sleep || {})[taAdd(d, 1)] || [])[0]; if (!v) return false; const hh = +String(v).split(':')[0]; return hh >= 18 && hh <= 22; }
@@ -5806,7 +5815,8 @@ function taCalc0(){
       if (!P.hist && (!hab || !sub)){ fall[i] = 1; o.E = D.days[i]; o.r = !hab && !sub ? 'both' : !hab ? 'habit' : 'sub'; break; }
       if (P.hist && P.E && i === iE){ fall[i] = 1; break; }
       o.dk++;
-      if (M % 10 === 0 && bsOk){ const k = M / 10, ok = taTests(k).every(t => taTestOk(t, i)); kiep[i] = {n: k, ok}; if (ok) o.ko++; else o.kf++; }
+      if (M % 10 === 0 && bsOk){ const k = M / 10, ok = k === 6 ? [i - 2, i - 1, i].some(j => j >= i0 && taTestOk('t10', j)) : taTests(k).every(t => taTestOk(t, i));   /* kiếp 6: 10 km vào 1 trong 3 ngày */ kiep[i] = {n: k, ok}; if (ok){ o.ko++; o.kl = 0; } else { o.kf++; o.kl = (o.kl || 0) + 1;
+        if (!P.hist && o.kl >= 2){ fall[i] = 1; o.E = D.days[i]; o.r = 'kiep'; kiep[i].fall = 1; break; } } }
     }
     if (!P.hist && !o.E) o.cur = 1;
     per.push(o);
@@ -5824,12 +5834,14 @@ function taNow(){
   const c = taCalc(), o = c.act, today = D.today;
   if (!o){ const fp = c.per.find(x => !x.hist && x.E); return fp ? {fallen: fp} : null; }
   if (today < tm.a.S) return {wait: 1, br: tm.a.br, S: tm.a.S};
-  const M = taDiff(tm.a.S, today) + 1, cap = taCapOf(M), nk = Math.ceil(M / 10) * 10;
-  return {br: tm.a.br, S: tm.a.S, M, cap, o, toK: nk - M, kn: nk / 10, kiepToday: M % 10 === 0, warn: M % 10 === 9};
+  const M = taDiff(tm.a.S, today) + 1, cap = Math.max(1, taCapOf(M) - (o.kf || 0)), nk = Math.ceil(M / 10) * 10;   // mỗi lần trượt kiếp tụt 1 tà cấp
+  return {br: tm.a.br, S: tm.a.S, M, cap, o, toK: nk - M, kn: nk / 10, kiepToday: M % 10 === 0, warn: M % 10 >= 10 - TA_WARN, eve: M % 10 === 9};
 }
 const taActive = () => { const n = taNow(); return !!(n && !n.wait && !n.fallen); };
 /* điều kiện nhập ma: cấp 5 trở lên hoặc chuỗi 21 ngày */
-function taEligible(s){ s = s || summary(); const lv = levelOf(s.xp) + 1; return {ok: (lv >= 5 || s.cur >= 21) && T >= 0 && T < D.days.length - 2, lv, cur: s.cur}; }
+const TA_WAIT = 7;   // tẩu hỏa xong phải chờ 7 ngày mới được nhập ma lại (thầy chốt 18/11)
+function taEligible(s){ s = s || summary(); const lv = levelOf(s.xp) + 1, lastE = taCalc().per.reduce((a, o) => o.E && o.E > a ? o.E : a, ''), wait = lastE ? Math.max(0, TA_WAIT - taDiff(lastE, D.today)) : 0;
+  return {ok: (lv >= 5 || s.cur >= 21) && !wait && T >= 0 && T < D.days.length - 2, lv, cur: s.cur, wait}; }
 /* tính số ngày nghiệp lưu vào hồ sơ (bảng xếp hạng đọc qua lk[0], chỉ chữ thường) */
 const taB26 = (v, n) => { v = Math.max(0, Math.min(Math.pow(26, n) - 1, v | 0)); let s = ''; for (let i = 0; i < n; i++){ s = TA_LET[v % 26] + s; v = Math.floor(v / 26); } return s; };
 const taU26 = s => [...s].reduce((a, c) => a * 26 + Math.max(0, TA_LET.indexOf(c)), 0);
@@ -5895,7 +5907,7 @@ function taLine(){
   if (st.total && st.done / st.total < THRESHOLD - 1e-9 && h >= 20 && Math.random() < .7) return taFill(taSit(n.br, 'ta_low', '', n.cap));
   if (!sub && h >= 19 && Math.random() < .7) return taFill(taSit(n.br, 'ta_nosub', '', n.cap));
   if (n.kiepToday && Math.random() < .6) return taFill(taSit(n.br, 'ta_kiep', '', n.cap));
-  if (n.warn && Math.random() < .6) return taFill(taSit(n.br, 'ta_warn', '', n.cap), {test: taTestTxt(n.kn)});
+  if (n.eve && Math.random() < .6) return taFill(taSit(n.br, 'ta_warn', '', n.cap), {test: taTestTxt(n.kn)});
   const v = (S.v || [])[n.cap - 1] || []; return v.length ? taFill(pick(v)) : '';
 }
 function taGreet(){
@@ -5916,7 +5928,7 @@ function taPenAdd(add){
   WEEKLY.forEach(h => { for (let w = 0; w <= weekOf(T); w++){ const b = wkB(w); if (b > T || c.inP[b] < 0 || c.fall[b] || !activeWeek(h, w) || D.weekly[h.code][w] || !(b < T - 1)) continue; add(b + 1, TA_PEN_W); } });
 }
 function taSubAdd(m){
-  const c = taCalc(); Object.keys(c.kiep).forEach(i => { if (c.kiep[i].ok){ const d = D.days[+i]; m[d] = (m[d] || 0) + TA_KOK; } });
+  const c = taCalc(); Object.keys(c.kiep).forEach(i => { if (c.kiep[i].ok){ const d = D.days[+i]; m[d] = (m[d] || 0) + taKOk(c.kiep[i].n); } });
 }
 /* ---------- giao diện ---------- */
 function taCardHtml(big, noPic){
@@ -5925,7 +5937,7 @@ function taCardHtml(big, noPic){
   if (n.fallen) return '';
   const st = dayStat(T), need = Math.ceil(st.total * THRESHOLD - 1e-9), s = taSubs(D.today), B = TA_BR[n.br];
   const ttl = taTitles(n.br), mark = (ok, t) => `<span class="${ok ? 'ok' : ''}">${t} ${ok ? '✓' : '✗'}</span>`;
-  const band = n.kiepToday ? `<div class="ta-kiep now">⚡ Hôm nay độ kiếp lần ${n.kn}: ${esc(taTestTxt(n.kn))} · hạn hết ngày</div>` : n.warn ? `<div class="ta-kiep">⚡ Ngày mai thiên kiếp lần ${n.kn}: ${esc(taTestTxt(n.kn))}</div>` : '';
+  const band = n.kiepToday ? `<div class="ta-kiep now">⚡ Hôm nay độ kiếp lần ${n.kn}: ${esc(taTestTxt(n.kn))} · hạn hết ngày</div>` : n.warn ? `<div class="ta-kiep">⚡ ${n.toK === 1 ? 'Ngày mai' : 'Còn ' + n.toK + ' ngày tới'} thiên kiếp lần ${n.kn} (vượt +${taKOk(n.kn)} XP): ${esc(taTestTxt(n.kn))}</div>` : '';
   return `<div class="ta-card ${big ? 'big' : ''} ${noPic ? 'mini' : ''}">${n.kiepToday ? '<div class="ta-storm"></div>' : ''}<div class="ta-row">${noPic ? '' : `<div class="ta-pic evbig ta-masc" data-ta-talk="1">${evoTaB(n.br, n.cap, 'big')}</div>`}<div class="ta-info">
     <div class="ta-br">${B.ic} ${esc(B.n)}${ttl ? ' · <i>' + esc(ttl) + '</i>' : ''}</div><b class="ta-st">${esc(B.st[n.cap])}</b>
     <small>Tà cấp ${n.cap} · ngày trụ thứ ${n.M} · còn ${n.toK || 10} ngày tới thiên kiếp</small>
@@ -5936,7 +5948,7 @@ function taTitles(br){ const c = taCalc(); let ko = 0; c.per.forEach(o => { if (
 function taEntryHtml(s){
   if (taMeta().a) return '';
   const e = taEligible(s);
-  return `<div class="card ta-door ${e.ok ? '' : 'off'}"><div><b>😈 Tà tu</b><small>${e.ok ? 'Chế độ khó: thưởng x3, lỡ trừ x6, đứt chuỗi mất 300 XP.' : `Cần cấp 5 hoặc chuỗi 21 ngày (đang: cấp ${e.lv}, chuỗi ${e.cur}).`}</small></div><button class="btn ${e.ok ? 'ta-btn' : 'ghost'}" ${e.ok ? 'data-ta-open="1"' : 'disabled'}>Nhập ma</button></div>`;
+  return `<div class="card ta-door ${e.ok ? '' : 'off'}"><div><b>😈 Tà tu</b><small>${e.ok ? 'Chế độ khó: thưởng x3, lỡ trừ x6, đứt chuỗi mất 300 XP.' : e.wait ? `Vừa tẩu hỏa: còn ${e.wait} ngày nữa mới được nhập ma lại.` : `Cần cấp 5 hoặc chuỗi 21 ngày (đang: cấp ${e.lv}, chuỗi ${e.cur}).`}</small></div><button class="btn ${e.ok ? 'ta-btn' : 'ghost'}" ${e.ok ? 'data-ta-open="1"' : 'disabled'}>Nhập ma</button></div>`;
 }
 let TA_PICK = null, TA_STEP = 1;
 function taOpen(){ TA_PICK = null; TA_STEP = 1; taDraw(); }
@@ -5949,11 +5961,11 @@ function taDraw(){
   } else if (TA_STEP === 2){
     const S = taAdd(D.today, 1), bz = Object.keys(D.meta.busy || {}).filter(d => d >= S).map(dm);
     h = `<h2>⚠️ Đọc kỹ trước khi ký</h2><ul class="ta-warn">
-      <li>Không đổi nhánh, không tự thoát. Chỉ ra khi tẩu hỏa.</li>
+      <li>Không đổi nhánh giữa chừng, không tự thoát. Chỉ ra khi tẩu hỏa, và tẩu hỏa xong phải chờ 7 ngày mới được nhập ma lại.</li>
       <li>Mỗi ngày phải đủ <b>2/3 thói quen</b> và có <b>ít nhất một bài</b>: chạy bộ hoặc đi bộ, đọc sách, cam kết. Thiếu một trong hai là tẩu hỏa: <b>mất 300 XP</b>, được phép tụt cấp, về chính đạo.</li>
       <li>Thưởng x3 (mỗi tick +30, việc tuần +90, ngày hoàn hảo +60, mỗi loại bài +30). Lỡ việc trừ x6: −30 mỗi việc ngày, −90 mỗi việc tuần, −30 mỗi loại bài thiếu.</li>
       <li>Không có ngày lười, xin bận, ngày nghỉ 29–31.${bz.length ? ' Ngày bận đã đặt (' + bz.join(', ') + ') sẽ bị bỏ.' : ''}</li>
-      <li>Thiên kiếp mỗi 10 ngày trụ: vượt +150 XP, trượt −200 XP.</li>
+      <li>Thiên kiếp mỗi 10 ngày trụ, báo trước 3 ngày. Vượt: +150 XP (kiếp 1–2), +250 (kiếp 3–5), +400 (từ kiếp 6). Trượt: −200 XP và tụt 1 tà cấp; trượt 2 kiếp liên tiếp là tẩu hỏa. Kiếp thứ 6: chạy bộ 10 km.</li>
       <li>Mỗi ngày được chốt lúc 12:00 trưa hôm sau (trước giờ đó vẫn tick bổ sung được). Hiệu lực từ 0 giờ ngày ${dm(S)}.</li></ul>
       <button class="btn ta-btn" data-ta-next="3">Tôi đã hiểu</button> <button class="btn ghost" data-ta-next="1">Quay lại</button>`;
   } else {
@@ -5979,7 +5991,8 @@ document.addEventListener('click', e => {
 function taEntryOk(){ const e = taEligible(); if (!e.ok){ toast('Chưa đủ điều kiện nhập ma.'); return false; } return true; }
 /* ---------- thông báo toàn màn hình: mỗi sự kiện một lần ---------- */
 function taShow(o){
-  const el = document.createElement('div'); el.className = 'luo ta-note';
+  const el = document.createElement('div'); el.className = 'luo ta-note' + (o.zap ? ' zap ' + o.zap : '');
+  if (o.zap){ try { sfx('zap'); setTimeout(() => sfx(o.zap === 'win' ? 'fanfare' : 'roar'), 450); if (navigator.vibrate) navigator.vibrate(o.zap === 'win' ? [40,60,40] : [200,80,300]); } catch(e){} }
   el.innerHTML = `<div class="luc"><div class="lut ta-lut">${o.ic} ${esc(o.t)}</div>${o.art ? `<div class="lus">${o.old ? `<div class="luold">${o.old}</div><div class="lunew">${o.art}</div>` : `<div class="lunew">${o.art}</div>`}</div>` : ''}<h3>${esc(o.s || '')}</h3>${o.say ? `<p class="ta-say">${taRich(o.say)}</p>` : ''}<button class="btn ta-btn" data-tanote="1">${esc(o.b || 'Tiếp')}</button></div>`;
   document.body.appendChild(el);
 }
@@ -5989,15 +6002,15 @@ function taNotices(){
   const c = taCalc(), mark = id => { seen[id] = 1; try { LS.set(k, JSON.stringify(seen)); } catch(e){} };
   for (const o of c.per){
     const B = TA_BR[o.br]; if (!B) continue; const base = o.br + o.S;
-    if (o.E && taDiff(o.E, D.today) <= 14){ const id = base + ':fall'; if (!seen[id]){ mark(id); const r = o.r === 'sub' ? 'sub' : 'habit';
-      taShow({ic: '💥', t: 'Tẩu hỏa nhập ma', s: (o.r === 'sub' ? 'Cả ngày ' + dm(o.E) + ' không có bài nào.' : 'Ngày ' + dm(o.E) + ' chưa đủ 2/3 thói quen' + (o.r === 'both' ? ' và không có bài nào.' : '.')) + ' −300 XP, về chính đạo.', old: evoTaB(o.br, taCapOf(o.M)), art: evo(look().l, 'base', levelOf(summary().xp), 'big'), say: taFill(taSit(o.br, 'ta_fall', r, taCapOf(o.M)), {br: o.br}), b: 'Về chính đạo'}); return; } }
+    if (o.E && taDiff(o.E, D.today) <= 14){ const id = base + ':fall'; if (!seen[id]){ mark(id); const r = o.r === 'sub' ? 'sub' : o.r === 'kiep' ? '' : 'habit';
+      taShow({ic: '💥', t: 'Tẩu hỏa nhập ma', s: o.r === 'kiep' ? 'Trượt 2 thiên kiếp liên tiếp (ngày ' + dm(o.E) + '). −300 XP, về chính đạo.' : (o.r === 'sub' ? 'Cả ngày ' + dm(o.E) + ' không có bài nào.' : 'Ngày ' + dm(o.E) + ' chưa đủ 2/3 thói quen' + (o.r === 'both' ? ' và không có bài nào.' : '.')) + ' −300 XP, về chính đạo.', old: evoTaB(o.br, taCapOf(o.M)), art: evo(look().l, 'base', levelOf(summary().xp), 'big'), say: taFill(taSit(o.br, 'ta_fall', r, taCapOf(o.M)), {br: o.br}), b: 'Về chính đạo'}); return; } }
     if (o.hist) continue;
     const n = taNow(); if (!n || n.wait || n.fallen) continue;
     if (!seen[base + ':enter']){ mark(base + ':enter'); taShow({ic: '😈', t: 'Khế ước có hiệu lực', s: 'Ngày trụ thứ 1 · ' + B.st[1], art: evoTaB(o.br, 1, 'big'), say: taFill(taSit(o.br, 'first', '', 1))}); return; }
     for (let cap = 2; cap <= n.cap; cap++){ const id = base + ':cap' + cap; if (!seen[id]){ mark(id); if (cap === n.cap){ taShow({ic: '🩸', t: 'Lên tà cấp ' + cap, s: B.st[cap], old: evoTaB(o.br, cap - 1), art: evoTaB(o.br, cap, 'big'), say: taFill(taSit(o.br, 'ta_cap', '', cap))}); return; } } }
     for (const i of Object.keys(c.kiep)){ if (c.inP[+i] !== c.per.indexOf(o)) continue; const kr = c.kiep[i], id = base + ':k' + kr.n; if (seen[id]) continue; mark(id);
-      taShow({ic: kr.ok ? '⚡' : '🌩️', t: kr.ok ? 'Vượt thiên kiếp lần ' + kr.n : 'Bị sét đánh', s: (kr.ok ? '+150 XP. ' : '−200 XP. ') + 'Thử thách: ' + taTestTxt(kr.n) + '.', art: evoTaB(o.br, n.cap, 'big'), say: taFill(taSit(o.br, kr.ok ? 'ta_win' : 'ta_hit', '', n.cap))}); return; }
-    if (n.warn){ const id = base + ':w' + n.kn; if (!seen[id]){ mark(id); taShow({ic: '⚡', t: 'Thiên kiếp lần ' + n.kn + ' vào ngày mai', s: 'Thử thách: ' + taTestTxt(n.kn) + '.', art: evoTaB(o.br, n.cap, 'big'), say: taFill(taSit(o.br, 'ta_warn', '', n.cap), {test: taTestTxt(n.kn)})}); return; } }
+      taShow({zap: kr.ok ? 'win' : 'hit', ic: kr.ok ? '⚡' : '🌩️', t: kr.ok ? 'Vượt thiên kiếp lần ' + kr.n : 'Bị sét đánh', s: (kr.ok ? '+' + taKOk(kr.n) + ' XP. ' : '−200 XP, tụt 1 tà cấp. Trượt thêm kiếp sau là tẩu hỏa. ') + 'Thử thách: ' + taTestTxt(kr.n) + '.', art: evoTaB(o.br, n.cap, 'big'), say: taFill(taSit(o.br, kr.ok ? 'ta_win' : 'ta_hit', '', n.cap))}); return; }
+    if (n.warn){ const id = base + ':w' + n.kn; if (!seen[id]){ mark(id); taShow({ic: '⚡', t: 'Thiên kiếp lần ' + n.kn + (n.toK === 1 ? ' vào ngày mai' : ' sau ' + n.toK + ' ngày'), s: 'Thử thách: ' + taTestTxt(n.kn) + '. Vượt +' + taKOk(n.kn) + ' XP, trượt −200 XP và tụt 1 tà cấp.', art: evoTaB(o.br, n.cap, 'big'), say: n.eve ? taFill(taSit(o.br, 'ta_warn', '', n.cap), {test: taTestTxt(n.kn)}) : ''}); return; } }
     if (n.kiepToday){ const id = base + ':kd' + n.kn; if (!seen[id]){ mark(id); taShow({ic: '🌩️', t: 'Hôm nay độ kiếp', s: taTestTxt(n.kn) + '. Hạn hết ngày.', art: evoTaB(o.br, n.cap, 'big'), say: taFill(taSit(o.br, 'ta_kiep', '', n.cap))}); return; } }
   }
 }
