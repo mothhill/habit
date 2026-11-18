@@ -884,6 +884,15 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 .ev.l-jiang.k4{--a:#2a2440;--b:#4a3a72;--c:#9ab6a8;--g:#ffd34d;--m:#7a3ad8}
 .ev.l-jiang.k5{--a:#7a1a1a;--b:#2a0e0e;--c:#e2a882;--g:#ffb02e;--m:#ff3a2a}
 /* ===== Tà tu: thẻ, cửa nhập ma, khế ước, Ma giới ===== */
+.blood{position:relative;display:inline-block;font-family:Georgia,"Times New Roman",serif;font-weight:900;font-style:italic;color:#d0001f;letter-spacing:.3px;text-shadow:0 1px 0 #5a0010,0 0 8px rgba(255,0,40,.5);line-height:1.1}
+.blood i{position:absolute;top:78%;width:.15em;height:0;border-radius:0 0 .2em .2em;background:linear-gradient(#d0001f,#7a0012);animation:taDrip var(--t,3.6s) var(--d,0s) ease-in infinite;pointer-events:none}
+.blood i::after{content:"";position:absolute;bottom:-.14em;left:50%;transform:translateX(-50%);width:.27em;height:.3em;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:#7a0012}
+@keyframes taDrip{0%{height:0;opacity:1}55%{height:var(--h,.6em);opacity:1}85%{opacity:1}100%{height:var(--h,.6em);opacity:0}}
+@media (prefers-reduced-motion:reduce){.blood i{animation:none;height:var(--h,.6em)}}
+.btn.blood-btn{background:#14060a!important;border:1px solid #6a0016!important;overflow:visible;padding:10px 16px 16px;font-size:18px;white-space:nowrap;flex:none;box-shadow:0 0 14px rgba(200,0,30,.35)}
+.btn.blood-btn:disabled{opacity:.45}
+.btn.ta-btn{background:linear-gradient(135deg,#c8323a,#7a1fa0)!important;color:#fff!important}
+.ta-word{font-family:Georgia,"Times New Roman",serif!important;font-style:italic;font-weight:900;color:#ff2a40!important}
 .ta-card{position:relative;overflow:hidden;margin:10px 0;padding:12px;border-radius:18px;background:linear-gradient(160deg,#241226,#120a18);color:#f3e8f0;border:1px solid #5a2038;box-shadow:0 6px 22px rgba(120,20,50,.25)}
 .ta-card .ta-row{display:flex;gap:12px;align-items:center}
 .ta-card .ta-pic{width:92px;height:92px;flex:none;cursor:pointer}
@@ -948,7 +957,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v18.11.116';
+const APP_VER = 'v18.11.117';
 try { if (localStorage.getItem('rh_fx') === '0') document.documentElement.classList.add('no-fx'); } catch(e){}   // v18.11.115: Chế độ đơn giản   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
@@ -2060,7 +2069,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbxbxFDzYyGOJgo0GUbq0AKD
 /* Dùng chung: trong Apps Script chạy google.script.run, trên GitHub Pages gọi fetch tới API_URL. */
 /* v14.11.93: chuyển hẳn sang Supabase (Apps Script đã khoá). Mọi hàm gọi Supabase. */
 const SB_URL = 'https://iaekdnrblvatqmldnjyi.supabase.co/functions/v1/api';
-const SB_FNS = {getMembers:1, login:1, logout:1, getData:1, getBoard:1, saveRow:1, adminOverview:1, getProfile:1, addMember:1, resetPin:1, setUnlockAll:1, setBirthday:1, lineLog:1, lineStats:1, badgeReplayAll:1, gymSave:1, gymMine:1, gymBoard:1, submitRun:1, myRuns:1, cancelRun:1, runOcr:1, appealRun:1, reviewAppeal:1, reviewFlag:1, ackRunNews:1, queueTick:1, runBoard:1, runRecords:1, runChamps:1, teamGrid:1, runAdminData:1, saveRunMap:1, saveStravaName:1, runResync:1, saveRunSettings:1, mindSubmit:1, mindMine:1, listenCheck:1, listenSubmit:1, mindSetBook:1, mindQueueInfo:1, mindRetryNow:1, mindManual:1, mindManualBulk:1, quotaMine:1, quotaBoard:1, badgeStats:1, workMine:1, workRemove:1, workRemoveFor:1, workUploadStart:1, workSubmit:1, workList:1, workDetail:1, workSetTier:1, workTierLog:1, workMembers:1, reportInfo:1, reportStart:1, reportMine:1, reportSaveDraft:1, reportPaste:1, reportDropPaste:1, reportSubmit:1, reportList:1, reportDetail:1, reportReview:1, reportAck:1, reportPriDone:1, reportBook:1, reportBookRead:1, reportImgAdd:1, reportImgDrop:1, reportFbImgAdd:1, reportImage:1};
+const SB_FNS = {taTuSave:1, taTuMine:1, getMembers:1, login:1, logout:1, getData:1, getBoard:1, saveRow:1, adminOverview:1, getProfile:1, addMember:1, resetPin:1, setUnlockAll:1, setBirthday:1, lineLog:1, lineStats:1, badgeReplayAll:1, gymSave:1, gymMine:1, gymBoard:1, submitRun:1, myRuns:1, cancelRun:1, runOcr:1, appealRun:1, reviewAppeal:1, reviewFlag:1, ackRunNews:1, queueTick:1, runBoard:1, runRecords:1, runChamps:1, teamGrid:1, runAdminData:1, saveRunMap:1, saveStravaName:1, runResync:1, saveRunSettings:1, mindSubmit:1, mindMine:1, listenCheck:1, listenSubmit:1, mindSetBook:1, mindQueueInfo:1, mindRetryNow:1, mindManual:1, mindManualBulk:1, quotaMine:1, quotaBoard:1, badgeStats:1, workMine:1, workRemove:1, workRemoveFor:1, workUploadStart:1, workSubmit:1, workList:1, workDetail:1, workSetTier:1, workTierLog:1, workMembers:1, reportInfo:1, reportStart:1, reportMine:1, reportSaveDraft:1, reportPaste:1, reportDropPaste:1, reportSubmit:1, reportList:1, reportDetail:1, reportReview:1, reportAck:1, reportPriDone:1, reportBook:1, reportBookRead:1, reportImgAdd:1, reportImgDrop:1, reportFbImgAdd:1, reportImage:1};
 const SB_ON = true;
 try { localStorage.removeItem('rh_sb'); } catch(e){}
 function call(fn, ...args){
@@ -2167,6 +2176,7 @@ function buildData(d, noAF, keepVi){
   habits.forEach(h => { if (/tuần/i.test(h.freq)) D.weekly[h.code] = Array(weeks.length).fill(0); else D.daily[h.code] = Array(90).fill(0); });
   const rows = d.rows || {};
   if (rows.META){ D.meta.plans = rows.META.plans || {}; D.meta.lists = rows.META.lists || {}; D.meta.hist = rows.META.hist || {}; D.meta.subs = rows.META.subs || {}; D.meta.look = rows.META.look || {}; D.meta.sleep = rows.META.sleep || {}; D.meta.bd = rows.META.bd || ''; D.meta.sleepGoal = rows.META.sleepGoal || ['','']; D.meta.busy = rows.META.busy || {}; D.meta.gym = rows.META.gym || []; D.meta.lazy = rows.META.lazy || {}; if (rows.META.bdg) D.meta.bdg = rows.META.bdg; D.meta.tt = rows.META.tt || {}; D.meta.ix = rows.META.ix || {}; D.meta.lvd = rows.META.lvd || {}; D.meta.bdNo = rows.META.bdNo || 0; D.meta.rp = rows.META.rp || ''; D.meta.ttu = rows.META.ttu || null; TA_GEN++; }
+  if (d.ttu !== undefined){ TA_SRV = true; if (d.ttu) D.meta.ttu = d.ttu; else if (D.meta.ttu) TA_PUSH = true; TA_GEN++; }
   Object.keys(rows).forEach(k => {
     const m = k.match(/^([DW]):(\d{4}-\d{2}-\d{2})$/); if (!m) return;
     const isD = m[1] === 'D', pk = m[2], idx = isD ? days.indexOf(pk) : weeks.indexOf(pk);
@@ -3312,8 +3322,8 @@ function rankView(){
   if (rankGroup === 'person'){
     const rows = BOARD.rows.slice().sort((a,b) => metric(b) - metric(a) || b.xp - a.xp);
     list = rows.map((r,k) => `<div class="rk click ${r.id===BOARD.me?'me':''} ${k<3 && metric(r) > 0 ? 't'+(k+1) : ''}" data-prof="${esc(r.id)}"><div class="pos">${k<3 ? ['🥇','🥈','🥉'][k] : k+1}</div>
-      <div class="ava evava">${taAva(r.lk, r.level)}${r.id === crownId && wxp(r) > 0 ? '<span class="wcrown">👑</span>' : ''}</div>
-      <div class="rn"><b>${esc(r.name)}${taMark(r.lk)}${r.id===BOARD.me?' (bạn)':''}</b><small>${esc(r.dept)} · Cấp ${r.level} · 🔥 ${r.cur} ngày${rankMode === 'total' ? ' · +' + wxp(r) + ' XP tuần' : ''}</small></div><div class="rv">${metric(r)}<small>${unit}</small></div><div class="chev">›</div></div>`).join('');
+      <div class="ava evava">${taAva(r.lk, r.level, r.ta)}${r.id === crownId && wxp(r) > 0 ? '<span class="wcrown">👑</span>' : ''}</div>
+      <div class="rn"><b>${esc(r.name)}${taMark(r.lk, r.ta)}${r.id===BOARD.me?' (bạn)':''}</b><small>${esc(r.dept)} · Cấp ${r.level} · 🔥 ${r.cur} ngày${rankMode === 'total' ? ' · +' + wxp(r) + ' XP tuần' : ''}</small></div><div class="rv">${metric(r)}<small>${unit}</small></div><div class="chev">›</div></div>`).join('');
   } else {
     const g = {}; BOARD.rows.forEach(r => { (g[r.dept] = g[r.dept] || []).push(r); });
     const rows = Object.keys(g).map(d => ({d, n: g[d].length, v: Math.round(g[d].reduce((a,r) => a + metric(r), 0) / g[d].length), mine: g[d].some(r => r.id === BOARD.me)}))
@@ -5868,14 +5878,22 @@ function evoTaB(br, k, cls){
   return `<svg class="ev l-${br} k${k} ${cls || ''}" viewBox="-4 -6 108 108" aria-hidden="true"><defs><clipPath id="tac"><circle cx="50" cy="52" r="45"/></clipPath></defs>${aura}<g class="bd">${art}</g></svg>`;
 }
 /* đồng bộ: khôi phục khi máy cũ ghi đè META, chốt tẩu hỏa vào lịch sử sau 1 ngày */
+let TA_SRV = false, TA_PUSH = false;
+/* 18/11 v18.11.117: khế ước lưu ở máy chủ (bảng ta_tu); máy chủ giữ luật không đổi nhánh, chờ 7 ngày */
+function taPush(){
+  if (!D || PRACTICE || !TOKEN) return; const v = D.meta.ttu; TA_PUSH = false;
+  call('taTuSave', TOKEN, v || {a: null, h: []}).then(r => { if (r && D){ D.meta.ttu = r; TA_GEN++; try { LS.set('rh_ttu_' + ME.id, JSON.stringify(r)); } catch(e){} markDirty('META'); } })
+    .catch(e => { toast('😈 ' + e.message); call('taTuMine', TOKEN).then(r => { if (D){ D.meta.ttu = r || {a: null, h: []}; TA_GEN++; try { LS.set('rh_ttu_' + ME.id, JSON.stringify(D.meta.ttu)); } catch(e2){} render(); } }).catch(() => {}); });
+}
 function taSync(){
   if (!D || !ME || PRACTICE) return;
   const key = 'rh_ttu_' + ME.id, tm = taMeta();
   try { const bk = JSON.parse(LS.get(key) || 'null');
-    if (bk && bk.ts && (!D.meta.ttu || (D.meta.ttu.ts || 0) < bk.ts)){ D.meta.ttu = bk; TA_GEN++; markDirty('META'); } } catch(e){}
+    if (bk && bk.ts && (!D.meta.ttu || (D.meta.ttu.ts || 0) < bk.ts) && !(TA_SRV && D.meta.ttu)){ D.meta.ttu = bk; TA_GEN++; markDirty('META'); if (TA_SRV) TA_PUSH = true; } } catch(e){}
   const c = taCalc(), fp = c.per.find(o => !o.hist && o.E);
   if (fp && tm.a && BSAT){ const iE = D.days.indexOf(fp.E);
-    if (iE >= 0 && iE <= T - 2){ tm.h.push({br: fp.br, S: fp.S, E: fp.E, r: fp.r}); tm.a = null; tm.ts = Date.now(); TA_GEN++; markDirty('META'); } }
+    if (iE >= 0 && iE <= T - 2){ tm.h.push({br: fp.br, S: fp.S, E: fp.E, r: fp.r}); tm.a = null; tm.ts = Date.now(); TA_GEN++; markDirty('META'); TA_PUSH = true; } }
+  if (TA_PUSH) taPush();
   try { if (D.meta.ttu && D.meta.ttu.ts) LS.set(key, JSON.stringify(D.meta.ttu)); } catch(e){}
 }
 function taEnter(br){
@@ -5883,7 +5901,7 @@ function taEnter(br){
   const S = taAdd(D.today, 1); tm.a = {br, S, ts: Date.now()}; tm.ts = Date.now();
   const bz = D.meta.busy || {}; Object.keys(bz).forEach(d => { if (d >= S) delete bz[d]; });
   const lz = D.meta.lazy || {}; Object.keys(lz).forEach(d => { if (d >= S) delete lz[d]; });
-  TA_GEN++; markDirty('META'); taSync(); return true;
+  TA_GEN++; markDirty('META'); TA_PUSH = true; taSync(); return true;
 }
 /* ---------- thoại ---------- */
 function taFill(t, x){
@@ -5945,10 +5963,11 @@ function taCardHtml(big, noPic){
     <div class="ta-chk">Bài: ${mark(s.run, '🏃')} ${mark(s.rd, '📖')} ${mark(s.ck, '🗣️')}</div></div></div>${band}${noPic ? '' : `<div class="ta-bub" data-ta-talk="1">${taRich(taGreet() || taLine())}</div>`}</div>`;
 }
 function taTitles(br){ const c = taCalc(); let ko = 0; c.per.forEach(o => { if (o.br === br) ko += o.ko; }); const T3 = TA_TITLE[br] || []; return ko >= 9 ? T3[2] : ko >= 6 ? T3[1] : ko >= 3 ? T3[0] : ''; }
+const bloodTxt = t => `<span class="blood">${esc(t)}${[[10,0,.5],[30,1.3,.85],[55,.6,.45],[78,2.1,.7],[92,2.9,.4]].map(([l, d, h]) => `<i style="left:${l}%;--d:${d}s;--h:${h}em"></i>`).join('')}</span>`;
 function taEntryHtml(s){
   if (taMeta().a) return '';
   const e = taEligible(s);
-  return `<div class="card ta-door ${e.ok ? '' : 'off'}"><div><b>😈 Tà tu</b><small>${e.ok ? 'Chế độ khó: thưởng x3, lỡ trừ x6, đứt chuỗi mất 300 XP.' : e.wait ? `Vừa tẩu hỏa: còn ${e.wait} ngày nữa mới được nhập ma lại.` : `Cần cấp 5 hoặc chuỗi 21 ngày (đang: cấp ${e.lv}, chuỗi ${e.cur}).`}</small></div><button class="btn ${e.ok ? 'ta-btn' : 'ghost'}" ${e.ok ? 'data-ta-open="1"' : 'disabled'}>Nhập ma</button></div>`;
+  return `<div class="card ta-door ${e.ok ? '' : 'off'}"><div><b>😈 Tà tu</b><small>${e.ok ? 'Chế độ khó: thưởng x3, lỡ trừ x6, đứt chuỗi mất 300 XP.' : e.wait ? `Vừa tẩu hỏa: còn ${e.wait} ngày nữa mới được nhập ma lại.` : `Cần cấp 5 hoặc chuỗi 21 ngày (đang: cấp ${e.lv}, chuỗi ${e.cur}).`}</small></div><button class="btn ${e.ok ? 'blood-btn' : 'ghost'}" ${e.ok ? 'data-ta-open="1"' : 'disabled'}>${e.ok ? bloodTxt('Nhập ma') : 'Nhập ma'}</button></div>`;
 }
 let TA_PICK = null, TA_STEP = 1;
 function taOpen(){ TA_PICK = null; TA_STEP = 1; taDraw(); }
@@ -5969,7 +5988,7 @@ function taDraw(){
       <li>Mỗi ngày được chốt lúc 12:00 trưa hôm sau (trước giờ đó vẫn tick bổ sung được). Hiệu lực từ 0 giờ ngày ${dm(S)}.</li></ul>
       <button class="btn ta-btn" data-ta-next="3">Tôi đã hiểu</button> <button class="btn ghost" data-ta-next="1">Quay lại</button>`;
   } else {
-    h = `<h2>✍️ Ký khế ước</h2><p>Gõ đúng <b>nhập ma</b> để ký với ${esc(TA_BR[TA_PICK].n)}.</p><input class="ta-word" placeholder="nhập ma" autocomplete="off"><div style="margin-top:12px"><button class="btn ta-btn" data-ta-sign="1" disabled>Ký khế ước</button> <button class="btn ghost" data-ta-next="2">Quay lại</button></div>`;
+    h = `<h2>✍️ Ký khế ước</h2><p>Gõ đúng <span style="font-size:22px">${bloodTxt('nhập ma')}</span> để ký với ${esc(TA_BR[TA_PICK].n)}.</p><input class="ta-word" placeholder="nhập ma" autocomplete="off"><div style="margin-top:12px"><button class="btn blood-btn" data-ta-sign="1" disabled>${bloodTxt('Ký khế ước')}</button> <button class="btn ghost" data-ta-next="2">Quay lại</button></div>`;
   }
   el.innerHTML = `<div class="ta-box"><button class="pvx" data-ta-close="1" aria-label="Đóng">✕</button>${h}</div>`;
   const inp = el.querySelector('.ta-word'); if (inp){ inp.focus(); inp.addEventListener('input', () => { el.querySelector('[data-ta-sign]').disabled = inp.value.trim().replace(/\s+/g, ' ').toLowerCase() !== 'nhập ma'; }); }
@@ -6014,13 +6033,14 @@ function taNotices(){
     if (n.kiepToday){ const id = base + ':kd' + n.kn; if (!seen[id]){ mark(id); taShow({ic: '🌩️', t: 'Hôm nay độ kiếp', s: taTestTxt(n.kn) + '. Hạn hết ngày.', art: evoTaB(o.br, n.cap, 'big'), say: taFill(taSit(o.br, 'ta_kiep', '', n.cap))}); return; } }
   }
 }
-function taAva(lk, level){ const p = taParse(lk && lk[0]); if (p && p.act) return evoTaB(p.br, p.cap);
+const taP = (lk, ta) => { const p = taParse(lk && lk[0]); if (p || !ta || !ta.S) return p; const M = taDiff(ta.S, (BOARD && BOARD.today) || D.today) + 1; return M >= 1 && TA_BR[ta.br] ? {br: ta.br, cap: taCapOf(M), M, ko: 0, best: M - 1, act: 1} : null; };
+function taAva(lk, level, ta){ const p = taP(lk, ta); if (p && p.act) return evoTaB(p.br, p.cap);
   const ln = (lk && lkLine(lk[0])) || 'tree', kk = Math.max(0, Math.min(LEVELS.length-1, (level|0)-1)); return evfx(ln, kk, evo(ln, 'base', kk)); }
-const taMark = lk => { const p = taParse(lk && lk[0]); return p && p.act ? ' 😈' : ''; };
+const taMark = (lk, ta) => { const p = taP(lk, ta); return p && p.act ? ' 😈' : ''; };
 /* ---------- tab Ma giới ---------- */
 function taBoardRows(){
   const rows = (BOARD && BOARD.rows) || [];
-  return rows.map(r => ({r, p: taParse(r.id === BOARD.me && D ? taLk() : (r.lk && r.lk[0]))})).filter(x => x.p);
+  return rows.map(r => ({r, p: r.id === BOARD.me && D ? taParse(taLk()) : taP(r.lk, r.ta)})).filter(x => x.p);
 }
 function maView(){
   const all = taBoardRows(), act = all.filter(x => x.p.act).sort((a, b) => b.p.M - a.p.M || b.p.ko - a.p.ko || b.p.cap - a.p.cap || String(a.r.name).localeCompare(b.r.name));
@@ -6446,7 +6466,7 @@ async function runLoadBoard(ym){
 }
 function runAva(r){
   const b = BOARD && BOARD.rows && r.id ? BOARD.rows.find(x => x.id === r.id) : null;
-  if (b && typeof evfx === 'function') return `<div class="ava evava">${taAva(b.lk, b.level)}</div>`;
+  if (b && typeof evfx === 'function') return `<div class="ava evava">${taAva(b.lk, b.level, b.ta)}</div>`;
   const w = String(r.name || '?').trim().split(/\s+/); return `<div class="ava">${esc((w[w.length-1] || '?').charAt(0).toUpperCase())}</div>`;
 }
 function runRankView(){
