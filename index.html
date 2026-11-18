@@ -853,7 +853,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.97';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.98';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -5454,8 +5454,8 @@ function aiLbl(A){
   return '⚪ chưa bật · lấy khóa tại aistudio.google.com';
 }
 /* ===== v14.11.96: PWA – cài app ra màn hình chính, lối tắt ?go= ===== */
-/** v14.11.97: bố cục mới thử nghiệm. ?v2=1 bật, ?v2=0 tắt (nhớ trên máy). */
-const V2 = (() => { try { const q = /[?&]v2=([01])/.exec(location.search); if (q) localStorage.setItem('rh_v2', q[1]); return localStorage.getItem('rh_v2') === '1'; } catch(e){ return false; } })();
+/** v14.11.98: bố cục mới bật cho tất cả. ?v2=0 quay về bố cục cũ, ?v2=1 bật lại (nhớ trên máy). */
+const V2 = (() => { try { const q = /[?&]v2=([01])/.exec(location.search); if (q) localStorage.setItem('rh_v2', q[1]); return localStorage.getItem('rh_v2') !== '0'; } catch(e){ return true; } })();
 if (V2) document.body.classList.add('v2');
 function mStrip(){
   if (!V2 || T < 0) return '';
