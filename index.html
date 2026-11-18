@@ -332,16 +332,16 @@ html:not([data-theme=light]) .sbadd input{background:#0F1914;border-color:#2F403
 .ev.l-cat.k9{--a:#343b62;--b:#161a30;--c:#8e9bd0;--g:#ffd34d;--m:#3ee0ff}
 .ev .wk{fill:none;stroke:#0e1814;stroke-width:.8;opacity:.6}
 /* chiến thần */
-.ev.l-hero.k0{--a:#c9a678;--b:#8d5e34;--c:#e8d6b0;--g:#ffd34d}
-.ev.l-hero.k1{--a:#2f4f7a;--b:#4a3424;--c:#e6cf9c;--g:#c8323a}
-.ev.l-hero.k2{--a:#3a5f8a;--b:#2a3a52;--c:#ece0c0;--g:#d9a23a}
-.ev.l-hero.k3{--a:#8a5a32;--b:#5a3820;--c:#e8d6b0;--g:#c8323a}
-.ev.l-hero.k4{--a:#5f6f86;--b:#2c3a4a;--c:#dfe8f0;--g:#d9a23a}
-.ev.l-hero.k5{--a:#4a6a9a;--b:#1e2e4a;--c:#e0ecff;--g:#e8b84a}
-.ev.l-hero.k6{--a:#c8323a;--b:#3a2a26;--c:#7fe0b0;--g:#ffc83a}
-.ev.l-hero.k7{--a:#c8323a;--b:#5a1a1a;--c:#fff0c0;--g:#ffc83a}
-.ev.l-hero.k8{--a:#2fb59a;--b:#a61f33;--c:#e0fff5;--g:#ffd34d}
-.ev.l-hero.k9{--a:#fff3c4;--b:#c9802a;--c:#ffffff;--g:#ffd34d;--m:#ff6a2a}
+.ev.l-hero.k0{--a:#e8eef5;--b:#2f6f8a;--c:#ffffff;--g:#d9a23a;--m:#c8323a}
+.ev.l-hero.k1{--a:#dfe8f0;--b:#3a6fb0;--c:#ffffff;--g:#e8c25a;--m:#3a6fb0}
+.ev.l-hero.k2{--a:#7a3aa0;--b:#2a1a4a;--c:#ffe8c0;--g:#ffc83a;--m:#c8323a}
+.ev.l-hero.k3{--a:#2f8a5a;--b:#1a4a3a;--c:#e8ffe8;--g:#ffd34d;--m:#c8483a}
+.ev.l-hero.k4{--a:#e8b84a;--b:#8a1f1f;--c:#fff0c0;--g:#ffd34d;--m:#c8323a}
+.ev.l-hero.k5{--a:#2f5f9a;--b:#1a2e52;--c:#e8eef8;--g:#ffd34d;--m:#c8323a}
+.ev.l-hero.k6{--a:#3e3e4c;--b:#16161e;--c:#ffe0c0;--g:#d9a23a;--m:#c8323a}
+.ev.l-hero.k7{--a:#e8402a;--b:#a8281a;--c:#fff0d8;--g:#ffd34d;--m:#ff7a2a}
+.ev.l-hero.k8{--a:#c8d0dc;--b:#3a4a6a;--c:#f0f6ff;--g:#ffd34d;--m:#6a4aa0}
+.ev.l-hero.k9{--a:#ffc83a;--b:#c8321f;--c:#fff3d0;--g:#ffd34d;--m:#e8a070}
 .ev.l-hero{--a:#4f86f7;--b:#2c50b0;--c:#cfe0ff;--g:#ffd34d}
 /* tu tiên */
 .ev.l-sage.k0{--a:#e6c58f;--b:#a8763e;--c:#9fe8ff;--g:#ffd34d}
@@ -433,6 +433,47 @@ html:not([data-theme=light]) .sbadd input{background:#0F1914;border-color:#2F403
 .evfx.lv4::after,.evfx.lv5::after,.evfx.lv6::after,.evfx.lv7::after,.evfx.lv8::after,.evfx.lv9::after{content:"";position:absolute;inset:8%;border-radius:50%;z-index:3;pointer-events:none;background:linear-gradient(115deg,transparent 42%,rgba(255,255,255,.38) 50%,transparent 58%);background-size:260% 100%;animation:evShine 5s ease-in-out infinite;mix-blend-mode:screen}
 .evfx.lv9::before{content:"";position:absolute;inset:-3%;border-radius:50%;z-index:0;pointer-events:none;background:conic-gradient(#ff6a6a,#ffc83a,#b8f061,#4fe0ff,#8a6aff,#ff6ac8,#ff6a6a);-webkit-mask:radial-gradient(circle,transparent 63%,#000 64.5%,#000 68.5%,transparent 70%);mask:radial-gradient(circle,transparent 63%,#000 64.5%,#000 68.5%,transparent 70%);animation:evSpin 5s linear infinite;opacity:.9}
 .rk .evfx .ev{animation-duration:9s,3.4s}
+/* ---- Chuyển động từng bộ phận (Thần miêu, Chiến thần, 19/11) ---- */
+.evfx .ev:is(.l-cat,.l-hero) .pt-tl,.evfx .ev:is(.l-cat,.l-hero) .pt-ear,.evfx .ev:is(.l-cat,.l-hero) .pt-eye,.evfx .ev:is(.l-cat,.l-hero) .pt-sp,.evfx .ev:is(.l-cat,.l-hero) .pt-fl,.evfx .ev:is(.l-cat,.l-hero) .pt-wg{transform-box:fill-box}
+.evfx .ev:is(.l-cat,.l-hero) .pt-tl{transform-origin:0% 100%;animation:ptWag 2.6s ease-in-out infinite}
+.evfx .ev:is(.l-cat,.l-hero) .pt-tl.r{transform-origin:100% 100%;animation-name:ptWagR;animation-delay:-1.3s}
+.evfx .ev:is(.l-cat,.l-hero) .pt-eye{transform-origin:50% 50%;animation:ptBlink 4.8s infinite}
+.evfx.lv3 .ev:is(.l-cat,.l-hero) .pt-ear,.evfx.lv4 .ev:is(.l-cat,.l-hero) .pt-ear,.evfx.lv5 .ev:is(.l-cat,.l-hero) .pt-ear,.evfx.lv6 .ev:is(.l-cat,.l-hero) .pt-ear,.evfx.lv7 .ev:is(.l-cat,.l-hero) .pt-ear,.evfx.lv8 .ev:is(.l-cat,.l-hero) .pt-ear,.evfx.lv9 .ev:is(.l-cat,.l-hero) .pt-ear{transform-origin:50% 100%;animation:ptEar 5.4s ease-in-out infinite}
+.evfx .ev:is(.l-cat,.l-hero) .pt-ear.r{animation-duration:7s;animation-delay:1.6s}
+.evfx .ev:is(.l-cat,.l-hero) .pt-sp{transform-origin:50% 50%;animation:ptTw 1.9s ease-in-out infinite}
+.evfx .ev:is(.l-cat,.l-hero) .pt-sp:nth-of-type(2n){animation-delay:-.7s;animation-duration:2.3s}
+.evfx .ev:is(.l-cat,.l-hero) .pt-sp:nth-of-type(3n){animation-delay:-1.4s;animation-duration:2.8s}
+.evfx .ev:is(.l-cat,.l-hero) .pt-fl{transform-origin:50% 100%;animation:ptFl .55s ease-in-out infinite alternate}
+.evfx .ev:is(.l-cat,.l-hero) .pt-fl:nth-of-type(2n){animation-duration:.7s;animation-delay:-.3s}
+.evfx .ev:is(.l-cat,.l-hero) .pt-cl{animation:ptDrift 5s ease-in-out infinite alternate}
+.evfx .ev:is(.l-cat,.l-hero) .pt-cl:nth-of-type(2n){animation-duration:6.5s;animation-direction:alternate-reverse}
+.evfx .ev:is(.l-cat,.l-hero) .pt-wg{transform-origin:0% 70%;animation:ptFlap 1.6s ease-in-out infinite}
+@keyframes ptWag{0%,100%{transform:rotate(0)}30%{transform:rotate(-8deg)}65%{transform:rotate(5deg)}}
+@keyframes ptWagR{0%,100%{transform:rotate(0)}30%{transform:rotate(8deg)}65%{transform:rotate(-5deg)}}
+@keyframes ptBlink{0%,92%,98%,100%{transform:scaleY(1)}95%{transform:scaleY(.08)}}
+@keyframes ptEar{0%,88%,100%{transform:rotate(0)}91%{transform:rotate(-16deg)}94%{transform:rotate(5deg)}97%{transform:rotate(-7deg)}}
+@keyframes ptTw{0%,100%{transform:scale(1) rotate(0);opacity:1}50%{transform:scale(.4) rotate(45deg);opacity:.45}}
+@keyframes ptFl{to{transform:scale(.86,1.14) skewX(5deg)}}
+@keyframes ptDrift{to{transform:translateX(5px)}}
+@keyframes ptFlap{0%,100%{transform:scaleX(1) rotate(0)}50%{transform:scaleX(.82) rotate(-6deg)}}
+.evfx .ev.l-hero :is(.pt-cp,.pt-pl,.pt-ts,.pt-bd,.pt-fg,.pt-wp,.pt-rb,.pt-wh){transform-box:fill-box}
+.evfx .ev.l-hero .pt-cp{transform-origin:50% 0%;animation:ptCape 3.4s ease-in-out infinite}
+.evfx .ev.l-hero .pt-pl{transform-origin:50% 100%;animation:ptPl 2.4s ease-in-out infinite}
+.evfx .ev.l-hero .pt-ts{transform-origin:50% 0%;animation:ptTs 1.7s ease-in-out infinite}
+.evfx .ev.l-hero .pt-bd{transform-origin:50% 0%;animation:ptBd 3.6s ease-in-out infinite}
+.evfx .ev.l-hero .pt-fg{transform-origin:100% 50%;animation:ptFlag 1.5s ease-in-out infinite}
+.evfx .ev.l-hero .pt-fg.r{transform-origin:0% 50%;animation-name:ptFlagR}
+.evfx .ev.l-hero .pt-wp{transform-origin:50% 85%;animation:ptWp 4s ease-in-out infinite}
+.evfx .ev.l-hero .pt-rb{transform-origin:50% 50%;animation:ptRb 2.8s ease-in-out infinite}
+.evfx .ev.l-hero .pt-wh{transform-origin:50% 50%;animation:evSpin .9s linear infinite}
+@keyframes ptCape{0%,100%{transform:skewX(0) scaleX(1)}50%{transform:skewX(-7deg) scaleX(1.06)}}
+@keyframes ptPl{0%,100%{transform:rotate(0)}50%{transform:rotate(-6deg)}}
+@keyframes ptTs{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(10deg)}}
+@keyframes ptBd{0%,100%{transform:rotate(0)}50%{transform:rotate(3deg)}}
+@keyframes ptFlag{0%,100%{transform:skewY(0) scaleX(1)}50%{transform:skewY(5deg) scaleX(.93)}}
+@keyframes ptFlagR{0%,100%{transform:skewY(0) scaleX(1)}50%{transform:skewY(-5deg) scaleX(.93)}}
+@keyframes ptWp{0%,100%{transform:rotate(0)}50%{transform:rotate(2.4deg)}}
+@keyframes ptRb{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-2px) rotate(3deg)}}
 @keyframes evJump{0%{transform:translateY(0)}30%{transform:translateY(-16px) scale(1.04)}55%{transform:translateY(0) scale(1.06,.94)}75%{transform:translateY(-4px)}100%{transform:none}}
 .evbig.jump .evfx{animation:evJump .7s ease-out}
 .evbig{transition:transform .15s}
@@ -958,7 +999,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v18.11.119';
+const APP_VER = 'v18.11.120';
 try { if (localStorage.getItem('rh_fx') === '0') document.documentElement.classList.add('no-fx'); } catch(e){}   // v18.11.115: Chế độ đơn giản   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
@@ -989,7 +1030,7 @@ const LINES = {
   phoenix:{g:'thu',n:'Thần điểu',ic:'🔥',st:['Tàn tro','Trứng lửa','Chim non','Hỏa tước','Hỏa điểu','Thanh loan','Xích phượng','Hỏa phượng','Kim phượng','Bất tử điểu']},
   cat:{g:'thu',n:'Thần miêu',ic:'🐱',st:['Mèo con','Mèo mướp','Mèo đêm','Linh miêu','Song vĩ miêu','Lôi miêu','Vân miêu','Kim miêu','Miêu vương','Thần miêu']},
   wolf:{g:'thu',n:'Thần lang',ic:'🐺',st:['Sói con','Sói non','Sói săn','Sói đầu đàn','Sói trăng','Băng lang','Lôi lang','Thiên lang','Lang vương','Thần lang']},
-  hero:{g:'nguoi',n:'Chiến thần',ic:'⚔️',st:['Tân binh','Ngũ trưởng','Thập trưởng','Bách hộ','Thiên hộ','Hiệu úy','Tướng quân','Đại tướng quân','Thiên tướng','Chiến thần']},
+  hero:{g:'nguoi',n:'Chiến thần',ic:'⚔️',st:['Mã Siêu','Triệu Vân','Lữ Bố','Quan Vũ','Nhạc Phi','Hàn Tín','Hạng Vũ','Na Tra','Nhị Lang Thần','Tề Thiên Đại Thánh']},
   sage:{g:'nguoi',n:'Tu tiên',ic:'☯️',st:['Luyện Khí','Trúc Cơ','Kim Đan','Nguyên Anh','Hóa Thần','Luyện Hư','Hợp Thể','Đại Thừa','Độ Kiếp','Chân Tiên']},
   tree:{g:'tn',n:'Thần mộc',ic:'🌳',st:['Hạt giống','Mầm non','Chồi biếc','Cây non','Cây xanh','Cây hoa','Cây trái','Đại thụ','Cổ thụ','Thần mộc']},
   star:{g:'tn',n:'Tinh tú',ic:'✨',st:['Bụi vũ trụ','Tinh vân','Tiền sao','Sao sơ sinh','Ngôi sao','Sao đôi','Chòm sao','Cụm sao','Thiên hà','Tinh tú']}
@@ -1014,11 +1055,11 @@ const _l2 = (d,c,w) => `<path d="${d}" class="ol" style="stroke-width:${w+2.8}"/
 const _eyes = (x,y,g,r) => [-1,1].map(s => _c(x+s*g,y,r,'k n') + _c(x+s*g+r*.3,y-r*.35,r*.38,'w n')).join('');
 const _geyes = (x,y,g,r) => [-1,1].map(s => `<ellipse cx="${x+s*g}" cy="${y}" rx="${r*.75}" ry="${r}" class="k n"/><ellipse cx="${x+s*g}" cy="${y}" rx="${r*.42}" ry="${r*.68}" class="ey n"/>`).join('');
 const _smile = (x,y,w) => _p(`M${x-w},${y} Q${x},${y+w*.9} ${x+w},${y}`,'ln');
-const _spark = (x,y,r,c) => _p(`M${x},${y-r} Q${x},${y} ${x+r},${y} Q${x},${y} ${x},${y+r} Q${x},${y} ${x-r},${y} Q${x},${y} ${x},${y-r}Z`,(c||'g') + ' n');
+const _spark = (x,y,r,c) => _p(`M${x},${y-r} Q${x},${y} ${x+r},${y} Q${x},${y} ${x},${y+r} Q${x},${y} ${x-r},${y} Q${x},${y} ${x},${y-r}Z`,(c||'g') + ' n pt-sp');
 const _crown = (x,y,s) => `<g transform="translate(${x},${y}) scale(${s})">${_p('M-10,0 L-12,-10 L-5,-5 L0,-13 L5,-5 L12,-10 L10,0Z','g')}${_c(0,-13,1.8,'w n')}${_c(-12,-10,1.4,'w n')}${_c(12,-10,1.4,'w n')}</g>`;
 const _leaf = (x,y,rot,s,c) => `<path transform="translate(${x},${y}) rotate(${rot}) scale(${s})" d="M0,0 Q6,-11 20,-8 Q15,6 0,0Z" class="${c}"/>`;
-const _flame = (x,y,s,c,o) => `<path transform="translate(${x},${y}) scale(${s})" d="M0,0 C-9,-2 -9,-13 -3,-19 C-3,-13 2,-13 1,-24 C9,-17 10,-5 0,0Z" class="${_n(c,o)}"${o||''}/>`;
-const _cloud = (x,y,s,o) => `<path transform="translate(${x},${y}) scale(${s})" d="M-14,4 Q-18,-2 -11,-4 Q-10,-11 -2,-8 Q4,-14 10,-7 Q18,-7 16,1 Q18,5 12,5Z" class="w n" opacity="${o}"/>`;
+const _flame = (x,y,s,c,o) => `<g class="pt-fl"><path transform="translate(${x},${y}) scale(${s})" d="M0,0 C-9,-2 -9,-13 -3,-19 C-3,-13 2,-13 1,-24 C9,-17 10,-5 0,0Z" class="${_n(c,o)}"${o||''}/></g>`;
+const _cloud = (x,y,s,o) => `<g class="pt-cl"><path transform="translate(${x},${y}) scale(${s})" d="M-14,4 Q-18,-2 -11,-4 Q-10,-11 -2,-8 Q4,-14 10,-7 Q18,-7 16,1 Q18,5 12,5Z" class="w n" opacity="${o}"/></g>`;
 
 function artTree(k){
   /* tán lá: viền chung + 3 lớp màu, không đường kẻ bên trong */
@@ -1354,7 +1395,7 @@ if (k === 1){ // Hỏa tước: chim én lửa sải cánh lướt trong luồng
 /* ---------- Chiến thần: từ tân binh lên chiến thần, tướng sĩ phương Đông (19/11) ---------- */
 function _war(o){
   let g = o.back || '';
-  if (o.cape) g += _p('M-13,-40 Q-31,-16 -25,-1 L25,-1 Q31,-16 13,-40Z', o.cape);
+  if (o.cape) g += `<g class="pt-cp">${_p('M-13,-40 Q-31,-16 -25,-1 L25,-1 Q31,-16 13,-40Z', o.cape)}</g>`;
   [-1,1].forEach(s => { g += _p(`M${s*2},-14 L${s*10.5},-14 L${s*11},-3 L${s*2},-3Z`, o.leg || 'b'); });
   g += _e(-6.6,-2,6.8,3.2,o.boot || 'bt') + _e(6.6,-2,6.8,3.2,o.boot || 'bt');
   g += _p('M-13,-39 Q-16,-22 -12,-11 L12,-11 Q16,-22 13,-39 Q0,-44 -13,-39Z', o.body || 'a') + (o.armor || '');
@@ -1363,101 +1404,109 @@ function _war(o){
   g += _c(0,-53,13.5, o.skin || 'sk');
   if (o.face !== '') g += o.face || (_eyes(0,-52,5,2.1) + (o.brow ? _p('M-8.6,-57.6 L-2.6,-55.6 M8.6,-57.6 L2.6,-55.6','ln',' style="stroke-width:1.8"') : '') + (o.mouth || _smile(0,-46.6,2.6)));
   g += (o.beard || '') + (o.helm || '');
-  g += _l2('M12,-36 Q21,-32 19,-25', o.arm || 'a', 5) + (o.wpR || '') + _c(19,-23.5,3.8, o.hand || 'sk') + (o.wpF || '');
+  g += _l2('M12,-36 Q21,-32 19,-25', o.arm || 'a', 5) + (o.wpR ? `<g class="pt-wp">${o.wpR}</g>` : '') + _c(19,-23.5,3.8, o.hand || 'sk') + (o.wpF || '');
   g += _l2('M-12,-36 Q-21,-32 -19,-25', o.arm || 'a', 5) + (o.wpL || '') + _c(-19,-23.5,3.8, o.hand || 'sk') + (o.shield || '');
   return g + (o.top || '');
 }
 const _mir = t => t + `<g transform="scale(-1,1)">${t}</g>`;
 function artHero(k){
+  /* Chiến thần = thập đại danh tướng, từ phàm nhân lên thần tướng (19/11) */
   let o = _e(50,91,24,4.4,'sh n'), g = '';
   const BR = _p('M-8.6,-57.6 L-2.6,-55.2 M8.6,-57.6 L2.6,-55.2','ln',' style="stroke-width:2"');
-  const fierce = (m) => _eyes(0,-51.6,5,2.1) + BR + (m || _p('M-3,-46 L3,-46','ln'));
-  if (k === 0){ /* Tân binh: mũ nồi, kiếm gỗ, khiên nắp nồi */
-    g = _war({body:'tn',arm:'tn',leg:'wd',belt:'wd',
-      helm:_p('M-15,-60 Q-15,-72 0,-72 Q15,-72 15,-60Z','hm') + _p('M-17.5,-61 L17.5,-61 L17.5,-57.6 L-17.5,-57.6Z','hm2') + _l2('M16,-66 L24,-68','shm',2.2) + _p('M6,-46.6 L11,-48.4 L11.6,-46.6 L6.6,-44.8Z','w'),
-      wpR:_p('M16.6,-27 L16.6,-52 L19,-57 L21.4,-52 L21.4,-27Z','wd') + _p('M13,-28 L25,-28 L25,-25 L13,-25Z','wd'),
-      shield:_c(-22,-27,10.5,'hm') + _c(-22,-27,7.4,'hm2') + _e(-22,-27,3,2,'hm')});
-    o += `<g transform="translate(50,92) scale(.84)">${g}</g>`;
-  } else if (k === 1){ /* Ngũ trưởng: nón dấu, áo chàm, giáo tua đỏ, khiên mây */
-    g = _war({body:'a',arm:'a',leg:'b',boot:'bt',belt:'g',
-      armor:_p('M-12.6,-38 L12.6,-21 L12.6,-17 L-12.6,-34Z','g') + _p('M-3,-42 L0,-37 L3,-42','ln',' style="stroke-width:1"'),
-      helm:_p('M-23,-60 L0,-76 L23,-60 Q0,-55 -23,-60Z','c') + _p('M-23,-60 Q0,-55 23,-60','ln',' style="stroke-width:1.2"') + _p('M-12,-67.6 L12,-67.6','ln',' style="stroke-width:.9;opacity:.5"') + _c(0,-75.6,2.4,'g') + _mir(_p('M-11,-58 Q-12,-48 -8,-42','ln',' style="stroke-width:.9"')),
-      wpR:_l2('M19,-4 L19,-80','swd',2.4) + _p('M19,-91 L16.2,-80 L19,-76.6 L21.8,-80Z','sw') + _p('M17,-76 Q13.4,-70 15.6,-65 Q17.6,-70 19,-74Z','g'),
-      shield:_c(-21,-27,11.4,'tn') + `<circle cx="-21" cy="-27" r="8.4" class="ln" style="fill:none;stroke-width:1"/><circle cx="-21" cy="-27" r="5.2" class="ln" style="fill:none;stroke-width:1"/>` + _c(-21,-27,2.6,'b')});
-    o += `<g transform="translate(50,92) scale(.88)">${g}</g>`;
-  } else if (k === 2){ /* Thập trưởng: khăn chít, áo độn đinh tán, đao */
-    const riv = []; for (let r = 0; r < 3; r++) for (let c = -1; c <= 1; c++) riv.push(_c(c*6.4, -34 + r*6, 1.1, 'g n'));
-    g = _war({body:'a',arm:'a',leg:'b',boot:'bt',belt:'g',buckle:'c',brow:1,
-      armor:_p('M-13.4,-39 Q0,-33 13.4,-39 L13,-36 Q0,-30 -13,-36Z','b') + riv.join(''),
-      helm:_p('M-14.6,-58 Q-15,-70 0,-71 Q15,-70 14.6,-58Z','b') + _p('M-15.2,-61 L15.2,-61 L15.2,-57.4 L-15.2,-57.4Z','g') + _p('M14,-60.6 Q23,-60 26,-50 Q20,-54 14,-57.6Z','g') + _p('M15,-59 Q21,-55 22,-47','ln',' style="stroke-width:.9;opacity:.5"'),
-      wpR:_p('M17.4,-29 Q16,-52 27,-70 Q24,-50 21.4,-29Z','sw') + _p('M18.6,-34 Q18,-52 25,-64','wl n') + _e(19.4,-28.6,5,1.7,'g') + _l2('M19.4,-27 L19.4,-18','sb',2.6)});
-    o += `<g transform="translate(50,92) scale(.9)">${g}</g>`;
-  } else if (k === 3){ /* Bách hộ: mũ trụ tròn che gáy, giáp lá da, cờ đuôi nheo, thương */
-    const lam = []; [-37,-32,-27,-22].forEach((y, r) => { for (let x = -11 + (r % 2) * 1.6; x < 11; x += 3.4) lam.push(_p(`M${x},${y} L${x},${y+4.2}`,'sg2',' style="stroke-width:.9"')); lam.push(_p(`M-13,${y+4.4} L13,${y+4.4}`,'sb',' style="stroke-width:1"')); });
-    g = _war({body:'a',arm:'b',leg:'b',boot:'bt',belt:'g',brow:1,
-      back:_l2('M-6,-38 L-11,-92','swd',1.6) + _p('M-11,-92 L-33,-86 L-22,-83 L-31,-79 L-10,-78Z','g'),
-      armor:lam.join('') + _mir(_e(-15.4,-39,6.6,4.8,'b')),
-      beard:_p('M-6,-47.4 Q-3,-49 0,-47.6 Q3,-49 6,-47.4 Q3,-46 0,-46.4 Q-3,-46 -6,-47.4Z','hr'),
-      helm:_p('M-15,-58 Q-15.6,-72 0,-73 Q15.6,-72 15,-58Z','hm') + _p('M-15.6,-60.4 L15.6,-60.4 L15.6,-57.4 L-15.6,-57.4Z','b') + _mir(_p('M-15,-58 L-17.4,-46 L-12.6,-46.6 L-12.4,-57.4Z','b')) + _c(0,-73.4,2.2,'g'),
-      wpR:_l2('M19,-4 L19,-82','swd',2.6) + _p('M19,-96 L15.6,-82 L19,-78 L22.4,-82Z','sw') + _p('M17,-78 Q12.6,-71 15,-64 Q17.4,-70 19,-75Z','cp')});
-    o += `<g transform="translate(50,93) scale(.88)">${g}</g>`;
-  } else if (k === 4){ /* Thiên hộ: giáp vảy cá, mũ trụ chóp tua đỏ, áo choàng ngắn, kiếm thẳng */
-    const scl = []; for (let r = 0; r < 4; r++) for (let c = 0; c < 5; c++){ const x = -10 + c*5 + (r % 2 ? 2.5 : 0), y = -35 + r*4.6; if (x < 11) scl.push(_p(`M${x-2.5},${y} Q${x},${y+3.6} ${x+2.5},${y}`,'sg2',' style="stroke-width:1"')); }
+  const EY = y => `<g class="pt-eye">${_eyes(0,y || -51.6,5,2.1)}</g>`;
+  const fierce = m => EY() + BR + (m || _p('M-3,-46 L3,-46','ln'));
+  const T = (t,s,y) => `<g transform="translate(50,${y || 92}) scale(${s || .88})">${t}</g>`;
+  const PL = t => `<g class="pt-pl">${t}</g>`, TS = t => `<g class="pt-ts">${t}</g>`, BD = t => `<g class="pt-bd">${t}</g>`;
+  const tas = (x,y) => TS(_p(`M${x-2},${y} Q${x-6.6},${y+7} ${x-4},${y+14} Q${x-2},${y+8} ${x},${y+3}Z`,'cp'));
+  const spear = (top,cl) => _l2(`M19,-4 L19,${top}`,cl || 'wd',2.4) + _p(`M19,${top-14} L16,${top} L19,${top+4} L22,${top}Z`,'sw') + tas(19,top+4);
+  const flag = (ch,cl) => _l2('M-8,-34 L-14,-104','wd',1.8) + `<g class="pt-fg">${_p('M-14,-104 L-42,-104 L-42,-76 L-14,-76Z',cl || 'cp')}${_p('M-16.4,-101.6 L-39.6,-101.6 L-39.6,-78.4 L-16.4,-78.4Z','sg2',' style="fill:none;stroke-width:1.2"')}<text x="-28" y="-84" font-size="17" text-anchor="middle" style="fill:var(--g);font-weight:700;font-family:serif">${ch}</text></g>` + _c(-14,-105,2,'g');
+  const scl = (cl,op) => { const a = []; for (let r = 0; r < 4; r++) for (let c = 0; c < 5; c++){ const x = -10 + c*5 + (r % 2 ? 2.5 : 0), y = -36 + r*4.6; if (x < 11) a.push(_p(`M${x-2.5},${y} Q${x},${y+3.6} ${x+2.5},${y}`,cl || 'sg2',` style="stroke-width:1${op ? ';opacity:' + op : ''}"`)); } return a.join(''); };
+  const pad = cl => _mir(_e(-15.6,-39,8,6,cl || 'g') + _c(-17,-40,1.2,'k n'));
+  const helmB = (cl,band) => _p('M-15,-58 Q-15.6,-72 0,-75 Q15.6,-72 15,-58Z',cl) + _p('M-15.6,-60.6 L15.6,-60.6 L15.6,-57.4 L-15.6,-57.4Z',band || 'g') + _mir(_p('M-15,-58 L-17.6,-48 L-12.6,-48 L-12,-57Z',cl));
+  const must = _p('M-7,-47.2 Q-3.4,-49.4 0,-47.6 Q3.4,-49.4 7,-47.2 Q7.4,-44 4.6,-44.6 Q2.4,-46.4 0,-46 Q-2.4,-46.4 -4.6,-44.6 Q-7.4,-44 -7,-47.2Z','hr');
+  if (k === 0){ /* Mã Siêu: tướng trẻ, mũ sư tử, giáp trắng, dải gấm, giáo dài */
+    g = _war({cape:'b',body:'a',arm:'a',leg:'b',boot:'b',belt:'g',buckle:'g',
+      face:EY(-52) + _p('M-8.4,-57.4 L-3,-55.8 M8.4,-57.4 L3,-55.8','ln',' style="stroke-width:1.6"') + _smile(0,-46.6,2.4),
+      hairB:_p(_spiky(0,-58,20,15.6,14,0),'g'),
+      armor:scl() + _p('M-12.6,-38 L12.6,-21 L12.6,-17 L-12.6,-34Z','cp') + [-6,0,6].map(x => _c(x,-29.4 + x*.6,1,'g n')).join('') + pad('c'),
+      helm:helmB('a') + _c(0,-67,5.4,'g') + _c(-2,-68,.9,'k n') + _c(2,-68,.9,'k n') + _p('M-1.4,-65.4 L1.4,-65.4 L0,-63.8Z','k') + _p('M-3,-63 Q0,-61.4 3,-63','ln',' style="stroke-width:.8"') + PL(_p('M0,-74 Q-4,-84 0,-90 Q4,-84 0,-74Z','cp')),
+      wpR:spear(-82)});
+    o += T(g);
+  } else if (k === 1){ /* Triệu Vân: giáp bạc, áo choàng trắng, thương bạc */
+    g = _war({cape:'c',body:'a',arm:'a',leg:'b',boot:'b',belt:'b',buckle:'g',
+      face:EY(-52) + _p('M-8.4,-57.6 L-3,-55.6 M8.4,-57.6 L3,-55.6','ln',' style="stroke-width:1.8"') + _p('M-2.6,-46.4 Q0,-45 2.6,-46.4','ln'),
+      armor:scl() + _c(0,-29,5.6,'g') + _c(0,-29,4.2,'hm') + _p('M-2,-31 Q-.6,-32.4 1,-31.8','w n',' style="opacity:.8"') + pad('hm'),
+      helm:helmB('hm','b') + _p('M-4,-69 Q0,-72.6 4,-69','sg2') + _p('M-1.6,-74 L0,-82 L1.6,-74Z','g') + PL(_p('M0,-81 Q-7,-78 -5.6,-70 Q-2,-75 0,-75 Q2,-75 5.6,-70 Q7,-78 0,-81Z','c')),
+      wpR:_l2('M19,-4 L19,-84','hm',2.4) + _p('M19,-100 L15.6,-84 L19,-80 L22.4,-84Z','sw') + tas(19,-80)});
+    o += _spark(84,22,3,'c') + T(g);
+  } else if (k === 2){ /* Lữ Bố: mũ trĩ linh đôi, giáp tím vàng, phương thiên họa kích */
+    const plume = _p('M-5,-72 Q-18,-92 -40,-104 Q-22,-88 -9,-70Z','c') + _p('M-8,-73 Q-20,-89 -37,-101','ln',' style="stroke-width:.8;opacity:.6"');
     g = _war({cape:'cp',body:'a',arm:'a',leg:'b',boot:'b',belt:'g',buckle:'g',face:fierce(''),
-      armor:scl.join('') + _mir(_e(-15.6,-39,7.4,5.6,'hm') + _p('M-21,-40 Q-15.6,-44 -10.4,-40','ln',' style="stroke-width:1"')),
-      beard:_p('M-7,-47.2 Q-3.4,-49.4 0,-47.6 Q3.4,-49.4 7,-47.2 Q7.4,-44 4.6,-44.6 Q2.4,-46.4 0,-46 Q-2.4,-46.4 -4.6,-44.6 Q-7.4,-44 -7,-47.2Z','hr'),
-      helm:_p('M-15,-58 Q-15.6,-72 0,-76 Q15.6,-72 15,-58Z','hm') + _p('M-15.6,-60.6 L15.6,-60.6 L15.6,-57.4 L-15.6,-57.4Z','g') + _mir(_p('M-15,-58 L-17,-48 L-12.6,-48 L-12.4,-57Z','hm')) + _p('M-1.6,-75 L0,-86 L1.6,-75Z','g') + _p('M0,-84 Q-7,-80 -5.6,-72 Q-2,-77 0,-77 Q2,-77 5.6,-72 Q7,-80 0,-84Z','cp'),
-      wpR:_p('M17.6,-28 L17.6,-68 L19,-72.6 L20.4,-68 L20.4,-28Z','sw') + _p('M19,-70 L19,-31','wl n') + _p('M13.6,-29 L24.4,-29 L24.4,-26.4 L13.6,-26.4Z','g') + _l2('M19,-25 L19,-18','sb',2.6) + _p('M19,-17 Q16,-12 17.4,-8 Q19,-12 20.6,-8 Q22,-12 19,-17Z','cp')});
-    o += `<g transform="translate(50,93) scale(.88)">${g}</g>`;
-  } else if (k === 5){ /* Hiệu úy: giáp vảy, hộ tâm kính, mũ lông trĩ ngắn, trường thương */
-    const scl = []; for (let r = 0; r < 4; r++) for (let c = 0; c < 5; c++){ const x = -10 + c*5 + (r % 2 ? 2.5 : 0), y = -36 + r*4.6; if (x < 11) scl.push(_p(`M${x-2.5},${y} Q${x},${y+3.6} ${x+2.5},${y}`,'sg2',' style="stroke-width:1"')); }
-    g = _war({cape:'cp',body:'a',arm:'a',leg:'b',boot:'b',belt:'g',buckle:'g',face:fierce(''),
-      armor:scl.join('') + _c(0,-29,6,'g') + _c(0,-29,4.6,'hm') + _p('M-2.4,-31 Q-1,-32.6 1,-32','w n',' style="opacity:.8"') + _mir(_e(-15.6,-39,8,6,'g') + _c(-17,-40,1.2,'b n')),
-      beard:_p('M-7.6,-47 Q-3.6,-49.6 0,-47.6 Q3.6,-49.6 7.6,-47 Q8,-43 5,-43.6 Q2.6,-46 0,-45.6 Q-2.6,-46 -5,-43.6 Q-8,-43 -7.6,-47Z','hr'),
-      helm:_p('M-15,-58 Q-15.6,-72 0,-75 Q15.6,-72 15,-58Z','b') + _p('M-15.6,-60.6 L15.6,-60.6 L15.6,-57.4 L-15.6,-57.4Z','g') + _p('M-4,-69 Q0,-72.6 4,-69','sg2') + _mir(_p('M-15,-58 L-17.6,-48 L-12.6,-48 L-12,-57Z','b')) + _p('M0,-74 Q-3,-90 7,-102 Q4,-88 2.4,-74Z','cp') + _p('M1,-76 Q0,-88 5.6,-98','ln',' style="stroke-width:.8;opacity:.5"'),
-      wpR:_l2('M19,-4 L19,-86','swd',2.6) + _p('M19,-100 L15.6,-86 L19,-82 L22.4,-86Z','sw') + _p('M16.6,-82 Q11,-74 13.6,-66 Q16,-73 19,-78 Q22,-73 24.4,-66 Q27,-74 21.4,-82Z','cp')});
-    o += `<g transform="translate(50,93) scale(.86)">${g}</g>`;
-  } else if (k === 6){ /* Tướng quân (giữ hình Tướng Đại Việt cũ) */
-    const scl = [];
-    for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++){ const x = -7.5 + c*5 + (r % 2 ? 2.5 : 0), y = -34 + r*4.6; if (x < 10) scl.push(_p(`M${x-2.5},${y} Q${x},${y+3.6} ${x+2.5},${y}`,'sg2',' style="stroke-width:1"')); }
-    g = _war({cape:'cp2',body:'a',arm:'a',leg:'b',boot:'b',belt:'g',buckle:'c',face:fierce(''),
-      beard:_p('M-7.6,-47 Q-3.6,-49.6 0,-47.6 Q3.6,-49.6 7.6,-47 Q8,-43 5,-43.6 Q2.6,-46 0,-45.6 Q-2.6,-46 -5,-43.6 Q-8,-43 -7.6,-47Z','hr') + _p('M-1.6,-42 L1.6,-42 L0.8,-36 L-0.8,-36Z','hr'),
-      armor:scl.join('') + _mir(_e(-15.6,-39,7.4,5.6,'g') + _c(-17,-40,1.2,'k n')),
-      helm:_p('M-15,-58 Q-15.6,-72 0,-80 Q15.6,-72 15,-58Z','b') + _p('M-15.6,-60.6 L15.6,-60.6 L15.6,-57.4 L-15.6,-57.4Z','g') + _p('M-4,-70 Q0,-74 4,-70','sg2') + _mir(_p('M-15,-58 L-17.6,-48 L-12.6,-48 L-12,-57Z','b')) + _p('M-1.6,-80 L0,-86 L1.6,-80Z','g') + _p('M0,-85 Q-8,-90 -4,-98 Q-1,-92 0,-96 Q1,-92 4,-98 Q8,-90 0,-85Z','cp'),
-      wpR:_l2('M19,-6 L19,-72','swd',2.6) + _p('M17,-71 L17,-84 Q26,-90 26,-100 Q32,-84 22,-71Z','sw') + _p('M14.6,-71.6 L23.4,-71.6 L23.4,-69 L14.6,-69Z','g') + _p('M17,-69 Q12,-64 13.6,-57 Q16,-63 19,-66Z','cp'),
-      shield:_c(-21,-27,13.6,'g') + `<circle cx="-21" cy="-27" r="10.4" class="ln" style="fill:none;stroke-width:1"/><circle cx="-21" cy="-27" r="7.4" class="ln" style="fill:none;stroke-width:1"/>` + _p(_spiky(-21,-27,6,2.4,12,0),'b') + [0,1,2,3,4,5,6,7].map(j => _c(-21+Math.cos(j*Math.PI/4)*8.9,-27+Math.sin(j*Math.PI/4)*8.9,.9,'b n')).join('')});
-    o += `<g transform="translate(50,93) scale(.88)">${g}</g>`;
-  } else if (k === 7){ /* Đại tướng quân: giáp vàng, hộ tâm kính, mũ lông trĩ đôi, soái kỳ, quan đao */
-    const scl = []; for (let r = 0; r < 4; r++) for (let c = 0; c < 5; c++){ const x = -10 + c*5 + (r % 2 ? 2.5 : 0), y = -36 + r*4.6; if (x < 11) scl.push(_p(`M${x-2.5},${y} Q${x},${y+3.6} ${x+2.5},${y}`,'sb',' style="stroke-width:1;opacity:.55"')); }
-    const plume = _p('M-5,-72 Q-18,-90 -36,-98 Q-20,-86 -9,-70Z','c') + _p('M-8,-73 Q-20,-87 -33,-96','ln',' style="stroke-width:.8;opacity:.6"') + [0,1,2].map(j => _p(`M${-14-j*7},${-81-j*4} l-2.4,-2.4`,'b',' style="stroke-width:1.4"')).join('');
-    g = _war({cape:'cp',body:'g',arm:'g',leg:'b',boot:'g',belt:'b',buckle:'g',hand:'sk',face:fierce(''),
-      back:_l2('M-9,-38 L-9,-98','swd',2) + _p('M-9,-98 L-37,-98 L-37,-68 L-9,-68Z','a') + _p('M-11.4,-95.6 L-34.6,-95.6 L-34.6,-70.4 L-11.4,-70.4Z','sg2',' style="fill:none;stroke-width:1.4"') + _c(-23,-83,6.4,'g') + _p('M-26,-83 L-20,-83 M-23,-86.4 L-23,-79.6','b',' style="stroke-width:1.6"'),
-      armor:scl.join('') + _c(0,-29,6.4,'b') + _c(0,-29,5,'hm') + _p('M-2.4,-31.4 Q-1,-33 1,-32.4','w n',' style="opacity:.8"') + _mir(_e(-16,-39.4,9,6.8,'g') + _c(-18,-40.6,1.3,'b n') + _c(-14.4,-40.6,1.3,'b n') + _p('M-19,-37 Q-16,-35.4 -13,-37','b',' style="stroke-width:1;fill:none"')),
-      skirt:_mir(_p('M-12.6,-14 L-1,-14 L-1.6,-5 L-14,-6Z','g') + _p('M-12.6,-10 L-1.4,-10','sb',' style="stroke-width:1"')),
-      beard:_p('M-7.6,-47 Q-3.6,-49.6 0,-47.6 Q3.6,-49.6 7.6,-47 Q8,-43 5,-43.6 Q2.6,-46 0,-45.6 Q-2.6,-46 -5,-43.6 Q-8,-43 -7.6,-47Z','hr') + _p('M-4,-42.6 Q0,-41 4,-42.6 L2,-31 Q0,-29 -2,-31Z','hr'),
-      helm:_p('M-15,-58 Q-15.6,-73 0,-76 Q15.6,-73 15,-58Z','g') + _p('M-15.6,-60.6 L15.6,-60.6 L15.6,-57.4 L-15.6,-57.4Z','b') + _mir(_p('M-15,-58 L-18,-47 L-12.6,-47 L-12,-57Z','g')) + _c(0,-66,2.6,'cp') + _p('M-6,-72 Q0,-78 6,-72','sb',' style="stroke-width:1.2;fill:none"') + _mir(plume),
-      wpR:_l2('M19,-4 L19,-80','sb',2.8) + _p('M17,-79 L17,-97 Q27,-103 29,-113 Q37,-95 23,-79Z','sw') + _p('M19.6,-84 Q26,-94 27.6,-104','wl n') + _p('M14.4,-80 L23.6,-80 L23.6,-77 L14.4,-77Z','g') + _p('M17,-77 Q11,-71 13,-64 Q16,-70 19,-74Z','cp')});
-    o += _cloud(22,94,1,.45) + `<g transform="translate(50,93) scale(.84)">${g}</g>`;
-  } else if (k === 8){ /* Thiên tướng */
-    const flag = s => `<g transform="scale(${s},1)">${_l2('M-6,-38 L-12,-92','swd',1.6)}${_p('M-12,-92 L-26,-82 L-10,-72Z','b')}${_p('M-12,-92 L-26,-82 L-10,-72','sg2',' style="fill:none;stroke-width:1.2"')}</g>`;
-    g = _war({body:'g',arm:'g',leg:'b',boot:'g',belt:'a',buckle:'g',face:fierce(''),
-      back:flag(1) + flag(-1) + _p('M-24,-40 Q-34,-22 -28,-8 Q-38,-14 -40,-28 Q-36,-40 -24,-40Z','c') + _p('M24,-40 Q34,-22 28,-8 Q38,-14 40,-28 Q36,-40 24,-40Z','c'),
-      beard:_p('M-1,-47.6 Q-8,-46 -11,-40 Q-6,-43 -1,-45.6Z M1,-47.6 Q8,-46 11,-40 Q6,-43 1,-45.6Z','hr'),
-      armor:_c(0,-31,5,'w') + `<circle cx="0" cy="-31" r="5" class="sg2" style="fill:none"/>` + _p('M-10,-22 L-6,-25 L-2,-22 L2,-25 L6,-22 L10,-25','ln',' style="stroke-width:1"') + _mir(_e(-15.6,-39,8.4,6.4,'g') + _c(-17,-40.4,1.3,'k n') + _p('M-20,-37 Q-16,-35 -12,-37','ln',' style="stroke-width:1"')),
-      skirt:_mir(_p('M-12.6,-14 L-1,-14 L-1.6,-5 L-14,-6Z','g') + _p('M-12.6,-10 L-1.4,-10','ln',' style="stroke-width:1"')),
-      helm:_p('M-14.4,-58 Q-15,-71 0,-72 Q15,-71 14.4,-58Z','g') + _p('M-15,-60.6 L15,-60.6 L15,-57.4 L-15,-57.4Z','b') + _mir(_p('M-13.6,-64 Q-27,-68 -30,-84 Q-21,-76 -11.6,-70Z','g') + _p('M-24,-74 Q-20,-71 -15,-69','ln',' style="stroke-width:1"')) + _c(0,-66,2.6,'a') + _p('M0,-72 Q-6,-82 -2,-90 Q0,-84 2,-90 Q6,-82 0,-72Z','b'),
-      wpR:_l2('M19,-6 L19,-86','sb',2.6) + _p('M19,-96 L16,-86 L19,-82 L22,-86Z','sw') + _p('M20,-80 Q30,-80 31,-70 Q26,-75 20,-74Z','sw') + _p('M16,-80 Q11,-74 13,-68 Q15,-74 19,-77Z','b')});
-    o += _cloud(26,92,1.4,.75) + _cloud(74,93,1.3,.7) + `<g transform="translate(50,91) scale(.88)">${g}</g>`;
-  } else { /* Chiến Thần */
-    const wing = [0,1,2,3].map(j => _p(`M-12,${-40+j*2} Q${-30-j*6},${-68+j*10} ${-44+j*2},${-74+j*14} Q${-36+j*2},${-56+j*10} -14,${-28+j*3}Z`, j % 2 ? 'g' : 'c')).join('');
-    g = _war({cape:'c',body:'g',arm:'g',leg:'b',boot:'g',belt:'b',buckle:'w',hand:'g',
-      back:_c(0,-56,30,'g n',' opacity=".2"') + _mir(wing),
-      face:_geyes(0,-52,5,2.6) + BR + _p('M-3,-46 L3,-46','ln'),
-      armor:_p('M-8,-38 Q0,-26 8,-38','sb',' style="stroke-width:1.6"') + _spark(0,-28,4,'w') + _mir(_e(-15.6,-39,8.4,6.4,'g') + _p('M-13,-44 L-20,-52 L-19,-42Z','g')),
-      helm:_p('M-14.4,-58 Q-15,-71 0,-72 Q15,-71 14.4,-58Z','g') + _p('M-15,-60.6 L15,-60.6 L15,-57.4 L-15,-57.4Z','b') + _mir(_p('M-13,-62 Q-26,-62 -32,-76 Q-23,-72 -14,-70Z','c') + _p('M-14,-66 Q-24,-70 -28,-82 Q-20,-76 -12,-72Z','c')) + _p('M-5,-70 Q0,-92 5,-70Z','cp') + _c(0,-64,2.4,'w'),
-      wpR:_flame(21,-30,1.5,'mn',' opacity=".85"') + _p('M16.6,-28 L16.6,-74 L19,-80 L21.4,-74 L21.4,-28Z','w') + _p('M12,-29 L26,-29 L26,-26 L12,-26Z','b') + _flame(19,-62,1.2,'g n',' opacity=".9"'),
-      shield:_p(_spiky(-21,-27,15.4,11,12,0),'g') + _c(-21,-27,10,'a') + _c(-21,-27,6,'g') + _spark(-21,-27,5,'w')});
-    o += `<g transform="translate(50,92) scale(.88)">${g}</g>` + _spark(12,28,5) + _spark(90,60,4) + _spark(88,18,3.4);
+      armor:scl('g',.7) + _p('M-6,-38 L0,-30 L6,-38','sg2') + _mir(_e(-15.8,-39,8.6,6.4,'g') + _p('M-21,-38 Q-16,-41 -11,-38','b',' style="stroke-width:1;fill:none"')),
+      helm:helmB('g','b') + _c(0,-66,2.6,'cp') + _p('M-7,-72 L0,-78 L7,-72','sb',' style="stroke-width:1.4;fill:none"') + PL(_mir(plume)),
+      wpR:_l2('M19,-4 L19,-86','b',2.6) + _p('M19,-100 L16,-86 L19,-82 L22,-86Z','sw') + _p('M20,-86 Q32,-90 33,-78 Q28,-82 20,-80Z','sw') + _p('M18,-86 Q6,-90 5,-78 Q10,-82 18,-80Z','sw') + tas(19,-80)});
+    o += T(g,.86,93);
+  } else if (k === 3){ /* Quan Vũ: mặt đỏ, râu dài, khăn xanh, Thanh Long đao */
+    g = _war({cape:'b',body:'a',arm:'a',leg:'b',boot:'bt',belt:'g',buckle:'g',skin:'mn',
+      face:`<g class="pt-eye">${_p('M-9,-53 Q-5.6,-55 -2.4,-52.4 M9,-53 Q5.6,-55 2.4,-52.4','ln',' style="stroke-width:1.9"')}</g>` + _p('M-10,-58.6 L-2.4,-56.4 M10,-58.6 L2.4,-56.4','ln',' style="stroke-width:2.4"'),
+      armor:scl('g',.6) + pad('g'),
+      beard:must + `<g class="pt-bd">${_p('M-8.6,-46 Q-11,-36 -6,-24 Q-3,-16 0,-8 Q3,-16 6,-24 Q11,-36 8.6,-46 Q0,-41 -8.6,-46Z','hr')}</g>` + _p('M-3,-38 Q0,-30 -1,-22 M3,-38 Q2,-30 2,-24','ln',' style="stroke:#55485c;stroke-width:.8"'),
+      helm:_p('M-14.8,-55 Q-15.6,-71 0,-73 Q15.6,-71 14.8,-55 L12.4,-59.4 Q0,-64 -12.4,-59.4Z','a') + _p('M-12.4,-59.4 Q0,-64 12.4,-59.4','sg2') + _c(0,-63.6,2.2,'g') + PL(_p('M12,-62 Q22,-60 24,-48 Q19,-54 13,-58Z','a')),
+      wpR:_l2('M19,-4 L19,-74','b',2.8) + _p('M17,-73 L17,-92 Q28,-100 30,-112 Q38,-92 23,-73Z','sw') + _p('M19.6,-78 Q26,-88 28,-100','wl n') + _p('M17,-80 Q12,-82 14,-88 Q18,-86 19,-82Z','g') + _p('M14.4,-75 L23.6,-75 L23.6,-72 L14.4,-72Z','g') + tas(19,-72)});
+    o += T(g,.86,93);
+  } else if (k === 4){ /* Nhạc Phi: giáp vàng, áo choàng đỏ, cờ chữ Nhạc, giáo */
+    g = _war({cape:'cp',body:'a',arm:'a',leg:'b',boot:'b',belt:'b',buckle:'g',face:fierce(''),
+      back:flag('岳','b'),
+      armor:scl('sb',.55) + _c(0,-29,5.6,'b') + _c(0,-29,4.2,'g') + pad('g'),
+      beard:must,
+      helm:helmB('g','b') + _p('M-4,-69 Q0,-72.6 4,-69','sb',' style="stroke-width:1.2;fill:none"') + _p('M-1.6,-74 L0,-82 L1.6,-74Z','g') + PL(_p('M0,-81 Q-8,-78 -6,-68 Q-2,-75 0,-75 Q2,-75 6,-68 Q8,-78 0,-81Z','cp')),
+      wpR:spear(-84,'b')});
+    o += T(g,.86,93);
+  } else if (k === 5){ /* Hàn Tín: nguyên soái, áo bào, mũ quan, lệnh kỳ chữ Soái, kiếm */
+    g = _war({cape:'b',body:'a',arm:'a',leg:'a',boot:'bt',belt:'g',buckle:'g',
+      face:EY() + _p('M-8.4,-57.6 L-3,-55.8 M8.4,-57.6 L3,-55.8','ln',' style="stroke-width:1.7"') + _p('M-2.6,-46.4 L2.6,-46.4','ln'),
+      armor:_p('M-4,-40 L0,-26 L4,-40','sg2') + _p('M-13,-39 Q0,-35 13,-39','sg2') + _mir(_p('M-11,-34 Q-8,-30 -10,-24','sg2',' style="stroke-width:1.2"')),
+      skirt:_p('M-12.6,-14 L12.6,-14 L15,-3 L-15,-3Z','a') + _p('M0,-14 L0,-3','sg2',' style="stroke-width:1.2"'),
+      beard:_p('M-5,-47.4 Q0,-49 5,-47.4 Q3,-46 0,-46.6 Q-3,-46 -5,-47.4Z','hr') + BD(_p('M-1.6,-44.6 L1.6,-44.6 L.6,-36 L-.6,-36Z','hr')),
+      helm:_p('M-13,-61 Q-13,-72 0,-73 Q13,-72 13,-61Z','b') + _p('M-15,-62 L15,-62 L15,-58.6 L-15,-58.6Z','g') + _c(0,-66,2.2,'g') + _mir(_p('M-13,-63 L-24,-66 L-23,-62.4 L-13,-61Z','b')),
+      wpR:_l2('M19,-20 L19,-80','wd',1.6) + `<g class="pt-fg r">${_p('M19,-80 L40,-80 L40,-60 L19,-60Z','cp')}${_p('M21,-78 L38,-78 L38,-62 L21,-62Z','sg2',' style="fill:none;stroke-width:1"')}<text x="29.5" y="-64.6" font-size="14" text-anchor="middle" style="fill:var(--g);font-weight:700;font-family:serif">帥</text></g>`,
+      wpL:_l2('M-17,-22 L-26,2','hm',2) + _p('M-20,-26 L-15,-20','g',' style="stroke:var(--g);stroke-width:3"')});
+    o += _p('M14,92 L30,84 L44,90 L58,84 L74,90 L86,85','qi',' style="stroke:var(--b);stroke-width:1.2;opacity:.6"') + T(g,.88,92);
+  } else if (k === 6){ /* Hạng Vũ: bá vương, giáp đen, mũ lông đỏ, thương nặng, cờ chữ Sở */
+    g = _war({cape:'cp',body:'a',arm:'a',leg:'b',boot:'b',belt:'g',buckle:'g',face:fierce(_p('M-3.4,-45.6 L3.4,-45.6','ln',' style="stroke-width:1.6"')),
+      back:flag('楚','b'),
+      armor:scl('g',.7) + _p('M-8,-38 L0,-27 L8,-38','sg2') + _mir(_e(-16.4,-39.4,9.4,7,'b') + _p('M-24,-40 Q-16.4,-45 -9,-40','sg2',' style="stroke-width:1.2"') + _c(-17,-40,1.3,'g n')),
+      beard:must + _p('M-6,-43 Q0,-36 6,-43 Q3,-41 0,-41.6 Q-3,-41 -6,-43Z','hr'),
+      helm:helmB('b','g') + _p('M-6,-72 Q0,-78 6,-72','sg2',' style="stroke-width:1.2"') + _p('M-2,-75 L0,-82 L2,-75Z','g') + PL(_p('M0,-80 Q-12,-88 -8,-104 Q-3,-94 0,-100 Q3,-94 8,-104 Q12,-88 0,-80Z','cp')),
+      wpR:_l2('M19,-2 L19,-86','b',3.4) + _p('M19,-104 L14.6,-86 L19,-80 L23.4,-86Z','sw') + _p('M15,-82 L23,-82 L23,-79 L15,-79Z','g') + tas(19,-79)});
+    o += _c(50,52,40,'cp n',' opacity=".07"') + T(g,.86,93);
+  } else if (k === 7){ /* Na Tra: tóc búi, Hỗn Thiên Lăng, Càn Khôn quyển, Hỏa tiêm thương, Phong hỏa luân */
+    const wheel = x => `<g class="pt-wh">${_c(x,1,6.4,'g')}${_c(x,1,3.6,'a')}${_c(x,1,1.4,'g')}${[0,1,2,3,4,5].map(j => _p(`M${x},${-5.4} L${x},${-7.6}`,'sb',` transform="rotate(${j*60} ${x} 1)" style="stroke-width:1.6"`)).join('')}</g>` + _flame(x-6,5,.55,'mn') + _flame(x+6,5,.55,'mn');
+    g = _war({body:'a',arm:'a',leg:'b',boot:'a',belt:'g',buckle:'g',
+      back:`<g class="pt-rb">${_p('M-12,-40 Q-38,-48 -38,-76 Q-28,-58 -11,-46Z','a')}${_p('M12,-36 Q38,-30 44,-56 Q36,-42 14,-30Z','a')}</g>`,
+      face:`<g class="pt-eye">${_eyes(0,-52,5,2.4)}</g>` + _smile(0,-46.4,2.6) + _c(0,-59.4,1.1,'cp'),
+      armor:_p('M-12,-39 Q0,-30 12,-39 L12,-34 Q0,-26 -12,-34Z','g') + _p('M-12.4,-26 L12.4,-26','sb',' style="stroke-width:1.2"'),
+      helm:_p('M-13.6,-55 Q-14,-67.4 0,-67.4 Q14,-67.4 13.6,-55 Q8,-61.4 0,-60.4 Q-8,-61.4 -13.6,-55Z','hr') + _c(-9,-68,5,'hr') + _c(9,-68,5,'hr') + PL(_p('M-12,-69 Q-20,-66 -22,-58 Q-17,-63 -12,-65Z','cp') + _p('M12,-69 Q20,-66 22,-58 Q17,-63 12,-65Z','cp')),
+      wpR:_l2('M19,-4 L19,-80','b',2.2) + _p('M19,-94 L16.4,-80 L19,-77 L21.6,-80Z','sw') + _flame(19,-90,.62,'mn'),
+      wpL:`<circle cx="-24" cy="-25" r="7" class="sg2" style="fill:none;stroke-width:3.2"/>` + _spark(-31,-31,2.6,'g')});
+    o = _e(50,94,22,3.6,'sh n') + T(g + wheel(-7) + wheel(7),.84,84) + _spark(14,24,3,'g') + _spark(86,30,2.6,'g');
+  } else if (k === 8){ /* Nhị Lang Thần: mắt thứ ba, mũ tam sơn, đao ba mũi, chó thần */
+    const dog = _l2('M-24,-12 Q-17,-16 -18,-24','b',2.4) + _e(-31,-9,8.6,5.4,'hr') + [-37,-33,-28,-24.6].map(x => _p(`M${x},-6 L${x},0`,'hr',' style="stroke:var(--hr,#2b2230);stroke-width:2.4;stroke-linecap:round"')).join('') + _c(-39,-16,5,'hr') + _p('M-43,-15 L-47.6,-13.4 L-43,-12Z','hr') + _p('M-38,-20 L-35,-26 L-34,-19Z','hr') + _c(-40.6,-17,1,'g n');
+    g = _war({cape:'b',body:'a',arm:'a',leg:'b',boot:'b',belt:'g',buckle:'g',
+      face:fierce('') + _e(0,-59.6,1.5,2.8,'k') + _e(0,-59.6,.7,1.8,'g n'),
+      armor:scl() + _c(0,-29,5.6,'g') + _c(0,-29,4.2,'hm') + pad('g'),
+      helm:_p('M-15,-62 Q-15.6,-74 0,-76 Q15.6,-74 15,-62Z','a') + _p('M-15.6,-64 L15.6,-64 L15.6,-61.2 L-15.6,-61.2Z','g') + _p('M-12,-74 L-10,-86 L-5,-77 L0,-90 L5,-77 L10,-86 L12,-74Z','g') + _c(0,-80,1.6,'cp') + _mir(_p('M-15,-62 L-17,-52 L-13,-52 L-12.6,-61Z','a')),
+      wpR:_l2('M19,-4 L19,-84','b',2.4) + _p('M17.2,-84 L19,-106 L20.8,-84Z','sw') + _p('M15,-84 Q12.4,-92 13.6,-99 Q16,-91 17.6,-86Z','sw') + _p('M23,-84 Q25.6,-92 24.4,-99 Q22,-91 20.4,-86Z','sw') + _p('M13.4,-84.6 L24.6,-84.6 L24.6,-81.6 L13.4,-81.6Z','g') + tas(19,-81.6),
+      top:dog});
+    o += _cloud(22,93,1.5,.8) + _cloud(78,94,1.4,.75) + T(g,.86,92);
+  } else { /* Tề Thiên Đại Thánh: mặt khỉ, kim cô, mũ lông phượng, giáp vàng, gậy như ý, cân đẩu vân */
+    g = _war({cape:'b',body:'a',arm:'a',leg:'b',boot:'g',belt:'b',buckle:'g',skin:'tn',hand:'tn',
+      hairB:_mir(_c(-14.4,-53,4.2,'tn') + _c(-14.4,-53,2.4,'mn')),
+      face:_p('M0,-43.6 Q-11.6,-43.6 -11.4,-53 Q-11,-60.4 -5,-59.4 Q-1.4,-58.6 0,-56.4 Q1.4,-58.6 5,-59.4 Q11,-60.4 11.4,-53 Q11.6,-43.6 0,-43.6Z','mn') + `<g class="pt-eye">${_geyes(0,-53,4.4,2.2)}</g>` + _p('M-1.6,-49.6 L1.6,-49.6','ln') + _smile(0,-46.6,3),
+      armor:scl('sb',.5) + _c(0,-29,5.6,'b') + _c(0,-29,4.2,'g') + _mir(_e(-15.8,-39.4,8.6,6.4,'g') + _p('M-13,-44 L-20,-52 L-19,-42Z','g')),
+      helm:_p('M-13.4,-60.4 Q0,-66.4 13.4,-60.4 L13.4,-57.4 Q0,-63.4 -13.4,-57.4Z','g') + _p('M-9.6,-63 Q0,-73 9.6,-63 L7.6,-68.4 Q0,-75 -7.6,-68.4Z','g') + _c(0,-68,1.6,'cp') + PL(_mir(_p('M-4,-70 Q-14,-98 -34,-112 Q-18,-94 -7.6,-68Z','cp'))),
+      wpR:_p('M17.6,-96 L20.4,-96 L20.4,8 L17.6,8Z','cp') + _p('M17,-100 L21,-100 L21,-88 L17,-88Z','g') + _p('M17,0 L21,0 L21,12 L17,12Z','g')});
+    o = _e(50,95,24,3.6,'sh n') + _cloud(36,94,2.2,.95) + _cloud(64,92,2.4,.95) + _cloud(50,96,1.8,.9) + T(g,.84,86) + _spark(12,30,4.6) + _spark(90,56,3.6) + _spark(86,16,3);
   }
   return o;
 }
@@ -1682,9 +1731,9 @@ const _wsk = (o,pts) => _p(pts,o.wk ? 'wk' : 'wl');
 /* đầu mèo nhìn thẳng, gốc (0,0) */
 function _chead(o){
   o = o || {}; let s = '';
-  [-1,1].forEach(d => { s += `<g transform="scale(${d},1)">` + (o.ear === 'rd'
+  [-1,1].forEach(d => { s += `<g transform="scale(${d},1)"><g class="pt-ear ${d < 0 ? 'l' : 'r'}">` + (o.ear === 'rd'
     ? _p('M-17,-5 Q-23,-17 -14,-19 Q-8,-18 -5,-12Z','a') + _p('M-15,-8 Q-17,-14 -13,-15.5 Q-10,-15 -9,-12Z','c')
-    : _p('M-18,-3 Q-19,-19 -14,-25 Q-6,-21 -3,-13Z','a') + _p('M-15,-8 Q-15,-17 -13,-20 Q-9,-17 -7,-13Z',o.inner || 'mn')) + '</g>'; });
+    : _p('M-18,-3 Q-19,-19 -14,-25 Q-6,-21 -3,-13Z','a') + _p('M-15,-8 Q-15,-17 -13,-20 Q-9,-17 -7,-13Z',o.inner || 'mn')) + '</g></g>'; });
   if (o.ruff) [-1,1].forEach(d => { s += `<g transform="scale(${d},1)">` + _p('M-15,-2 L-24,3 L-17,5 L-22,11 L-13,10 L-9,14Z','a') + '</g>'; });
   s += _e(0,0,18,14.5,'a');
   if (o.patch) s += o.patch;
@@ -1697,6 +1746,7 @@ function _chead(o){
     s += o.big ? _p('M-3.4,1.8 L3.4,1.8 L0,5.3Z','mn') : _p('M-2.3,2.2 L2.3,2.2 L0,4.7Z','mn');
   }
   const ey = o.ey == null ? -1 : o.ey;
+  s += '<g class="pt-eye">';
   [-1,1].forEach(d => {
     const x = d*7;
     if (o.eye === 'round') s += _e(x,ey,4.2,4.8,'k') + _e(x,ey+.3,3.1,3.8,'ey n') + _e(x,ey+.3,1.3,2.7,'k n') + _c(x+1.3,ey-1.6,1.15,'w n');
@@ -1707,6 +1757,7 @@ function _chead(o){
       s += _p(`M${d*3},${ey+.2} Q${d*7},${ey-5.2} ${d*12},${ey-1.8} Q${d*8},${ey+3} ${d*3},${ey+.2}Z`,'k') + _p(`M${d*4.2},${ey} Q${d*7},${ey-3.4} ${d*10},${ey-1.5} Q${d*7.4},${ey+1.8} ${d*4.2},${ey}Z`,'ey n') + _e(x+d*.4,ey-.8,.95,2.1,'k n');
     }
   });
+  s += '</g>';
   if (o.brow) s += _p('M-13,-5.5 L-4.5,-3 M13,-5.5 L4.5,-3','ln',' style="stroke-width:2"');
   if (o.hb) s += _p('M-18.4,-7 Q0,-12.5 18.4,-7 L18.4,-2.4 Q0,-8 -18.4,-2.4Z','cp') + _p('M-6.5,-10 L6.5,-10 L6.5,-3.4 L-6.5,-3.4Z','hm') + _p('M-3,-6.7 L3,-6.7 M0,-9 L0,-4.5','ln');
   s += _wsk(o,'M-10,6 L-24,3.5 M-10,8 L-24,9 M10,6 L24,3.5 M10,8 L24,9');
@@ -1727,7 +1778,7 @@ function _chs(o){
 function _cpaw(x,c){ return _p(`M${x-4.6},72 L${x-4.6},86 Q${x-4.6},90 ${x},90 Q${x+4.6},90 ${x+4.6},86 L${x+4.6},72Z`,c) + _p(`M${x-1.6},87.6 L${x-1.6},90 M${x+1.6},87.6 L${x+1.6},90`,'ln'); }
 function _cbody(o){
   o = o || {}; const bs = o.bs || 1; let s = '';
-  s += o.tail || '';
+  s += o.tail ? '<g class="pt-tl">' + o.tail + '</g>' : '';
   s += _e(35,78,10,11,'a') + _e(65,78,10,11,'a') + _e(50,70,16.5,19,'a') + _e(50,74,8.6,13,o.belly || 'c');
   s += _cpaw(43,o.leg || 'a') + _cpaw(57,o.leg || 'a');
   if (o.more) s += o.more;
@@ -1774,7 +1825,7 @@ if (k === 0){
   }
   if (k === 5){
     const tails = [[1,'M62,84 Q94,90 91,56 Q90,40 80,34'],[-1,'M38,84 Q6,90 9,56 Q10,40 20,34']];
-    let t = ''; tails.forEach(a => { t += _l2(a[1],'a',6); });
+    let t = ''; tails.forEach(a => { t += `<g class="pt-tl${a[0] < 0 ? ' r' : ''}">` + _l2(a[1],'a',6) + '</g>'; });
     let f = ''; [[80,35],[20,35]].forEach(p => { f += _flame(p[0],p[1],1.15,'mn') + _flame(p[0],p[1]-1,.62,'w n',' opacity=".85"'); });
     let beads = ''; for (let i = 0; i < 7; i++){ const u = i/6; beads += _c(38+24*u,61+7*Math.sin(Math.PI*u),2.3,'g'); }
     return sh + t + _cbody({belly:'c'}) + f + _flame(10,16,.6,'mn n',' opacity=".8"') + _flame(92,18,.55,'mn n',' opacity=".8"') + _flame(50,6,.5,'mn n',' opacity=".7"')
@@ -1802,7 +1853,7 @@ if (k === 0){
   }
   /* k = 9 : Thần Miêu (Bastet) */
   const wing = [0,1,2,3,4].map(j => _p(`M${64+j*1.5},${48+j*5} Q${86+j*4},${22+j*6} ${98},${30+j*9} Q${88+j*2},${36+j*7} ${70},${58+j*3}Z`,j % 2 ? 'g' : 'c')).join('');
-  return `<g opacity=".95">${wing}</g>` + _c(47,31,19,'g n',' opacity=".3"') + _c(47,31,19,'rg n',' style="fill:none"') + sh
+  return `<g class="pt-wg" opacity=".95">${wing}</g>` + _c(47,31,19,'g n',' opacity=".3"') + _c(47,31,19,'rg n',' style="fill:none"') + sh
     + _l2('M72,85 Q100,86 82,91 Q58,94 32,91','a',4.6)
     + _p('M44,40 Q40,52 38,62 Q35,76 40,88 L72,88 Q77,70 66,56 Q60,48 58,40Z','a') + _e(62,74,13,14.5,'a') + _e(54,88,9,3.2,'a')
     + _p('M38,64 L47,64 L47,86 Q47,90 42,90 L33,90 Q30,90 32.5,87 L38,84Z','a') + _p('M35,88 L35,90 M39,88 L39,90','ln')
@@ -4254,29 +4305,54 @@ GREET.hero = {
 "night": [["Đêm rồi, còn {left} mục tiêu. Đánh gọn rồi đi ngủ.", "Ca gác đêm bắt đầu. {left} việc còn trên bản đồ."], ["Lính gác đã vào vị trí. Ngủ ngon, {goi}.", "Đêm nay không có tiếng trống trận. Ngủ yên."]]
 };
 VOICE.hero = [
-  [0, 'hammer', mk(["Báo cáo {goi}, tôi… tôi đang tập cầm kiếm cho đúng chiều.", "Chưa có giáp, chưa có danh. Chỉ có cái nồi đội tạm trên đầu.", "*cộp cộp* Tôi đang tập đứng gác. Mười phút là mỏi chân.", "Tân binh xin hứa: không bỏ trận nào {goi} giao.", "Nghe nói các bậc tiền bối cũng bắt đầu từ cái chổi. Tôi tin."],
-    ["Báo cáo: còn {left} mục tiêu! Tôi… xin đi cùng {goi}.", "Còn {left} việc. Tôi mài kiếm sẵn rồi, chỉ chờ lệnh."],
-    ["Thắng rồi! Trận đầu đời tôi được ghi sổ!", "Xong hết! Tôi xin chạy một vòng sân tập ăn mừng."],
-    ["{streak} ngày liền! Trung đội trưởng bắt đầu nhớ tên tôi rồi."],
-    ["Còn {need} XP là tôi được phát giáp thật, khỏi đội nồi nữa!"])],
-  [1, 'clang', mk(["Gõ khiên! Mỗi ngày một trận, mỗi trận một bước.", "Ngũ trưởng coi năm người. Năm người giữ hàng thì cả đội vững.", "Một người đánh lẻ thì dễ ngã. Thói quen xếp thành hàng thì vững.", "Đường cái quan cũng đắp từng sọt đất. Tích từng việc thôi.", "Hò dô! Hét to không thắng trận, làm đều mới thắng."],
-    ["Còn {left} mục tiêu. Tôi xung phong đi đầu!", "Báo cáo: {left} việc chưa hạ. Đội hình đã sẵn.", "{goi} ơi, {left} mục tiêu nữa là cắm cờ."],
-    ["Thắng trận! Tôi gõ khiên ầm cả doanh trại!", "Mọi mục tiêu đã hạ. Tối nay cả đội nướng bánh ăn mừng.", "Hôm nay toàn thắng. Đội hình không vỡ chỗ nào."],
-    ["{streak} ngày không thua. Cả đội đòi khắc tên {goi} lên khiên.", "{streak} ngày liền! Con đường đắp đã dài lắm rồi."],
-    ["Còn {need} XP là tôi đổi sang giáp mới!", "Còn {need} XP nữa, cả đội lên một bậc."])],
-  [3, 'clang', mk(["Ít lời. Nhiều việc.", "Mài kiếm mỗi sáng. Kiếm cùn là do bỏ một ngày.", "Tôi không chờ cảm hứng. Tôi có giờ giấc.", "Võ sĩ cúi chào trước khi vào trận. Chào cái bảng việc đi, {goi}.", "Trận khó nhất là trận với cái chăn lúc sáng sớm."],
-    ["Còn {left}. Ra trận.", "Còn {left} mục tiêu. Không bàn thêm, đánh thôi.", "Còn {left} việc. Việc khó nhất, làm trước."],
-    ["Xong. Tôi tra kiếm vào vỏ.", "Thắng trận mà không ồn ào. Đẹp.", "Hôm nay đủ. Lau kiếm, uống trà."],
-    ["{streak} ngày. Kỷ luật đã thành thói quen.", "{streak} ngày không lùi bước. Tôi cúi đầu kính phục."],
-    ["Còn {need} XP. Bình tĩnh, giữ nhịp.", "Còn {need} XP. Đừng vội, cũng đừng dừng."])],
-  [5, 'clang', mk(["Mạt tướng giữ biên cương, chờ lệnh {goi}.", "Giặc lười kéo tới ba lần, ba lần bị đánh lui. Lần này cũng vậy.", "Thiên hộ thề bằng kiếm. Mạt tướng thề bằng bảng việc mỗi ngày.", "Thắng được mình mới thắng được trận. Câu này mạt tướng khắc trên khiên.", "Thành Cổ Loa đắp từ từng sọt đất. Chín mươi ngày cũng thế.", "Biết người biết ta. Biết mình hay lười buổi tối thì làm từ chiều."],
-    ["Còn {left} mục tiêu. Mạt tướng xin lệnh phản công!", "Báo cáo {goi}: {left} việc chưa hạ. Ngựa đã thắng yên.", "Còn {left}. Đánh nhanh thắng nhanh, đừng để sang đêm."],
-    ["Mạt tướng hoàn thành nhiệm vụ. Xin dâng sổ công.", "Toàn thắng. Khao quân bằng một giấc ngủ đủ.", "Xong hết. Cờ đã cắm trên mọi cứ điểm."],
-    ["{streak} ngày chiến thắng. Sử quan ghi chép không kịp.", "{streak} ngày giữ thành. Giặc lười phải đi đường vòng."],
-    ["Còn {need} XP, mạt tướng sắp lên bậc mới.", "Còn {need} XP nữa, ấn tướng mới sẽ trao tay."])],
-  [9, 'fanfare', mk(["Bản tướng đã đi qua trăm trận. Trận nào cũng có {goi} bên cạnh.", "Từ tân binh đội nồi đến Chiến Thần. Bản tướng nhớ hết.", "Danh tiếng không quan trọng. Giữ kỷ luật mỗi ngày mới quan trọng.", "Chiến Thần mạnh không phải vì chưa từng ngã. Mà vì luôn đứng dậy trước.", "Trận cuối cùng không ở chiến trường. Nó ở phòng thi của {goi}."],
-    ["Còn {left} việc. Bản tướng chờ lệnh, {goi}.", "Còn {left} mục tiêu. Chiến Thần cũng không bỏ trận dễ.", "Còn {left}. Trận nhỏ thôi, đừng để bản tướng đứng không."],
-    ["Toàn thắng. Bản tướng cúi chào {goi}.", "Hôm nay vẻ vang. Ghi vào sử sách.", "Xong hết. Chiến Thần cũng cần ngủ đủ, đi nghỉ thôi."],
+  [0, 'clang', mk(["Người đời gọi ta là Cẩm Mã Siêu, vì giáp trắng đẹp như gấm. Đẹp nhất vẫn là bảng việc kín ô.", "Ta ra trận từ thuở còn trẻ ở Tây Lương. Tuổi trẻ là lúc tập thói quen tốt nhất.", "Mũ sư tử nặng lắm, nhưng đội mỗi ngày rồi cũng quen. Thói quen cũng thế.", "Ngựa giỏi phải chạy mỗi ngày. Người giỏi cũng vậy.", "Đường còn dài. Cứ đi từng bước, {goi} nhé."],
+    ["Còn {left} việc. Giáo đã sẵn, chờ {goi} xuất trận.", "Còn {left} mục tiêu. Tuổi trẻ đừng để việc sang mai."],
+    ["Toàn thắng! Gió Tây Lương thổi mát cả doanh trại.", "Xong hết. Ta lau giáo, cho ngựa ăn."],
+    ["{streak} ngày liền. Tiếng tăm bắt đầu vang xa rồi."],
+    ["Còn {need} XP nữa là gặp Thường Sơn Triệu Tử Long."])],
+  [1, 'clang', mk(["Thường Sơn Triệu Tử Long đây. Một mình phá vây ở Trường Bản, nhờ luyện thương mỗi sáng.", "Người ta khen ta gan dạ. Gan dạ chỉ là làm việc khó mà không bỏ giữa chừng.", "Ta theo chủ suốt đời, không đổi lòng. Giữ thói quen cũng phải bền như thế.", "Giáp bạc sáng là vì lau mỗi ngày.", "Cẩn thận là đức của tướng giỏi. Làm đủ, làm đúng, làm đều."],
+    ["Còn {left} việc. Tử Long xin đi tiên phong.", "Còn {left} vòng vây. Phá từng vòng một."],
+    ["Phá vây thành công! {goi} an toàn.", "Xong hết. Thương bạc đã tra vào giá."],
+    ["{streak} ngày. Cả người {goi} toàn là gan dạ."],
+    ["Còn {need} XP nữa là gặp kẻ mạnh nhất thiên hạ: Lữ Bố."])],
+  [2, 'clang', mk(["Người có Lữ Bố, ngựa có Xích Thố. Nhưng giỏi mấy mà không giữ chữ tín thì cũng thua.", "Họa kích của ta nặng, phải múa mỗi ngày mới thuần tay.", "Ta từng bắn một mũi tên trúng cán kích ngoài trăm năm mươi bước. Tay vững là nhờ tập đều.", "Sức mạnh thôi chưa đủ. Phải có kỷ luật đi kèm.", "Lông trĩ trên mũ ta dài nhất trận. Chuỗi ngày của {goi} cũng phải dài như thế."],
+    ["Còn {left} việc. Họa kích đã giơ cao.", "Còn {left} kẻ địch. Một mình ta cũng chấp."],
+    ["Hôm nay thiên hạ vô địch! Xong hết.", "Gọn. Xích Thố được nghỉ."],
+    ["{streak} ngày. Đến ta cũng phải nể."],
+    ["Còn {need} XP nữa là gặp Quan Vân Trường."])],
+  [3, 'clang', mk(["Quan mỗ trọng nhất chữ nghĩa. Đã hứa với {goi} thì làm cho đủ.", "Thanh Long đao nặng tám mươi hai cân. Thói quen nhẹ hơn nhiều, cứ cầm lên.", "Đêm đêm ta đọc Xuân Thu dưới đèn. Đọc sách mỗi ngày là việc của người quân tử.", "Qua năm ải, chém sáu tướng, cũng chỉ là đi từng bước một.", "Râu dài không phải tự nhiên mà có. Phải nuôi ngày qua ngày."],
+    ["Còn {left} việc. Quan mỗ chưa đặt đao xuống.", "Còn {left} ải. Qua từng ải một."],
+    ["Xong hết. Quan mỗ vuốt râu, đọc sách.", "Ải cuối đã qua. Nghĩa đã trọn."],
+    ["{streak} ngày giữ lời. Chữ tín này quý hơn vàng."],
+    ["Còn {need} XP nữa là gặp Nhạc Võ Mục."])],
+  [4, 'clang', mk(["Bốn chữ «Tận trung báo quốc» khắc trên lưng ta. Bốn chữ của {goi} là «làm đủ mỗi ngày».", "Ba mươi năm công danh như bụi đất, tám nghìn dặm đường mây trăng. Đường dài là đi bằng từng bước.", "Đừng để tuổi trẻ trôi qua, bạc đầu mới tiếc. Làm ngay hôm nay.", "Nhạc gia quân giữ kỷ luật: chết rét cũng không phá nhà dân.", "Giặc phải than: lay núi còn dễ, lay Nhạc gia quân mới khó."],
+    ["Còn {left} việc. Nhạc gia quân chưa thu cờ.", "Còn {left} mục tiêu. Đừng để tuổi trẻ trôi qua uổng."],
+    ["Xong hết. Cờ chữ Nhạc tung bay.", "Thu quân. Hôm nay không phụ lòng ai."],
+    ["{streak} ngày. Lay núi còn dễ, lay chuỗi này của {goi} mới khó."],
+    ["Còn {need} XP nữa là gặp Binh tiên Hàn Tín."])],
+  [5, 'clang', mk(["Hàn mỗ dùng binh, càng nhiều càng tốt. Ngày chăm chỉ cũng thế.", "Thuở hàn vi ta từng chịu nhục chui qua háng kẻ khác. Nhẫn một lúc, làm nên cả đời.", "Ta từng bày trận quay lưng ra sông. Không còn đường lùi thì chỉ còn tiến.", "Một bữa cơm của bà giặt lụa, sau này ta đền ngàn vàng. Nhớ ơn người giúp mình.", "Kế hay mấy cũng phải làm. Bày trận xong thì xuất quân."],
+    ["Còn {left} việc. Sa bàn đã bày, chờ {goi} xuất quân.", "Còn {left} cánh quân chưa về. Nhanh lên."],
+    ["Toàn thắng. Binh pháp của {goi} đáng ghi sử.", "Xong hết. Thu lệnh kỳ, nghỉ quân."],
+    ["{streak} ngày. Càng nhiều càng tốt."],
+    ["Còn {need} XP nữa là gặp Tây Sở Bá Vương."])],
+  [6, 'clang', mk(["Sức nhổ núi, khí trùm đời. Nhưng sức lớn cũng phải dùng mỗi ngày.", "Ta từng đập nồi, đánh chìm thuyền để quân không còn đường lui.", "Bá vương cũng có lúc thua. Thua một ngày không sao, đừng thua cả chuỗi.", "Ngựa Ô Truy theo ta tới phút cuối. Thói quen tốt cũng sẽ theo {goi} như thế.", "Đã quyết thì làm tới cùng."],
+    ["Còn {left} việc. Đập nồi dìm thuyền, không lùi.", "Còn {left} trận. Bá vương chưa cởi giáp."],
+    ["Toàn thắng! Cả thiên hạ nghe tiếng.", "Xong hết. Ô Truy được nghỉ."],
+    ["{streak} ngày. Khí thế trùm đời."],
+    ["Còn {need} XP nữa là vượt cõi người, lên hàng thần tướng."])],
+  [7, 'fanfare', mk(["Tiểu gia đây! Chân đạp Phong hỏa luân, tay cầm Hỏa tiêm thương.", "Sinh ra đã biết đánh, nhưng tiểu gia vẫn luyện mỗi ngày.", "Dải Hỗn Thiên Lăng này khuấy được cả biển. Việc của {goi} sao mà không gói gọn?", "Thân sen của tiểu gia không biết mỏi. {goi} thì nhớ ngủ đủ nhé.", "Nhỏ mà có võ. Việc nhỏ làm đều cũng thành lớn."],
+    ["Còn {left} việc! Bánh xe lửa đang quay, đi thôi!", "Còn {left} việc. Tiểu gia ném vòng Càn Khôn giúp đây!"],
+    ["Xong hết! Tiểu gia bay một vòng trời ăn mừng.", "Gọn! Vòng Càn Khôn trúng hết mục tiêu."],
+    ["{streak} ngày! Lửa dưới chân tiểu gia chưa tắt ngày nào."],
+    ["Còn {need} XP nữa là gặp Nhị Lang Thần."])],
+  [8, 'fanfare', mk(["Mắt thứ ba của bổn thần nhìn thấu mọi lời bào chữa.", "Chó thần đánh hơi được cả việc {goi} giấu dưới gối.", "Bổn thần từng đấu phép biến hóa với Tề Thiên Đại Thánh. Biến hóa mấy cũng không bằng làm đều.", "Đao ba mũi, hai lưỡi. Vài việc chính thôi, nhưng làm cho sắc.", "Trên trời cũng có lịch trực. Thần cũng không được bỏ ca."],
+    ["Còn {left} việc. Mắt thứ ba thấy rõ rồi.", "Còn {left} việc. Chó thần đã ngồi chờ."],
+    ["Xong hết. Bổn thần nhắm mắt thứ ba nghỉ ngơi.", "Trọn vẹn. Thiên đình ghi công {goi}."],
+    ["{streak} ngày. Mắt thần cũng không tìm ra lỗi."],
+    ["Còn {need} XP nữa là gặp Tề Thiên Đại Thánh."])],
+  [9, 'fanfare', mk(["Lão Tôn đây! Một cân đẩu vân bay mười vạn tám nghìn dặm.", "Đại náo thiên cung rồi mới biết: phép lớn không bằng đi đường đều.", "Tám mươi mốt kiếp nạn mới tới Tây Thiên. Chín mươi ngày của {goi} đã là gì.", "Gậy như ý nặng một vạn ba nghìn năm trăm cân, mà lão Tôn vẫn múa mỗi ngày.", "Người ta gọi lão Tôn là Đấu Chiến Thắng Phật. Thắng được mình mới là thắng lớn."],
+    ["Còn {left} việc. Lão Tôn nhổ lông biến ra cũng không làm hộ được đâu, {goi} tự làm nhé!", "Còn {left} việc. Một cân đẩu là tới, đi thôi!"],
+    ["Xong hết! Lão Tôn nhảy lên mây ăn mừng.", "Trọn vẹn. Đến Ngọc Hoàng cũng phải khen."],
     ["{streak} ngày bất bại. Huyền thoại là đây."],
     ["Còn {need} XP. Đỉnh núi chỉ còn một bậc."])]
 ];
