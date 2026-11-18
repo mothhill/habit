@@ -887,7 +887,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v18.11.109';   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
+const APP_VER = 'v18.11.110';   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -2427,7 +2427,7 @@ const WD = ['CN','T2','T3','T4','T5','T6','T7'];
 const WDL = ['Chủ nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
 
 /* ================== Trạng thái ================== */
-let D = null, T = 0, tab = 'today', vi = 0, DAILY = [], WEEKLY = [], pending = 0, byCode = {};
+let D = null, T = 0, tab = 'overview', vi = 0, DAILY = [], WEEKLY = [], pending = 0, byCode = {};
 let boardAt = 0;
 let TOKEN = '', ME = null, SETTINGS = {unlockAll:false}, BOARD = null, ADMIN = null, NEWPIN = null;
 let rankMode = 'total', rankGroup = 'person';
@@ -3166,8 +3166,9 @@ function render(){ if (typeof loadBS === 'function') loadBS(); if (typeof bdAsk 
   const s = summary();
   $('#root').innerHTML = `<div class="layout tab-${tab}"><aside class="side">${side(s)}</aside><main>
     <div class="tabs">${tabBtns()}</div>
-    ${tab === 'today' ? today() : tab === 'health' ? (typeof healthView === 'function' ? healthView() : '') : tab === 'mind' ? (typeof mindView === 'function' ? mindView() : '') : tab === 'work' ? workView() : tab === 'help' ? helpView() : tab === 'prog' ? progTabs() + progress(s) : tab === 'rank' ? (MOB() ? progTabs() : '') + rankView() : tab === 'pet' ? progTabs() + petView(s) : tab === 'admin' ? adminView() : progTabs() + badges(s)}</main></div>`;
+    ${tab === 'overview' ? ovView(s) : tab === 'today' ? today() : tab === 'health' ? (typeof healthView === 'function' ? healthView() : '') : tab === 'mind' ? (typeof mindView === 'function' ? mindView() : '') : tab === 'work' ? workView() : tab === 'help' ? helpView() : tab === 'prog' ? progTabs() + progress(s) : tab === 'rank' ? (MOB() ? progTabs() : '') + rankView() : tab === 'pet' ? progTabs() + petView(s) : tab === 'admin' ? adminView() : progTabs() + badges(s)}</main></div>`;
   $('#bnav').innerHTML = tabBtns(true);
+  if (tab === 'overview') { ovAfter(); ovKick(); }
   const cur = document.querySelector('.ladder .cur'); if (cur) cur.parentNode.scrollLeft = cur.offsetLeft - cur.parentNode.offsetLeft - 70;
   if (tab === 'today') greetMasc();
   if (focusLeft() && !FOCUST) focusTick();
@@ -3176,14 +3177,14 @@ function render(){ if (typeof loadBS === 'function') loadBS(); if (typeof bdAsk 
   if (tab === 'work') workInit();
 }
 function tabBtns(mobile){
-  const t = [['today','✅','Hôm nay'],['health','💚','Sức khỏe'],['mind','🧠','Tâm Trí'],['pet','🏆','Thành tích'],['rank','🥇','Xếp hạng']];   // Thành tích = Thú cưng (pet) · Huy hiệu (badge) · Cá nhân (prog) · Xếp hạng (rank)
-  if (ME && ME.work) t.splice(3, 0, ['work','🗂️','Công việc']);
+  const t = [['overview','🏠','Tổng quan'],['today','✅','Hôm nay'],['health','💚','Sức khỏe'],['mind','🧠','Tâm Trí'],['pet','🏆','Thành tích'],['rank','🥇','Xếp hạng']];   // v18.11.110: Tổng quan là màn mở đầu   // Thành tích = Thú cưng (pet) · Huy hiệu (badge) · Cá nhân (prog) · Xếp hạng (rank)
+  if (ME && ME.work) t.splice(4, 0, ['work','🗂️','Công việc']);
   if (ME && ME.role === 'Quản lý') t.push(['admin','🛠️','Quản lý']);
   const dot = RP.info && RP.info.dot > 0 ? '<i class="tdot"></i>' : '';
   if (V2 && mobile){   // v18.11.108: điện thoại luôn có ☰ Thêm (chứa Đăng xuất)
-    const main = t.filter(x => !MORE_K.includes(x[0])), on = tab === 'admin' || tab === 'help';
-    return main.map(([k,e,n]) => `<button class="${tab===k || (k==='pet' && (tab==='badge' || tab==='prog' || tab==='rank'))?'on':''}" data-tab="${k}"><span>${e}</span>${n}${k === 'work' ? dot : ''}</button>`).join('')
-      + `<button class="${on?'on':''}" data-more="1"><span>☰</span>Thêm</button>`;
+    const main = t.filter(x => !MORE_K.includes(x[0])), on = tab === 'admin' || tab === 'help' || tab === 'work';   // v18.11.110: Công việc vào ☰ Thêm, chấm đỏ hiện trên ô Thêm
+    return main.map(([k,e,n]) => `<button class="${tab===k || (k==='pet' && (tab==='badge' || tab==='prog' || tab==='rank'))?'on':''}" data-tab="${k}"><span>${e}</span>${n}</button>`).join('')
+      + `<button class="${on?'on':''}" data-more="1"><span>☰</span>Thêm${ME && ME.work ? dot : ''}</button>`;
   }
   return t.map(([k,e,n]) => `<button class="${tab===k || (k==='pet' && (tab==='badge' || tab==='prog'))?'on':''}" data-tab="${k}">${mobile?`<span>${e}</span>`:e+' '}${n}${k === 'work' ? dot : ''}</button>`).join('');
 }
@@ -3683,7 +3684,7 @@ function rankView(){
   if (rankMode === 'track') return trackView();
   if (!BOARD) return `<div class="loading" style="min-height:40vh"><div class="spin"></div>Đang tải bảng xếp hạng…</div>`;
   if (BOARD.error) return `<div class="empty">${esc(BOARD.error)}</div>`;
-  const wk = blkStart(BOARD.today);
+  const wk = blkStart(BOARD.today || D.today);   // v18.11.110: BOARD.today có thể trống
   const metric = r => rankMode === 'week' ? (r.week && blkStart(String(r.week).slice(0,10)) === wk ? r.xpWeek : 0) : rankMode === 'total' ? r.xp : r.cur;
   const unit = rankMode === 'streak' ? 'ngày' : 'XP';
   const wxp = r => r.week && blkStart(String(r.week).slice(0,10)) === wk ? r.xpWeek : 0;
@@ -5511,11 +5512,12 @@ function mStrip(){
     <div class="xpbar"><i style="width:${xp}%"></i></div></div>
     <div class="mo" data-mside="1">📊<br>Tổng<br>quan</div></div>`;
 }
-const MORE_K = ['rank', 'admin', 'help'];   // v18.11.109: Công việc lên thanh dưới, Xếp hạng vào Thành tích
+const MORE_K = ['work', 'rank', 'admin', 'help'];   // v18.11.110: Công việc vào ☰ Thêm, Tổng quan lên thanh dưới   // v18.11.109: Công việc lên thanh dưới, Xếp hạng vào Thành tích
 const MOB = () => { try { return V2 && matchMedia('(max-width:919px)').matches; } catch(e){ return false; } };
 function moreSheet(){
   const el = $('#moresheet'); if (!el) return;
   const t = [];
+  if (ME && ME.work) t.push(['work','🗂️','Công việc']);
   if (ME && ME.role === 'Quản lý') t.push(['admin','🛠️','Quản lý']);
   t.push(['help','❓','Hướng dẫn']);
   const dot = RP.info && RP.info.dot > 0 ? '<i class="tdot"></i>' : '';
@@ -6976,5 +6978,276 @@ function trackView(){
 .gw-r em{font-style:normal;font-size:13px;color:var(--muted);text-align:right}
 .gw-tip{font-size:13px;margin-top:8px;color:var(--peach)}.gw-tip.ok{color:var(--primary)}
 </style>
+<style>
+/* v18.11.110: Tổng quan dạng cuộn. Chỉ dùng biến màu của bảng màu; cỡ chữ 13/15/17/20/24 (số trang trí to hơn) */
+.layout.tab-overview{grid-template-columns:minmax(0,1fr)}.layout.tab-overview .side{display:none}
+.ov{max-width:980px;margin:0 auto;padding-bottom:96px;color:var(--ink)}
+.ov h1{font-size:24px;line-height:1.25;margin:2px 0 8px;font-weight:800}
+.ov h2{font-size:20px;line-height:1.3;margin:0 0 16px;font-weight:800}
+.ov h3{font-size:15px;margin:0 0 10px;color:var(--muted);font-weight:700}
+.ov p{font-size:15px;line-height:1.5;margin:0}.ov small{font-size:13px}.ov .muted{color:var(--muted)}
+.ov-act{padding:36px 4px;border-bottom:1px solid var(--line)}
+.ov-act:last-of-type{border-bottom:0}
+.ov-note{color:var(--muted);font-size:13px!important;margin-top:10px!important}
+.ov-big{white-space:nowrap;flex:none;font-size:64px;font-weight:800;line-height:1;letter-spacing:-1px;font-variant-numeric:tabular-nums;color:var(--primary)}
+.ov-big small{font-size:24px;color:var(--muted);font-weight:700;letter-spacing:0}
+.ov-link{display:inline-block;margin-top:16px;background:none;border:0;color:var(--primary);font:inherit;font-size:15px;font-weight:700;padding:10px 0;cursor:pointer;min-height:44px}
+.trk{position:relative;display:block;height:10px;border-radius:99px;background:var(--line);overflow:visible}
+.trk .bar{position:absolute;inset:0;border-radius:inherit;background:var(--primary);transform-origin:left center;transform:scaleX(calc(var(--w,0)/100))}
+/* 1. Chào */
+.ov-hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:center;padding-top:20px}
+.ov-hi{color:var(--muted)}
+.ov-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.ov-chips span{font-size:13px;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:6px 12px}
+.ov-chips b{font-size:15px}.ov-chips .warn{color:var(--gold);border-color:var(--gold)}
+.ov-rw{position:relative;width:136px;height:136px}
+.ov-ring{width:100%;height:100%;transform:rotate(-90deg)}
+.ov-ring circle{fill:none;stroke-width:11}.ov-ring .tr{stroke:var(--line)}
+.ov-ring .fg{stroke:var(--primary);stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:var(--o)}
+.ov-rl{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ov-rl b{font-size:36px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.ov-rl small{color:var(--muted);margin-top:4px;max-width:96px}
+/* 2. Hành trình */
+.ov-day{display:flex;align-items:flex-end;gap:16px;margin-bottom:18px}
+.ov-mos{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:4px}
+.ov-mos i,.ov-leg i{display:block;aspect-ratio:1;border-radius:4px;background:var(--line)}
+.ov-mos i.ok,.ov-leg i.ok{background:var(--primary)}
+.ov-mos i.miss,.ov-leg i.miss{background:color-mix(in srgb,var(--peach) 60%,var(--card))}
+.ov-mos i.now,.ov-leg i.now{box-shadow:0 0 0 2px var(--gold) inset}
+.ov-mos i.now.ok{box-shadow:0 0 0 2px var(--gold)}
+.ov-leg{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:13px;color:var(--muted)}
+.ov-leg span{display:flex;align-items:center;gap:6px}.ov-leg i{width:12px}
+.ov-xp{margin-top:24px}
+.ov-xp > div:first-child{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.ov-xp b{font-size:24px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}
+.ov-xp > div > span{font-size:15px}.ov-xp small{color:var(--muted);display:block;margin-top:6px}
+.ov-xpb{height:12px;border-radius:99px;background:var(--line);margin-top:8px;overflow:hidden}
+.ov-xpb i{display:block;height:100%;border-radius:inherit;background:var(--gold);transform-origin:left;transform:scaleX(calc(var(--w)/100))}
+.ov-rail{display:flex;gap:10px;overflow-x:auto;margin:18px -4px 0;padding:4px 4px 10px;scroll-snap-type:x proximity;scrollbar-width:thin}
+.ov-lv{flex:0 0 112px;scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;text-align:center;display:flex;flex-direction:column;gap:2px;opacity:.75}
+.ov-lv svg{width:56px;height:56px;margin:0 auto 4px}
+.ov-lv b{font-size:15px}.ov-lv small{color:var(--muted);line-height:1.3}
+.ov-lv.got{opacity:1}.ov-lv.cur{opacity:1;border-color:var(--gold);box-shadow:0 6px 18px -10px var(--gold)}
+/* 3. Xếp hạng – đoạn cao trào */
+.ov-rank{margin:12px -12px;padding:44px 16px;border-radius:24px;border:1px solid var(--line);background:color-mix(in srgb,var(--primary) 7%,var(--card))}
+.ov-rank > h2{text-align:center}
+.ov-pos{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;margin-bottom:24px}
+.ov-pos .ov-big{font-size:88px}
+.ov-race{display:flex;flex-direction:column;gap:6px;overflow-x:clip;overflow-y:visible}
+.ov-lane{display:grid;grid-template-columns:30px minmax(0,1fr) 64px;grid-template-areas:"pos nm v" "pos trk v";gap:4px 10px;align-items:center;padding:10px 10px;border-radius:14px;cursor:pointer}
+.ov-lane .pos{grid-area:pos;text-align:center;font-size:17px;font-weight:800}
+.ov-lane .nm{grid-area:nm;min-width:0;display:flex;gap:8px;align-items:baseline}
+.ov-lane .nm b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ov-lane .nm small{color:var(--muted);white-space:nowrap;flex:none}
+@media(max-width:919px){.ov-lane .nm .dp{display:none}}
+.ov-lane .trk{grid-area:trk;margin:14px 16px 10px 0}
+.ov-lane .v{grid-area:v;text-align:right;font-size:20px;font-weight:800;font-variant-numeric:tabular-nums}
+.ov-lane .v small{display:block;font-size:13px;color:var(--muted);font-weight:600}
+.ov-lane .rw{position:absolute;inset:0;transform:translateX(calc(var(--w)*1%))}
+.ov-lane .run{position:absolute;left:-15px;top:50%;width:30px;height:30px;margin-top:-15px;border-radius:50%;background:var(--card);box-shadow:0 2px 8px -2px rgba(0,0,0,.35)}
+.ov-lane .run svg{width:30px;height:30px;display:block}
+.ov-lane .run em{position:absolute;top:-17px;left:6px;font-style:normal;font-size:15px}
+.ov-lane.me{background:var(--card);box-shadow:0 0 0 2px var(--primary) inset}
+.ov-lane.me .trk .bar{background:var(--gold)}
+.ov-gap{text-align:center;color:var(--muted);font-size:15px;line-height:1}
+.ov-dep{margin-top:28px}
+.ov-drow{display:grid;grid-template-columns:minmax(0,9rem) minmax(0,1fr) 44px;gap:10px;align-items:center;padding:6px 0;font-size:15px}
+.ov-drow span:first-child{display:flex;flex-direction:column;min-width:0}
+.ov-drow small{color:var(--muted)}.ov-drow b{text-align:right;font-variant-numeric:tabular-nums}
+.ov-drow.me span:first-child{font-weight:800}.ov-drow.me .bar{background:var(--gold)}
+.ov-rank > .ov-link{display:block;margin:16px auto 0}
+.ov-wait{display:flex;gap:10px;align-items:center;justify-content:center;color:var(--muted);font-size:15px;min-height:120px}
+/* 4. Sức khỏe */
+.ov-hgrid{display:grid;gap:20px}
+.ov-bars{position:relative;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;height:180px;align-items:end;padding-top:24px}
+.ov-sl{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px}
+.ov-sl i{display:block;width:100%;max-width:36px;height:calc(var(--h)*1.2px);border-radius:8px 8px 4px 4px;background:var(--primary);transform-origin:bottom}
+.ov-sl.lo i{background:var(--gold)}.ov-sl.na i{height:6px;background:var(--line)}
+.ov-sl b{font-size:13px;font-variant-numeric:tabular-nums;order:-1}.ov-sl small{color:var(--muted)}
+.ov-goal{position:absolute;left:0;right:0;bottom:calc(84px + 24px);border-top:1px dashed var(--muted);pointer-events:none}
+.ov-tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.ov-tiles div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 10px}
+.ov-tiles b{display:block;font-size:24px;font-weight:800;font-variant-numeric:tabular-nums}
+.ov-tiles small{color:var(--muted);line-height:1.3;display:block;margin-top:2px}
+/* 5. Tâm trí */
+.ov-mind{text-align:right}
+.ov-mgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;text-align:left}
+.ov-ms{display:grid;grid-template-columns:auto 1fr;gap:0 10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.ov-ms span{grid-row:span 2;font-size:24px}.ov-ms b{font-size:17px}.ov-ms small{color:var(--muted)}
+.ov-ms.ok{border-color:var(--primary)}.ov-ms.ok small{color:var(--primary)}.ov-ms.no small{color:var(--gold)}
+.ov-q{margin-top:18px;text-align:left}
+.ov-qr{display:grid;grid-template-columns:7.5rem minmax(0,1fr) 44px;gap:10px;align-items:center;padding:6px 0;font-size:15px}
+.ov-qr b{text-align:right;font-variant-numeric:tabular-nums}.ov-qr .bar{background:var(--gold)}.ov-qr.ok .bar{background:var(--primary)}
+.ov-quote{margin:28px 0 0;padding:0}
+.ov-quote p{font-size:20px!important;line-height:1.45!important;font-weight:700}
+.ov-quote p span{display:inline-block}
+.ov-quote small{display:block;margin-top:8px;color:var(--muted)}
+/* 6. Điền hôm nay */
+.ov-end{text-align:center;padding:48px 4px 24px}
+.ov-end p{color:var(--muted);margin-bottom:20px}
+.ov-cta,.ov-fab{border:0;border-radius:99px;background:var(--primary);color:var(--on-primary);font:inherit;font-weight:800;cursor:pointer}
+.ov-cta{font-size:17px;padding:16px 32px;min-height:52px;box-shadow:0 10px 24px -12px var(--primary)}
+.ov-fab{position:fixed;right:16px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:19;font-size:15px;padding:12px 18px;min-height:48px;box-shadow:0 8px 20px -8px rgba(0,0,0,.45);transition:transform .3s ease,opacity .3s ease}
+.ov-fab.hide{opacity:0;transform:translateY(16px);pointer-events:none}
+@media(min-width:920px){
+  .ov-act{padding:56px 8px}
+  .ov-hero{padding-top:32px}.ov h1{font-size:24px}
+  .ov-rw{width:168px;height:168px}.ov-rl b{font-size:44px}
+  .ov-mos{grid-template-columns:repeat(28,minmax(0,1fr))}
+  .ov-rank{margin:16px 0;padding:56px 48px}
+  .ov-race{gap:8px}
+  .ov-hgrid{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);align-items:end}
+  .ov-tiles{grid-template-columns:1fr}
+  .ov-mind{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 40px;text-align:left}
+  .ov-mind > h2,.ov-mind > .ov-link{grid-column:1;justify-self:start}.ov-mind .ov-mgrid,.ov-mind .ov-q,.ov-mind > .ov-note{grid-column:1}
+  .ov-mind .ov-quote{grid-column:2;grid-row:1 / span 4;align-self:center;margin:0}
+  .ov-fab{bottom:24px;right:24px}
+}
+/* Chuyển động: chỉ khi máy cho phép. Trạng thái đầu ẩn, thêm .in khi cuộn tới */
+@media(prefers-reduced-motion:no-preference){
+  .ov-act:not(.ov-now) :is(h2,.ov-hl,.ov-day,.ov-pos,.ov-xp,.ov-mgrid,.ov-tiles,.ov-end p,.ov-cta){transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
+  .ov-act:not(.in) :is(h2,.ov-hl,.ov-day,.ov-pos,.ov-xp,.ov-mgrid,.ov-tiles,.ov-end p,.ov-cta){opacity:0;transform:translateY(18px)}
+  .ov-act:not(.ov-now) .ov-ring .fg{transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1) .15s}
+  .ov-act:not(.in) .ov-ring .fg{stroke-dashoffset:100}
+  .ov-act:not(.ov-now) .ov-mos i{transition:opacity .35s ease calc(var(--i)*9ms),transform .35s ease calc(var(--i)*9ms)}
+  .ov-act:not(.in) .ov-mos i{opacity:0;transform:scale(.4)}
+  .ov-act:not(.ov-now) :is(.trk .bar,.ov-xpb i){transition:transform 1.2s cubic-bezier(.2,.8,.2,1) calc(.25s + var(--k,0)*.12s)}
+  .ov-act:not(.in) :is(.trk .bar,.ov-xpb i){transform:scaleX(0)}
+  .ov-act:not(.ov-now) .ov-lane .rw{transition:transform 1.2s cubic-bezier(.2,.8,.2,1) calc(.25s + var(--k,0)*.12s)}
+  .ov-act:not(.in) .ov-lane .rw{transform:translateX(0)}
+  .ov-act:not(.ov-now) .ov-lane{transition:opacity .5s ease calc(var(--k,0)*.12s),transform .5s ease calc(var(--k,0)*.12s)}
+  .ov-act:not(.in) .ov-lane{opacity:0;transform:translateX(-16px)}
+  .ov-act.in:not(.ov-now) .ov-lane.me{animation:ovPulse 1s ease 1.9s 2}
+  .ov-act:not(.ov-now) .ov-sl i{transition:transform .9s cubic-bezier(.2,.8,.2,1) calc(var(--k)*.07s)}
+  .ov-act:not(.in) .ov-sl i{transform:scaleY(0)}
+  .ov-act:not(.ov-now) .ov-quote p span{transition:opacity .5s ease calc(.3s + var(--k)*.05s),transform .5s ease calc(.3s + var(--k)*.05s)}
+  .ov-act:not(.in) .ov-quote p span{opacity:0;transform:translateY(10px)}
+  .ov-act:not(.ov-now) .ov-lv{transition:opacity .5s ease}
+}
+@keyframes ovPulse{50%{box-shadow:0 0 0 2px var(--primary) inset,0 0 0 6px color-mix(in srgb,var(--primary) 30%,transparent)}}
+</style>
+<script>
+/* ===== v18.11.110: Tổng quan dạng cuộn – màn mở đầu (xếp hạng, tiến độ, sức khỏe, tâm trí). Ý tưởng từ scroll-craft, không nhúng engine ===== */
+const OVSEEN = new Set(), OVK = {}; let OVIO = null, OVFAB = null, OVT = 0;
+const ovRM = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch(e){ return false; } };
+const ovNum = (n, d) => (d ? (Math.round(n*Math.pow(10,d))/Math.pow(10,d)).toFixed(d) : String(Math.round(n))).replace('.', ',');
+function ovRe(){ clearTimeout(OVT); OVT = setTimeout(() => { if (tab === 'overview' && D) render(); }, 250); }
+function ovKick(){   // nạp dữ liệu còn thiếu, mỗi loại tối đa 1 lần/phút, xong thì vẽ lại
+  const go = (k, need, fn) => { if (!need || Date.now() - (OVK[k] || 0) < 60000) return; OVK[k] = Date.now(); try { Promise.resolve(fn()).then(ovRe, ovRe); } catch(e){} };
+  go('board', !BOARD && !boardBusy, loadBoard);
+  go('mind', !MIND && !MINDBUSY, mindLoad);
+  go('quota', !QUOTA && !QBUSY, () => loadQuota(true));
+  go('runs', !RUNS && !RUNSBUSY && typeof runLoadMine === 'function', runLoadMine);
+  go('gym', !GYM && !GYMBUSY, gymLoad);
+}
+function ovCount(el){
+  const to = +el.dataset.ovc, from = +(el.dataset.ovf || 0), d = +(el.dataset.ovd || 0), fin = el.dataset.ovt, t0 = performance.now(), ms = 1400;
+  const step = t => { const k = Math.min(1, (t - t0)/ms), e = 1 - Math.pow(1 - k, 3);
+    el.textContent = k < 1 ? ovNum(from + (to - from)*e, d) : fin; if (k < 1) requestAnimationFrame(step); };
+  requestAnimationFrame(step);
+}
+function ovAfter(){
+  const root = document.querySelector('.ov'); if (!root) return;
+  const still = ovRM() || !('IntersectionObserver' in window);
+  if (OVIO) OVIO.disconnect(); if (OVFAB) OVFAB.disconnect();
+  const acts = [...root.querySelectorAll('.ov-act')];
+  acts.forEach(a => {
+    if (still || OVSEEN.has(a.dataset.ov)) { a.classList.add('in', 'ov-now'); return; }
+    a.querySelectorAll('[data-ovc]').forEach(e => { e.dataset.ovt = e.textContent; e.textContent = ovNum(+(e.dataset.ovf || 0), +(e.dataset.ovd || 0)); });
+  });
+  const rail = root.querySelector('.ov-rail'), cur = rail && rail.querySelector('.cur');
+  if (cur) rail.scrollLeft = Math.max(0, cur.offsetLeft - rail.offsetLeft - 24);
+  if (still) return;
+  OVIO = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; const a = e.target; OVIO.unobserve(a); OVSEEN.add(a.dataset.ov);
+    a.classList.add('in'); a.querySelectorAll('[data-ovc]').forEach(ovCount); }), {threshold: 0.15, rootMargin: '0px 0px -8% 0px'});
+  acts.forEach(a => { if (!a.classList.contains('in')) OVIO.observe(a); });
+  const fab = root.querySelector('.ov-fab'), end = root.querySelector('.ov-end');
+  if (fab && end){ OVFAB = new IntersectionObserver(es => fab.classList.toggle('hide', es[0].isIntersecting), {threshold: 0.2}); OVFAB.observe(end); }
+}
+function ovRing(p){ const v = Math.round(Math.max(0, Math.min(1, p))*100);
+  return `<svg class="ov-ring" viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="52" class="tr"/><circle cx="60" cy="60" r="52" class="fg" pathLength="100" style="--o:${100 - v}"/></svg>`; }
+function ovRank(){
+  const head = `<h2>🏁 Cuộc đua tuần</h2>`;
+  if (!BOARD) return head + `<div class="ov-wait"><div class="spin"></div>Đang tải bảng xếp hạng…</div>`;
+  if (BOARD.error || !Array.isArray(BOARD.rows)) return head + `<p class="ov-note">${esc(BOARD.error || 'Chưa tải được bảng xếp hạng.')}</p>`;
+  const wk = blkStart(BOARD.today || D.today);
+  const wxp = r => r.week && blkStart(String(r.week).slice(0,10)) === wk ? (+r.xpWeek || 0) : 0;
+  const rows = BOARD.rows.slice().sort((a,b) => wxp(b) - wxp(a) || b.xp - a.xp), n = rows.length;
+  if (!n) return head + `<p class="ov-note">Chưa ai lên bảng. Tick thói quen đầu tiên để mở màn cuộc đua!</p>`;
+  const mi = rows.findIndex(r => r.id === BOARD.me), me = rows[mi], max = Math.max(1, ...rows.map(wxp));
+  const lane = (r, k) => { const v = wxp(r), w = Math.round(v/max*100), ln = r.lk && LINES[r.lk[0]] ? r.lk[0] : 'tree', kk = Math.max(0, Math.min(LEVELS.length-1, (r.level|0) - 1));
+    return `<div class="ov-lane ${r.id === BOARD.me ? 'me' : ''}" style="--w:${w};--k:${k}" data-prof="${esc(r.id)}">
+      <span class="pos">${k < 3 && v > 0 ? ['🥇','🥈','🥉'][k] : k + 1}</span>
+      <span class="nm"><b>${esc(r.name)}${r.id === BOARD.me ? ' (bạn)' : ''}</b><small><span class="dp">${esc(r.dept || '')} · </span>🔥 ${r.cur | 0}</small></span>
+      <span class="trk"><i class="bar"></i><span class="rw"><span class="run">${evo(ln, 'base', kk)}${k === 0 && v > 0 ? '<em>👑</em>' : ''}</span></span></span>
+      <b class="v">${v}<small>XP</small></b></div>`; };
+  const top = rows.slice(0, 5).map(lane).join('') + (mi >= 5 ? `<div class="ov-gap">⋯</div>` + lane(me, mi) : '');
+  const g = {}; rows.forEach(r => { (g[r.dept || '–'] = g[r.dept || '–'] || []).push(r); });
+  const dep = Object.keys(g).map(d => ({d, n: g[d].length, v: Math.round(g[d].reduce((a,r) => a + wxp(r), 0)/g[d].length), mine: me && (me.dept || '–') === d})).sort((a,b) => b.v - a.v);
+  const dmax = Math.max(1, ...dep.map(x => x.v));
+  const depH = dep.length > 1 ? `<div class="ov-dep"><h3>Theo phòng</h3>${dep.map((x,k) => `<div class="ov-drow ${x.mine ? 'me' : ''}" style="--w:${Math.round(x.v/dmax*100)};--k:${k}"><span>${esc(x.d)}<small>${x.n} người</small></span><span class="trk"><i class="bar"></i></span><b>${x.v}</b></div>`).join('')}<p class="ov-note">Điểm trung bình mỗi người, XP tuần.</p></div>` : '';
+  const big = me ? `<div class="ov-pos"><span class="ov-big">#<span data-ovc="${mi + 1}" data-ovf="${n}">${mi + 1}</span></span><p>Bạn đứng thứ <b>${mi + 1}</b> trên ${n} người tuần này<br><span class="muted">+${wxp(me)} XP từ ${dm(wk)}${mi > 0 ? ` · cách người trên ${Math.max(0, wxp(rows[mi-1]) - wxp(me))} XP` : ' · đang dẫn đầu 👑'}</span></p></div>`
+    : `<p class="ov-note">Bạn chưa có tên trên bảng tuần này.</p>`;
+  return head + big + `<div class="ov-race">${top}</div>` + depH + `<button class="ov-link" data-tab="rank">Xem bảng đầy đủ ›</button>`;
+}
+function ovHealth(){
+  const td = D.today, days = Array.from({length: 7}, (_, k) => addDays(td, k - 6)), slp = D.meta.sleep || {};
+  const hs = days.map(d => { const s = slp[d] || []; return sleepHours(s[0], s[1]); }), got = hs.filter(h => h != null);
+  const avg = got.length ? got.reduce((a,b) => a + b, 0)/got.length : null;
+  const bars = days.map((d,k) => { const h = hs[k];
+    return `<div class="ov-sl ${h == null ? 'na' : h >= 7 && h <= 9 ? 'ok' : 'lo'}" style="--h:${h == null ? 0 : Math.min(100, Math.round(h/10*100))};--k:${k}"><i></i><b>${h == null ? '–' : ovNum(h, 1)}</b><small>${d === td ? 'Nay' : d.slice(8,10)}</small></div>`; }).join('');
+  const rt = (RUNS && RUNS.today) || td, r0 = addDays(rt, -6);
+  const runs = RUNS && Array.isArray(RUNS.items) ? RUNS.items.filter(x => x.st === 'Hợp lệ' && x.date >= r0 && x.date <= rt) : null;
+  const km = runs ? runs.reduce((a,x) => a + (+x.km || 0), 0) : null;
+  const gt = (GYM && GYM.today) || td, g0 = addDays(gt, -6);
+  const gs = GYM && Array.isArray(GYM.items) ? new Set(GYM.items.filter(x => x.date >= g0 && x.date <= gt).map(x => x.date)).size : null;
+  const tile = (v, d, lab) => `<div><b>${v == null ? '…' : `<span data-ovc="${v}" data-ovd="${d}">${ovNum(v, d)}</span>`}</b><small>${lab}</small></div>`;
+  return `<h2>💚 Sức khỏe</h2><div class="ov-hgrid"><div class="ov-sleep"><h3>Giấc ngủ 7 đêm · vạch đứt là mốc 7 tiếng</h3><div class="ov-bars">${bars}<span class="ov-goal"></span></div></div>
+    <div class="ov-tiles">${tile(avg == null ? null : avg, 1, 'giờ ngủ trung bình')}${tile(km, 1, `km chạy · ${runs ? runs.length : 0} buổi, 7 ngày`)}${tile(gs, 0, 'buổi gym · 7 ngày')}</div></div>
+    <button class="ov-link" data-tab="health">Mở Sức khỏe ›</button>`;
+}
+function ovMind(){
+  const ok = MIND && !MIND.error && MIND.ck && MIND.ds;
+  const st = (v, ic, n) => `<div class="ov-ms ${v == null ? '' : v ? 'ok' : 'no'}"><span>${ic}</span><b>${n}</b><small>${v == null ? 'Đang tải…' : v ? 'Hôm nay đã xong' : 'Hôm nay chưa làm'}</small></div>`;
+  const q = QUOTA, w = q && Array.isArray(q.weeks) ? q.weeks.find(x => x.cur) : null;
+  const K = [['ck','🤝','Cam kết'],['read','📚','Đọc sách']];
+  const quota = !q ? '' : !w ? `<p class="ov-note">💤 Ngày nghỉ cuối tháng: không tính chỉ tiêu tuần.</p>`
+    : `<div class="ov-q"><h3>Chỉ tiêu tuần ${esc(w.from)}–${esc(w.to)} · còn ${q.left} ngày</h3>${K.filter(([k]) => w[k] != null && q.need && q.need[k]).map(([k,ic,nm],j) => `<div class="ov-qr ${w[k] >= q.need[k] ? 'ok' : ''}" style="--w:${Math.min(100, Math.round(w[k]/q.need[k]*100))};--k:${j}"><span>${ic} ${nm}</span><span class="trk"><i class="bar"></i></span><b>${w[k]}/${q.need[k]}</b></div>`).join('')}</div>`;
+  const ti = Math.max(T,0), act = D.habits.filter(h => h.start && h.start <= D.days[ti]), pick = act.length ? act[(ti*7 + 3) % act.length] : D.habits[0];
+  const words = String(COMMIT[pick.code] || pick.name).split(/\s+/).map((x,k) => `<span style="--k:${k}">${esc(x)}</span>`).join(' ');
+  return `<h2>🧠 Tâm Trí</h2><div class="ov-mgrid">${st(ok ? MIND.ck.done : null, '🤝', 'Cam kết')}${st(ok ? MIND.ds.done : null, '📚', 'Đọc sách')}</div>${quota}
+    <blockquote class="ov-quote"><p>“${words}”</p><small>Lời cam kết hôm nay · ${NO(pick.code)}</small></blockquote>
+    <button class="ov-link" data-tab="mind">Mở Tâm Trí ›</button>`;
+}
+function ovView(s){
+  const ti = Math.max(T,0), pre = T < 0 || PRACTICE, st = dayStat(ti), p = pre ? 0 : (st.p || 0), nD = D.days.length, ended = D.today > D.days[nD-1];
+  const lk = levelOf(s.xp), L = LEVELS[lk], N = LEVELS[lk+1], prog = N ? (s.xp - L.xp)/(N.xp - L.xp) : 1;
+  const ph = PHASES.find(x => ti >= x.a && ti <= x.b) || PHASES[2], go = T >= 0 ? `data-go="${T}"` : 'data-tab="today"';
+  const left = Math.max(0, st.total - st.done);
+  const msg = pre ? (T < 0 ? `Hành trình bắt đầu từ ${dm(D.days[0])}.` : 'Đang trong ngày làm quen.') : ended ? '🎉 Bạn đã đi hết 90 ngày!'
+    : !st.total ? 'Hôm nay chưa có việc nào cần tick.' : left ? `Còn <b>${left}</b> việc nữa là trọn ngày.` : 'Trọn vẹn hôm nay. Tuyệt vời! 🎉';
+  const hero = `<section class="ov-act ov-hero" data-ov="hero"><div class="ov-hl"><p class="ov-hi">${greet()}</p><h1>${esc(ME.name)}</h1><p>${msg}</p>
+      <div class="ov-chips"><span>🔥 <b>${s.cur}</b> ngày chuỗi</span><span>🏆 kỷ lục ${s.best}</span>${!pre && s.cur && !okDay(T) ? '<span class="warn">Chuỗi đang chờ bạn giữ lửa</span>' : ''}</div></div>
+    <div class="ov-rw">${ovRing(p)}<div class="ov-rl"><b><span data-ovc="${Math.round(p*100)}">${Math.round(p*100)}</span>%</b><small>${st.done}/${st.total} việc hôm nay</small></div></div></section>`;
+  const cells = D.days.map((d,i) => `<i class="${i > T ? '' : i === T ? 'now' + (okDay(i) ? ' ok' : '') : okS(i) ? 'ok' : 'miss'}" style="--i:${i}"></i>`).join('');
+  const passed = Math.max(0, Math.min(T, nD)), okN = D.days.slice(0, passed).filter((_,i) => okS(i)).length;
+  const jd = journeyDates();
+  const rail = LEVELS.map((l,k) => `<div class="ov-lv ${k === lk ? 'cur' : s.xp >= l.xp ? 'got' : ''}">${evo(look().l, 'base', k)}<b>Cấp ${k+1}</b><small>${esc(lvName(k))}</small><small>${s.xp >= l.xp ? (jd[k] ? 'đạt ' + dm(jd[k]) : 'đã đạt') : l.xp + ' XP'}</small></div>`).join('');
+  const journey = `<section class="ov-act ov-jour" data-ov="jour"><h2>🧭 Hành trình 90 ngày</h2>
+    <div class="ov-day"><span class="ov-big"><span data-ovc="${ti + 1}">${ti + 1}</span><small>/${nD}</small></span><p>${pre ? 'Sắp bắt đầu' : 'Ngày ' + (ti + 1) + ' · giai đoạn ' + esc(ph.n)}<br><span class="muted">${okN}/${passed} ngày đã qua giữ được chuỗi</span></p></div>
+    <div class="ov-mos" role="img" aria-label="${okN} trên ${passed} ngày đạt">${cells}</div>
+    <div class="ov-leg"><span><i class="ok"></i>Đạt</span><span><i class="miss"></i>Lỡ</span><span><i class="now"></i>Hôm nay</span><span><i></i>Sắp tới</span></div>
+    <div class="ov-xp"><div><b><span data-ovc="${s.xp}">${s.xp}</span> XP</b><span>Cấp ${lk + 1} · ${esc(lvName(lk))}</span></div><div class="ov-xpb" style="--w:${Math.round(prog*100)}"><i></i></div>
+      <small>${N ? `Còn ${N.xp - s.xp} XP lên cấp ${lk + 2} · ${esc(lvName(lk + 1))}` : 'Cấp cao nhất!'}</small></div>
+    <div class="ov-rail">${rail}</div></section>`;
+  return `<div class="ov">${hero}${journey}
+    <section class="ov-act ov-rank" data-ov="rank">${ovRank()}</section>
+    <section class="ov-act ov-health" data-ov="health">${ovHealth()}</section>
+    <section class="ov-act ov-mind" data-ov="mind">${ovMind()}</section>
+    <section class="ov-act ov-end" data-ov="end"><h2>${pre || ended || !st.total ? 'Ghi lại hôm nay' : left ? `Còn ${left} việc chờ bạn` : 'Hôm nay đã trọn vẹn'}</h2><p>${st.done}/${st.total} việc · 🔥 ${s.cur} ngày chuỗi</p>
+      <button class="ov-cta" ${go}>✏️ Điền hôm nay</button></section>
+    <button class="ov-fab" ${go}>✏️ Điền hôm nay</button></div>`;
+}
+</script>
 </body>
 </html>
