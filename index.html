@@ -6,7 +6,7 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#0B2F20">
+<meta name="theme-color" content="#111A1F">
 <meta name="apple-mobile-web-app-title" content="Siêu Nhẩm">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -867,7 +867,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v14.11.103';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
+const APP_VER = 'v14.11.104';   // mỗi lần cập nhật: tăng số cuối (ngày.tháng.thứ tự trong ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -5468,8 +5468,8 @@ function aiLbl(A){
   return '⚪ chưa bật · lấy khóa tại aistudio.google.com';
 }
 /* ===== v14.11.96: PWA – cài app ra màn hình chính, lối tắt ?go= ===== */
-/** v14.11.99: xem thử bảng màu mới, nhớ trên máy. */
-(() => { try { const q = /[?&]mau=([a-z-]+|0)/.exec(location.search); if (q) localStorage.setItem('rh_mau', q[1]); const m = localStorage.getItem('rh_mau'); if (m && m !== '0') document.documentElement.classList.add('mau-' + m); } catch(e){} })();
+/** v14.11.104: thầy chốt Biển lặng làm màu mặc định. ?mau=0 về màu cũ, ?mau=rung-dem | nang-som xem bảng khác (nhớ trên máy). */
+(() => { try { const q = /[?&]mau=([a-z-]+|0)/.exec(location.search); if (q) localStorage.setItem('rh_mau', q[1]); const m = localStorage.getItem('rh_mau') || 'bien-lang'; if (m !== '0') document.documentElement.classList.add('mau-' + m); } catch(e){} })();
 /** v14.11.98: bố cục mới bật cho tất cả. ?v2=0 quay về bố cục cũ, ?v2=1 bật lại (nhớ trên máy). */
 const V2 = (() => { try { const q = /[?&]v2=([01])/.exec(location.search); if (q) localStorage.setItem('rh_v2', q[1]); return localStorage.getItem('rh_v2') !== '0'; } catch(e){ return true; } })();
 if (V2) document.body.classList.add('v2');
