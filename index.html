@@ -889,7 +889,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v18.11.111';   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
+const APP_VER = 'v18.11.112';   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
 const XP_DAILY = 10, XP_WEEKLY = 30, XP_PERFECT = 20;
@@ -3184,9 +3184,10 @@ function tabBtns(mobile){
   if (ME && ME.role === 'Quản lý') t.push(['admin','🛠️','Quản lý']);
   const dot = RP.info && RP.info.dot > 0 ? '<i class="tdot"></i>' : '';
   if (V2 && mobile){   // v18.11.108: điện thoại luôn có ☰ Thêm (chứa Đăng xuất)
-    const main = t.filter(x => !MORE_K.includes(x[0])), on = tab === 'admin' || tab === 'help' || tab === 'work';   // v18.11.110: Công việc vào ☰ Thêm, chấm đỏ hiện trên ô Thêm
-    return main.map(([k,e,n]) => `<button class="${tab===k || (k==='pet' && (tab==='badge' || tab==='prog' || tab==='rank'))?'on':''}" data-tab="${k}"><span>${e}</span>${n}</button>`).join('')
-      + `<button class="${on?'on':''}" data-more="1"><span>☰</span>Thêm${ME && ME.work ? dot : ''}</button>`;
+    const W = !!(ME && ME.work), PG = ['pet','badge','prog','rank'].includes(tab);   // v18.11.112: người có Công việc → Công việc lên thanh dưới, Thành tích vào ☰ Thêm
+    const main = t.filter(x => !MORE_K.includes(x[0]) && !(W && x[0] === 'pet')), on = tab === 'admin' || tab === 'help' || (W && PG);   // v18.11.110: Công việc vào ☰ Thêm, chấm đỏ hiện trên ô Thêm
+    return main.map(([k,e,n]) => `<button class="${tab===k || (k==='pet' && PG)?'on':''}" data-tab="${k}"><span>${e}</span>${n}${k === 'work' ? dot : ''}</button>`).join('')
+      + `<button class="${on?'on':''}" data-more="1"><span>☰</span>Thêm</button>`;
   }
   if (V2 && !mobile){   // v18.11.111: máy tính – hàng tab gọn, phần còn lại vào ☰ Xem thêm
     const OUT = ['overview','today','health','mind','work'], on = !OUT.includes(tab);
@@ -5519,19 +5520,20 @@ function mStrip(){
     <div class="xpbar"><i style="width:${xp}%"></i></div></div>
     <div class="mo" data-mside="1">📊<br>Tổng<br>quan</div></div>`;
 }
-const MORE_K = ['work', 'rank', 'admin', 'help'];   // v18.11.110: Công việc vào ☰ Thêm, Tổng quan lên thanh dưới   // v18.11.109: Công việc lên thanh dưới, Xếp hạng vào Thành tích
+const MORE_K = ['rank', 'admin', 'help'];   // v18.11.112: Công việc trở lại thanh dưới (điện thoại)
+//   // v18.11.110: Công việc vào ☰ Thêm, Tổng quan lên thanh dưới   // v18.11.109: Công việc lên thanh dưới, Xếp hạng vào Thành tích
 const MOB = () => { try { return V2 && matchMedia('(max-width:919px)').matches; } catch(e){ return false; } };
 function moreSheet(){
   const el = $('#moresheet'); if (!el) return;
   const t = [], dk = innerWidth >= 920;   // v18.11.111: máy tính dùng chung bảng này, mở ngay dưới nút ☰ Xem thêm
   if (dk) t.push(['pet','🏆','Thành tích'], ['rank','🥇','Xếp hạng']);
-  else if (ME && ME.work) t.push(['work','🗂️','Công việc']);
+  else if (ME && ME.work) t.push(['pet','🏆','Thành tích']);   // v18.11.112
   if (ME && ME.role === 'Quản lý') t.push(['admin','🛠️','Quản lý']);
   t.push(['help','❓','Hướng dẫn']);
   const dot = RP.info && RP.info.dot > 0 ? '<i class="tdot"></i>' : '';
   el.classList.toggle('dk', dk); el.style.top = el.style.right = '';
   if (dk){ const b = document.querySelector('.tabs [data-more]'); if (b){ const r = b.getBoundingClientRect(); el.style.top = Math.round(r.bottom + 8) + 'px'; el.style.right = Math.max(8, Math.round(innerWidth - r.right)) + 'px'; } }
-  el.innerHTML = t.map(([k,e,n]) => `<button class="${tab===k || (k==='pet' && (tab==='badge' || tab==='prog'))?'on':''}" data-tab="${k}"><span>${e}</span>${n}${k === 'work' ? dot : ''}</button>`).join('')
+  el.innerHTML = t.map(([k,e,n]) => `<button class="${tab===k || (k==='pet' && (tab==='badge' || tab==='prog' || tab==='rank'))?'on':''}" data-tab="${k}"><span>${e}</span>${n}${k === 'work' ? dot : ''}</button>`).join('')
     + `<button data-mlogout="1"><span>🚪</span>Đăng xuất</button>`;
 }
 document.addEventListener('click', e => {
