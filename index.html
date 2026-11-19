@@ -23,6 +23,7 @@
   --lav:#6CC79C; --lav-soft:rgba(108,199,156,.14);
   --gold:#E3B84F; --gold-soft:rgba(227,184,79,.14);
   --pink:#E98199;
+  --blue:#6FA8E0; --pbr:#F07272;
   --r:18px; --shadow:0 6px 24px rgba(0,0,0,.35);
 
   --cellc:#22322A; --h1:#1E4A34; --h2:#2C7650; --h3:#4FA878; --h4:#9CCB63;
@@ -40,6 +41,7 @@
   --lav:#5FD6A0; --lav-soft:#E3F6EC;
   --gold:#F0B52A; --gold-soft:#FFF4D6;
   --pink:#FF6F91;
+  --blue:#2F7FD0; --pbr:#D63C3C;
   --shadow:0 6px 24px rgba(20,70,45,.09);
   --cellc:#E1EBE2; --h1:#BDE6C8; --h2:#86D09B; --h3:#4FC98A; --h4:#B8F061;
 }
@@ -130,6 +132,7 @@ a.wbtn{text-decoration:none}.wrow .n small{display:block}
 .wfile button{width:36px;height:36px;color:var(--pink);font-size:17px}
 .wtop{display:flex;gap:8px;align-items:center;margin-bottom:12px}.wtop h3{flex:1;font-size:17px}
 .wst{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.wst div{background:var(--card);border-radius:14px;padding:12px;text-align:center}.wst b{display:block;font-size:20px}.wst small{color:var(--muted);font-size:13px}
+.pbh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}.pbh b{min-width:0;overflow-wrap:anywhere}.pbh .pbp{font-size:20px;font-weight:800;color:var(--primary);white-space:nowrap}.pbc summary{margin-top:8px;font-size:13px;color:var(--muted);cursor:pointer}.pbi{padding:8px 0 8px 10px;border-top:1px solid var(--line);border-left:3px solid transparent;margin-top:6px}.pbi.late{border-left-color:var(--pbr)}.pbi.late .pbn{color:var(--pbr);font-weight:700}.pbi.drop .pbn{text-decoration:line-through;color:var(--muted)}.pbt{display:flex;gap:6px;align-items:flex-start}.pbn{flex:1;min-width:0;font-size:15px;overflow-wrap:anywhere}.pbm{font-size:13px;color:var(--muted);margin:2px 0 6px}.pbi.late .pbm{color:var(--pbr)}.pbd{display:grid;grid-template-columns:repeat(14,1fr);gap:3px;max-width:336px}.pbd i{height:14px;border-radius:4px;background:var(--line)}.pbd i.w{background:var(--blue)}.pbd i.x{background:var(--mint)}.pbd i.t{outline:1.5px solid var(--ink);outline-offset:1px}.pbl{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:13px;color:var(--muted);margin:-4px 0 12px}.pbl i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:4px}
 .wfil{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px}.wfil button{min-height:40px;padding:0 16px;border-radius:99px;background:var(--card);color:var(--muted);font-weight:700;white-space:nowrap}.wfil button.on{background:var(--primary-soft);color:var(--primary)}
 .wlist .wrow{cursor:pointer}
 .wtier label{display:flex;align-items:center;gap:12px;min-height:48px;padding:8px 12px;border-radius:14px;margin-top:8px;background:var(--bg);border:1.5px solid var(--line)}
@@ -1053,7 +1056,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v19.11.124';
+const APP_VER = 'v19.11.125';
 try { if (localStorage.getItem('rh_fx') === '0') document.documentElement.classList.add('no-fx'); } catch(e){}   // v18.11.115: Chế độ đơn giản   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
@@ -2152,7 +2155,7 @@ const API_URL = 'https://script.google.com/macros/s/AKfycbxbxFDzYyGOJgo0GUbq0AKD
 /* Dùng chung: trong Apps Script chạy google.script.run, trên GitHub Pages gọi fetch tới API_URL. */
 /* v14.11.93: chuyển hẳn sang Supabase (Apps Script đã khoá). Mọi hàm gọi Supabase. */
 const SB_URL = 'https://iaekdnrblvatqmldnjyi.supabase.co/functions/v1/api';
-const SB_FNS = {taTuSave:1, taTuMine:1, getMembers:1, login:1, logout:1, getData:1, getBoard:1, saveRow:1, adminOverview:1, getProfile:1, addMember:1, resetPin:1, setUnlockAll:1, setBirthday:1, lineLog:1, lineStats:1, badgeReplayAll:1, gymSave:1, gymMine:1, gymBoard:1, submitRun:1, myRuns:1, cancelRun:1, runOcr:1, appealRun:1, reviewAppeal:1, reviewFlag:1, ackRunNews:1, queueTick:1, runBoard:1, runRecords:1, runChamps:1, teamGrid:1, runAdminData:1, saveRunMap:1, saveStravaName:1, runResync:1, saveRunSettings:1, mindSubmit:1, mindMine:1, listenCheck:1, listenSubmit:1, mindSetBook:1, mindQueueInfo:1, mindRetryNow:1, mindManual:1, mindManualBulk:1, quotaMine:1, quotaBoard:1, badgeStats:1, workMine:1, workRemove:1, workRemoveFor:1, workUploadStart:1, workSubmit:1, workList:1, workDetail:1, workSetTier:1, workTierLog:1, workMembers:1, reportInfo:1, reportStart:1, reportMine:1, reportSaveDraft:1, reportPaste:1, reportDropPaste:1, reportSubmit:1, reportList:1, reportDetail:1, reportReview:1, reportAck:1, reportPriDone:1, reportBook:1, reportBookRead:1, reportImgAdd:1, reportImgDrop:1, reportFbImgAdd:1, reportImage:1};
+const SB_FNS = {taTuSave:1, taTuMine:1, getMembers:1, login:1, logout:1, getData:1, getBoard:1, saveRow:1, adminOverview:1, getProfile:1, addMember:1, resetPin:1, setUnlockAll:1, setBirthday:1, lineLog:1, lineStats:1, badgeReplayAll:1, gymSave:1, gymMine:1, gymBoard:1, submitRun:1, myRuns:1, cancelRun:1, runOcr:1, appealRun:1, reviewAppeal:1, reviewFlag:1, ackRunNews:1, queueTick:1, runBoard:1, runRecords:1, runChamps:1, teamGrid:1, runAdminData:1, saveRunMap:1, saveStravaName:1, runResync:1, saveRunSettings:1, mindSubmit:1, mindMine:1, listenCheck:1, listenSubmit:1, mindSetBook:1, mindQueueInfo:1, mindRetryNow:1, mindManual:1, mindManualBulk:1, quotaMine:1, quotaBoard:1, badgeStats:1, workMine:1, workRemove:1, workRemoveFor:1, workUploadStart:1, workSubmit:1, workList:1, workDetail:1, workSetTier:1, workTierLog:1, workMembers:1, reportInfo:1, reportStart:1, reportMine:1, reportSaveDraft:1, reportPaste:1, reportDropPaste:1, reportSubmit:1, reportList:1, reportDetail:1, reportReview:1, reportAck:1, reportPriDone:1, reportBook:1, reportBookRead:1, reportBoard:1, reportImgAdd:1, reportImgDrop:1, reportFbImgAdd:1, reportImage:1};
 const SB_ON = true;
 try { localStorage.removeItem('rh_sb'); } catch(e){}
 function call(fn, ...args){
@@ -5121,6 +5124,56 @@ async function rpAddFiles(files){
 }
 const rpHm = t => { const d = new Date(t); return ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2); };
 const rpDay = s => s.slice(8) + '/' + s.slice(5, 7);
+/* --- Bảng tiến độ (sổ việc + dải 14 ngày) --- */
+let PB = {d:null, busy:false, err:'', who:''};
+async function pbLoad(fresh){
+  if (PB.busy) return; PB.busy = true; PB.err = ''; if (tab === 'work') render();
+  try { PB.d = await call('reportBoard', TOKEN, !!fresh); } catch(e){ PB.err = e.message; }
+  PB.busy = false; if (tab === 'work') render();
+}
+const pbDm = d => d ? d.slice(8) + '/' + d.slice(5, 7) : '';
+const pbGap = (a, b) => Math.round((Date.parse(b + 'T00:00:00Z') - Date.parse(a + 'T00:00:00Z')) / 864e5);
+function pbItem(i, B){
+  const st = i.s === 'x' ? 'x' : i.s === '-' ? 'drop' : i.late ? 'late' : 'o';
+  const ic = {x:['✅','Xong'], o:['🔄','Đang làm'], late:['⏰','Quá hạn'], drop:['➖','Bỏ']}[st];
+  const ref = i.tc || i.fr;
+  const mk = st === 'x' ? (i.dn ? 'xong ' + pbDm(i.dn) : 'xong') : st === 'drop' ? 'đã bỏ' + (i.ev ? ' · ' + i.ev : '')
+    : (i.fr ? 'từ ' + pbDm(i.fr) + ' · ' + (pbGap(i.fr, B.today) + 1) + ' ngày' : 'chưa ghi ngày bắt đầu') + (st === 'late' && ref ? ' · ' + pbGap(ref, B.today) + ' ngày chưa đụng' : '');
+  const has = new Set(i.d || []);
+  const strip = B.span.map(d => `<i class="${i.dn === d ? 'x' : has.has(d) ? 'w' : ''}${d === B.today ? ' t' : ''}" title="${pbDm(d)}${i.dn === d ? ' · xong' : has.has(d) ? ' · có làm' : ''}"></i>`).join('');
+  return `<div class="pbi ${st}"><div class="pbt"><span role="img" aria-label="${ic[1]}" title="${ic[1]}">${ic[0]}</span><span class="pbn">${esc(i.t)}</span></div><div class="pbm">${esc(mk)}</div>${st === 'drop' ? '' : `<div class="pbd" aria-label="14 ngày gần nhất: ${has.size} ngày có làm">${strip}</div>`}</div>`;
+}
+function pbView(){
+  const B = PB.d, rv = !!(RP.info && RP.info.reviewer);
+  const names = B ? [...new Set(B.groups.map(g => g.code))] : [];
+  if (PB.who && !names.includes(PB.who)) PB.who = '';
+  const head = `<div class="sec"><h3>📊 Bảng tiến độ</h3><button class="wbtn ghost" data-pb="reload" style="min-height:34px;padding:0 12px" ${PB.busy ? 'disabled' : ''} aria-label="Tải lại bảng tiến độ">↻</button></div>`;
+  if (!B) return head + (PB.err ? `<div class="wcard">${esc(PB.err)}<br><button class="wbtn" data-pb="reload" style="margin-top:10px">Thử lại</button></div>` : `<div class="muted" style="text-align:center;margin-bottom:12px">Đang tải bảng tiến độ…</div>`);
+  if (!B.on) return '';
+  const gs = B.groups.filter(g => !PB.who || g.code === PB.who), c = {week: 0, open: 0, late: 0};
+  gs.forEach(g => g.items.forEach(i => { if (i.s === 'x' && i.dn && i.dn >= B.mon) c.week++; if (i.s === 'o') { c.open++; if (i.late) c.late++; } }));
+  const er = (B.err || PB.err) ? `<div class="muted" style="font-size:13px;margin-bottom:8px">⚠️ ${esc(B.err || PB.err)}</div>` : '';
+  const tiles = `<div class="wst"><div><b>${c.week}</b><small>Xong tuần này</small></div><div><b>${c.open}</b><small>Đang mở</small></div><div><b style="${c.late ? 'color:var(--pbr)' : ''}">${c.late}</b><small>Quá 5 ngày chưa đụng</small></div></div>`;
+  const leg = `<div class="pbl"><span><i style="background:var(--blue)"></i>có làm</span><span><i style="background:var(--mint)"></i>ngày xong</span><span>${pbDm(B.span[0])} → ${pbDm(B.today)}</span></div>`;
+  if (!B.groups.length) return head + er + tiles + `<div class="wcard muted">Chưa có sổ việc nào. Trong mỗi dự án Claude, gọi skill <b>bao-cao-ngay</b> để tạo sổ việc.</div>`;
+  const fil = rv && names.length > 1 ? `<div class="wfil"><button class="${PB.who ? '' : 'on'}" data-pb="who|">Tất cả</button>${names.map(cd => `<button class="${PB.who === cd ? 'on' : ''}" data-pb="who|${esc(cd)}">${esc(B.groups.find(g => g.code === cd).name.replace(/^(Thầy|Cô)\s+/, ''))}</button>`).join('')}</div>` : '';
+  const ord = i => i.s === 'o' ? (i.late ? 0 : 1) : i.s === 'x' ? 2 : 3;
+  const cards = gs.map(g => {
+    const pct = g.total ? Math.round(g.done / g.total * 100) : 0, late = g.items.filter(i => i.s === 'o' && i.late).length, open = g.items.filter(i => i.s === 'o').length;
+    const k = 'pb|' + g.code + '|' + g.file, op = RP.open[k] !== undefined ? RP.open[k] : (!rv || late > 0);
+    const its = g.items.slice().sort((a, b) => ord(a) - ord(b)).map(i => pbItem(i, B)).join('');
+    return `<div class="wcard pbc"><div class="pbh"><b>${rv ? esc(g.name) + ' · ' : ''}${esc(g.project)}${g.hand ? ' <small class="muted">(gõ tay)</small>' : ''}</b><span class="pbp">${pct}%</span></div>
+      <div class="wbar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100"><i style="width:${pct}%;${pct === 100 ? 'background:var(--mint)' : ''}"></i></div>
+      <details data-rpo="${esc(k)}" ${op ? 'open' : ''}><summary>${g.done}/${g.total} đầu mục xong · ${open} đang mở${late ? ` · <b style="color:var(--pbr)">${late} quá hạn ⏰</b>` : ''}</summary>${its}</details></div>`;
+  }).join('');
+  return head + er + tiles + fil + leg + cards;
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-pb]'); if (!t) return;
+  const [a, v] = t.dataset.pb.split('|');
+  if (a === 'reload') pbLoad(true);
+  else if (a === 'who') { PB.who = v || ''; render(); }
+});
 const RPF = {d:'Đã làm', g:'Đang làm', n:'Ngày mai', v:'Vướng / cần hỏi'};
 async function rpInit(){
   if (RP.ready || RP.busy) return; RP.busy = true;
@@ -5135,6 +5188,7 @@ async function rpInit(){
   } catch(e){ RP.on = false; RP.sec = 'bai'; }
   RP.ready = true; RP.busy = false; rpNav(); if (tab === 'work') render();
   if (RP.on && RP.info.reviewer && RV.list) rvBookLoad();
+  if (RP.on) pbLoad();
 }
 function rpNav(){ const b = $('#bnav'), t = document.querySelector('.tabs'); if (b) b.innerHTML = tabBtns(true); if (t) t.innerHTML = tabBtns(); }
 async function rpLoad(keep, fresh){
@@ -5168,6 +5222,7 @@ function rpView(){
   const priBox = d.pri && d.pri.length ? `<div class="wcard" style="border-color:var(--gold)"><b>⭐ Thầy Quý muốn ưu tiên</b>${d.pri.map(x => `<div class="rvit"><span>${esc(x.t)}${x.p ? `<small class="muted" style="display:block">${esc(x.p)} · ${esc(x.s)}</small>` : ''}</span><button class="wbtn ghost" data-rp="done|${x.id}">Xong</button></div>`).join('')}</div>` : '';
   return `<div class="sec"><h3>🗂️ Báo cáo ngày</h3><span>${esc(d.me.name)}</span></div>
     ${fbBox}${priBox}<div class="wcard wdead">${st}</div>
+    ${pbView()}
     <div class="wcard"><b>Từ các dự án (GitHub)</b> <button class="wbtn ghost" data-rp="reload" style="min-height:34px;padding:0 12px;float:right" ${RP.loading ? 'disabled' : ''}>↻</button><div style="margin-top:8px">${ghBox}</div></div>
     <div class="wcard"><details data-rpo="paste" ${RP.open.paste ? 'open' : ''}><summary><b>Dán mục dự án</b>${pk.length ? ` <span class="wfl ok">${pk.length} mục</span>` : ''}</summary><div class="muted" style="font-size:13px;margin-top:6px">Dán khối bắt đầu bằng "## Dự án: …" do skill tạo. Cùng tên dự án thì thay mục cũ.</div>
       <textarea class="rpta" id="rppaste" rows="4" placeholder="## Dự án: …"></textarea><button class="wbtn" data-rp="paste" style="margin-top:8px">Thêm</button>
@@ -5317,7 +5372,7 @@ function rvView(){
   return `<div class="sec"><h3>🗂️ Báo cáo các thầy</h3><span>${rpDay(L.day)}</span></div>
     <div class="wmo"><button data-rv="day|-1" aria-label="Ngày trước">‹</button><b>${L.day === L.today ? 'Hôm nay' : rpDay(L.day) + '/' + L.day.slice(0, 4)}</b><button data-rv="day|1" ${L.day >= L.today ? 'disabled' : ''} aria-label="Ngày sau">›</button></div>
     <div class="wst"><div><b>${c.done}</b><small>Đã nộp</small></div><div><b>${c.wait}</b><small>Chờ duyệt</small></div><div><b>${c.none}</b><small>Chưa nộp</small></div></div>
-    ${rvBookView()}<div class="wcard wlist">${rows}</div>${RV.busy ? '<div class="muted" style="text-align:center">Đang tải…</div>' : ''}`;
+    ${pbView()}${rvBookView()}<div class="wcard wlist">${rows}</div>${RV.busy ? '<div class="muted" style="text-align:center">Đang tải…</div>' : ''}`;
 }
 async function rvSend(){
   if (RV.sending) return; const f = RV.form;
