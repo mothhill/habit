@@ -1,7 +1,7 @@
 /* Service worker 90 Days Rich Habits (v14.11.96).
    Nguyên tắc an toàn: trang chính LUÔN ưu tiên bản mới từ mạng (cập nhật có hiệu lực ngay lần mở sau),
    bản đệm chỉ dùng khi mất mạng. Không đụng yêu cầu tới máy chủ Apps Script (khác nguồn, POST). */
-const CACHE = 'habit-v19-11-127';
+const CACHE = 'habit-v19-11-128';
 const STATIC = ['icon-192.png', 'icon-512.png', 'icon-maskable-192.png', 'icon-maskable-512.png', 'apple-touch-icon.png', 'manifest.webmanifest'];
 
 self.addEventListener('install', e => {
@@ -29,7 +29,7 @@ self.addEventListener('fetch', e => {
         } else { const f = fd.getAll('audio').find(x => x && x.size) || all[0];
           if (f) await c.put('/share-inbox-file', new Response(f, { headers: { 'Content-Type': f.type || 'audio/mp4', 'X-Name': encodeURIComponent(f.name || 'ghi-am'), 'X-Mod': String(f.lastModified || Date.now()) } })); }
       } catch (err) { try { await (await caches.open('share-inbox')).put('/share-last', new Response(JSON.stringify({ t: Date.now(), info: [], err: String(err && err.message || err) }))); } catch (_) {} }
-      return Response.redirect(new URL('./?shared=1', self.registration.scope).href, 303);
+      return Response.redirect(new URL('/?shared=1', self.location.origin).href, 303);   // v19.11.128: luôn về gốc
     })());
     return;
   }

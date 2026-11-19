@@ -5,7 +5,8 @@
 <title>90 Days Rich Habits</title>
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="manifest" href="manifest.webmanifest">
+<script>if (/^\/\/+/.test(location.pathname)) location.replace(location.pathname.replace(/^\/+/, '/') + location.search + location.hash);   /* v19.11.128: link dư dấu / */</script>
+<link rel="manifest" href="/manifest.webmanifest">
 <meta name="theme-color" content="#111A1F">
 <meta name="apple-mobile-web-app-title" content="Habits">
 <meta charset="utf-8">
@@ -1056,7 +1057,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v19.11.127';
+const APP_VER = 'v19.11.128';
 try { if (localStorage.getItem('rh_fx') === '0') document.documentElement.classList.add('no-fx'); } catch(e){}   // v18.11.115: Chế độ đơn giản   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
@@ -6390,7 +6391,7 @@ function runCard(){
     ${f.ocr && f.ocr.raw !== undefined && !f.busy ? `<details class="run-raw"><summary>🔍 Xem chữ app đọc được (chỉ quản lý thấy)</summary><pre>${esc(f.ocr.raw || '(trống)')}</pre></details>` : ''}
     ${f.ocr && f.ocr.nameBad && f.type !== 'tread' && !f.busy && !runNoRead() ? `<div class="run-msg">ℹ️ Tên trên ảnh khác tên trong app, quản lý sẽ xác nhận.</div>` : ''}
     ${runWarnHtml()}
-    ${f.ocr && f.ocr.noWhen && f.type !== 'tread' && !f.busy && !runNoRead() ? `<div class="run-msg bad">⚠️ Ảnh không có ngày giờ chạy (ví dụ "Hôm nay lúc 7:19") nên sẽ <b>không được tính</b>. Hãy chụp màn hình trang chi tiết hoạt động có tên và ngày giờ.</div>` : ''}
+    ${f.ocr && f.ocr.noWhen && f.type !== 'tread' && !f.busy && !runNoRead() ? `<div class="run-msg bad">⚠️ Ảnh không có ngày giờ chạy nên sẽ <b>không được tính</b>. Ảnh Strava tạo khi bấm Chia sẻ (thẻ bản đồ) không ghi ngày.<br><b>Cách đúng:</b><br>1. Trong Strava, mở buổi chạy.<br>2. <b>Chụp màn hình</b> trang chi tiết, thấy dòng ngày giờ (ví dụ "Hôm nay lúc 7:19") và số km.<br>3. Bấm nút dưới đây, chọn ảnh vừa chụp (hoặc chia sẻ ảnh đó từ Thư viện sang Habits).<div class="btns" style="margin-top:8px"><button class="btn ghost" data-runask="1">📷 Chọn ảnh chụp màn hình</button></div></div>` : ''}
     ${f.ocr && !f.busy && runNoRead() ? `<div class="run-msg">⏳ Chưa đọc nhanh được số km. Cứ nộp, số km sẽ cập nhật sau.</div>
     <div class="run-bug"><input type="text" maxlength="200" placeholder="Ghi chú thêm, ví dụ: chạy 5,2 km lúc 6h (không bắt buộc)" value="${esc(f.bugmsg || '')}" data-runbugmsg="1"></div>` : ''}
     <div class="run-km"><input type="text" inputmode="decimal" placeholder="Số km (app tự đọc từ ảnh)" value="${esc(f.km)}" data-runkm="1" readonly><span class="run-ocr" ${auto ? '' : 'hidden'}>📷 đọc từ ảnh</span></div>
@@ -6525,7 +6526,7 @@ function runWarnList(w, type){
   if (w.cam) a.push('Ảnh chụp bằng camera, không phải ảnh chụp màn hình app → vào mục Spam, chưa được tính');
   if (w.box) a.push(type === 'tread' ? 'Ảnh không phải màn hình máy chạy → vào mục Spam, chưa được tính' : 'Ảnh giống màn hình máy chạy (số đèn LED đỏ) → vào mục Spam, chưa được tính');
   if (w.day) a.push('Ngày trên ảnh khác ngày nộp → không được tính');
-  if (w.none) a.push('Ảnh không có ngày giờ chạy → không được tính');
+  if (w.none) a.push('Ảnh không có ngày giờ chạy → không được tính. Hãy chụp màn hình trang chi tiết buổi chạy trong Strava');
   if (w.slow) a.push(String(w.slow));
   return a.join('. ');
 }
@@ -6641,7 +6642,7 @@ function runQWarn(it){
   if (o.tread === true || it.led) return 'Ảnh màn hình máy chạy (phải nộp ở ô Máy chạy): nộp sẽ vào mục Spam, chưa được tính';
   if (runNoReadO(o)) return '';
   if (it.late) return 'Ảnh là buổi ngày ' + dm(it.date) + ', đã quá hạn nộp (chỉ nộp hôm nay, hoặc hôm qua trước 12h)';
-  if (o.noWhen) return 'Ảnh không có ngày giờ chạy nên sẽ không được tính';
+  if (o.noWhen) return 'Ảnh không có ngày giờ (ảnh Strava chia sẻ không ghi ngày) nên sẽ không được tính. Hãy chụp màn hình trang chi tiết buổi chạy, có dòng "Hôm nay lúc …"';
   if (o.wcs && o.wcs[it.date] === 'wrong') return 'Ngày trên ảnh' + (o.whenTxt ? ' (' + o.whenTxt + ')' : '') + ' khác ngày ' + dm(it.date) + ' nên sẽ không được tính';
   if (o.slow && it.type !== 'bike') return o.slow;
   return '';
@@ -7759,7 +7760,7 @@ document.addEventListener('click', async e => {
   if (await mindSendFile('docsach', f, null)){ SHARED = null; render(); }
 });
 sharedPick();
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js', {scope: '/'}).catch(() => {});
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-mrec],[data-mstop],[data-mcancel],[data-mmode]'); if (!b) return;
   const d = b.dataset;
