@@ -1053,7 +1053,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v18.11.122';
+const APP_VER = 'v19.11.123';
 try { if (localStorage.getItem('rh_fx') === '0') document.documentElement.classList.add('no-fx'); } catch(e){}   // v18.11.115: Chế độ đơn giản   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
@@ -2256,6 +2256,7 @@ function buildData(d, noAF, keepVi){
   const U0 = blkStart(SETTINGS.unlockFrom || ME.start);   // mở khoá đồng loạt vào ngày 1, 8, 15, 22 hằng tháng
   const habits = d.habits.map((h,k) => Object.assign({}, h, {no:k+1, start: SETTINGS.unlockAll ? ME.start : blkAdd(U0, h.week-1)}));
   D = {u0: U0, today: d.today, days, weeks, habits, daily:{}, weekly:{}, entries:{}, meta:{plans:{}, lists:{}, subs:{}, look:{}, sleep:{}, bd:'', sleepGoal:['',''], busy:{}, gym:[], lazy:{}}, frz:{}};
+  D.ut = {}; D.snap = {}; Object.keys(d.rows || {}).forEach(k => { const u = (d.rows[k] || {}).ut; if (u && typeof u === 'object') D.ut[k] = Object.assign({}, u); });   // 19/11 (B1, B2)
   habits.forEach(h => { if (/tuần/i.test(h.freq)) D.weekly[h.code] = Array(weeks.length).fill(0); else D.daily[h.code] = Array(90).fill(0); });
   const rows = d.rows || {};
   if (rows.META){ D.meta.plans = rows.META.plans || {}; D.meta.lists = rows.META.lists || {}; D.meta.hist = rows.META.hist || {}; D.meta.subs = rows.META.subs || {}; D.meta.look = rows.META.look || {}; D.meta.sleep = rows.META.sleep || {}; D.meta.bd = rows.META.bd || ''; D.meta.sleepGoal = rows.META.sleepGoal || ['','']; D.meta.busy = rows.META.busy || {}; D.meta.gym = rows.META.gym || []; D.meta.lazy = rows.META.lazy || {}; if (rows.META.bdg) D.meta.bdg = rows.META.bdg; D.meta.tt = rows.META.tt || {}; D.meta.ix = rows.META.ix || {}; D.meta.lvd = rows.META.lvd || {}; D.meta.bdNo = rows.META.bdNo || 0; D.meta.rp = rows.META.rp || ''; D.meta.ttu = rows.META.ttu || null; TA_GEN++; }
@@ -2309,6 +2310,7 @@ function autoFreeze(){
     if (canHFreeze(h.code,i) && !skip.includes(h.code + '|' + D.days[i])){ ent(h.code, D.days[i]).z = 1; markDirty('D:' + D.days[i]); AUTOFZ++; }
   } });
 }
+let HIDDEN_AT = 0;
 function prep(noAF){
   byCode = {}; D.habits.forEach(h => { byCode[h.code] = h; });
   DAILY = D.habits.filter(h => D.daily[h.code]);
@@ -2318,16 +2320,19 @@ function prep(noAF){
   PCODES = new Set(D.habits.slice(0,3).map(h => h.code));
   if (PRACTICE) T = 0; else if (D.today > D.days[n-1]) T = n - 1; else T = D.days.indexOf(D.today);
   vi = Math.max(0, T);
+  snapAll();
   if (noAF) AUTOFZ = 0; else autoFreeze();
   $('#bnav').style.display = '';
 }
 document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden'){ HIDDEN_AT = Date.now(); return; }
   if (document.visibilityState === 'visible' && D && ymd(new Date()) !== D.today){ D.today = ymd(new Date()); prep(); render(); }
+  if (document.visibilityState === 'visible' && D && TOKEN && HIDDEN_AT && Date.now() - HIDDEN_AT > 60000){ HIDDEN_AT = 0; setTimeout(refreshData, 800); }   // 19/11 (B1): mở lại app sau ≥1 phút → lấy dữ liệu mới (máy khác có thể đã tick)
 });
 
 /* ================== Lưu ================== */
 function rowFor(key){
-  if (key === 'META') return {hist: D.meta.hist || {}, plans: D.meta.plans, lists: D.meta.lists, subs: D.meta.subs, look: D.meta.look, sleep: D.meta.sleep || {}, bd: D.meta.bd || '', sleepGoal: D.meta.sleepGoal || ['',''], busy: D.meta.busy || {}, gym: D.meta.gym || [], lazy: D.meta.lazy || {}, bdg: D.meta.bdg, tt: D.meta.tt || {}, ix: D.meta.ix || {}, lvd: D.meta.lvd || {}, bdNo: D.meta.bdNo || 0, rp: D.meta.rp || '', ttu: D.meta.ttu || null};
+  if (key === 'META') return {hist: D.meta.hist || {}, plans: D.meta.plans, lists: D.meta.lists, subs: D.meta.subs, look: D.meta.look, sleep: D.meta.sleep || {}, bd: D.meta.bd || '', sleepGoal: D.meta.sleepGoal || ['',''], busy: D.meta.busy || {}, gym: D.meta.gym || [], lazy: D.meta.lazy || {}, bdg: D.meta.bdg, tt: D.meta.tt || {}, ix: D.meta.ix || {}, lvd: D.meta.lvd || {}, bdNo: D.meta.bdNo || 0, rp: D.meta.rp || '', ttu: D.meta.ttu || null, v: 2, ut: (D.ut && D.ut.META) || {}};
   const isD = key[0] === 'D', pk = key.slice(2), idx = isD ? D.days.indexOf(pk) : D.weeks.indexOf(pk), o = {h:{}};
   (isD ? DAILY : WEEKLY).forEach(h => {
     const arr = isD ? D.daily[h.code] : D.weekly[h.code], e = D.entries['E:'+h.code+':'+pk];
@@ -2336,6 +2341,7 @@ function rowFor(key){
     if (e && e.t) o.h[h.code].t = e.t;
   });
   if (isD && D.frz[pk]) o.fz = 1;
+  o.v = 2; o.ut = (D.ut && D.ut[key]) || {};   // 19/11 (B1): mốc giờ sửa từng thói quen để máy chủ gộp
   return o;
 }
 // Nhật ký ghi trước: mọi thay đổi được cất vào máy NGAY (đồng bộ), chỉ xoá khi máy chủ đã xác nhận. Tải lại trang (F5) giữa chừng cũng không mất.
@@ -2351,11 +2357,29 @@ function walApply(d){
   return keys;
 }
 let savedAt = 0;
+/* 19/11 (B1, B2): mỗi mục (thói quen trong dòng ngày, từng mục META) có mốc giờ sửa trong row.ut.
+   Máy chủ gộp theo từng mục: mốc mới hơn thắng; mục máy này chưa từng có (không mốc) thì máy chủ giữ nguyên.
+   META_OBJ phải trùng với supabase/api/merge.ts. */
+const META_OBJ = ['hist','plans','lists','subs','look','sleep','busy','lazy','bdg','tt','ix','lvd'];
+function flatRow(key, r){
+  const o = {}; r = r || {}; const isO = v => v != null && typeof v === 'object' && !Array.isArray(v);
+  if (key === 'META') Object.keys(r).forEach(f => { if (f === 'ut' || f === 'v') return;
+    if (META_OBJ.includes(f) && isO(r[f])) Object.keys(r[f]).forEach(k => { o['o|' + f + '|' + k] = r[f][k]; }); else o['v|' + f] = r[f]; });
+  else { Object.keys(r.h || {}).forEach(c => { o['h|' + c] = r.h[c]; }); if (r.fz) o.fz = 1; }
+  return o;
+}
+function snapAll(){ if (!D) return; D.snap = {}; D.ut = D.ut || {}; ['META'].concat(D.days.map(x => 'D:' + x), D.weeks.map(x => 'W:' + x)).forEach(k => { try { D.snap[k] = JSON.stringify(flatRow(k, rowFor(k))); } catch(e){} }); }
+function utMark(key){
+  const cur = flatRow(key, rowFor(key)), base = D.snap && D.snap[key] ? JSON.parse(D.snap[key]) : {}, ut = D.ut[key] || (D.ut[key] = {}), now = Date.now();
+  new Set(Object.keys(cur).concat(Object.keys(base))).forEach(k => { if (JSON.stringify(cur[k]) !== JSON.stringify(base[k])) ut[k] = now; });
+  D.snap[key] = JSON.stringify(cur);
+}
 function markDirty(key){
   if (typeof TA_GEN !== 'undefined') TA_GEN++;
   if (PRACTICE && key !== 'META') return;
   if (!D) return;
   dirty[key] = 1; clearTimeout(timers[key]);
+  try { utMark(key); } catch(e){}
   try { walPut(key); } catch(e){}
   timers[key] = setTimeout(() => flush(key), 400);
 }
@@ -2368,6 +2392,7 @@ async function flush(key){
   pending++; renderSync();
   try { const js = JSON.stringify(rowFor(key)); const r = await call('saveRow', TOKEN, key, js, statsNow()); savedAt = Date.now(); let jo = JSON.parse(js);
     if (key === 'META' && r && r.sleep && !dirty[key] && D && JSON.stringify(r.sleep) !== JSON.stringify(D.meta.sleep || {})){ D.meta.sleep = r.sleep; jo.sleep = r.sleep; const ae = document.activeElement; if ((tab === 'today' || tab === 'health') && !(ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName))) render(); }   // máy chủ đã giữ giờ ngủ từ máy khác
+    if (r && r.merged && !dirty[key]) setTimeout(refreshData, 500);   // 19/11 (B1): máy chủ đã gộp với máy khác → tải bản đã gộp
     if (!dirty[key]) walDel(key); if (RAWD){ RAWD.rows = RAWD.rows || {}; RAWD.rows[key] = jo; dcSave(); } }
   catch(e){ if (isAuthErr(e)) { dropToken(); return showLogin('Phiên đăng nhập đã hết, hãy đăng nhập lại.'); } dirty[key] = 1; toast('⚠️ Chưa lưu được: ' + e.message); }
   finally { pending--; renderSync(); }
@@ -4840,12 +4865,19 @@ function workInit(){
   }
   if (!WORK.loaded && !WORK.busy) workLoad();
 }
+/** Tuần Công việc theo ngày hôm nay: 1–7 → 1, 8–14 → 2, 15–21 → 3, từ 22 → 4; tháng đã qua → 4, tháng sau → 1 (giờ Việt Nam) */
+function wkToday(mo){
+  const t = new Intl.DateTimeFormat('en-CA', {timeZone: 'Asia/Ho_Chi_Minh'}).format(new Date()), cur = t.slice(0, 7);
+  if (!mo || mo === cur) return Math.min(4, Math.ceil(Number(t.slice(8, 10)) / 7));
+  return mo < cur ? 4 : 1;
+}
 async function workLoad(mo){
   WORK.busy = true; WORK.err = '';
   try {
     if (wIsTA()) { WORK.d = await call('workMine', TOKEN, mo || WORK.mo || undefined); WORK.mo = WORK.d.mo; }
     else { WORK.list = await call('workList', TOKEN, mo || WORK.mo || undefined); WORK.mo = WORK.list.mo; }
     WORK.loaded = true;
+    if (WORK.wkMo !== WORK.mo){ WORK.wkMo = WORK.mo; WORK.wk = wkToday(WORK.mo); }   // 19/11 (B4): mở tháng nào thì chọn sẵn tuần đang chạy
   } catch(e){ WORK.err = e.message; }
   WORK.busy = false; if (tab === 'work') render();
 }
@@ -5066,11 +5098,24 @@ function rpThumb(id, extra){
   return `<div>${u ? `<img class="rpim" src="${esc(u)}" data-rp="zoom|${id}" alt="Ảnh">` : `<div class="rpim ph">${u === '' ? 'Không mở được ảnh' : 'Đang tải…'}</div>`}${extra || ''}</div>`;
 }
 const rpImFiles = e => [...(e.clipboardData && e.clipboardData.items || [])].filter(i => i.type.startsWith('image/')).map(i => i.getAsFile()).filter(Boolean);
+/* 19/11 (B3): ảnh Báo cáo ngày gửi dạng base64 (máy chủ đọc f.b64); ảnh lớn thu nhỏ về JPEG cạnh dài ≤ 2000 px */
+async function rpImgPrep(file){
+  const p = await wPrep(file); if (p.mime === 'application/pdf') throw new Error('Chỉ nhận ảnh, không nhận PDF.');
+  let blob = p.blob, mime = p.mime, name = p.name;
+  if (blob.size > 1500000 || /heic|heif/i.test(mime)) try {
+    const bmp = await createImageBitmap(blob), k = Math.min(1, 2000 / Math.max(bmp.width, bmp.height)), c = document.createElement('canvas');
+    c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k); c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    const b = await new Promise(ok => c.toBlob(ok, 'image/jpeg', .85)); if (b && b.size && b.size < blob.size){ blob = b; mime = 'image/jpeg'; name = name.replace(/\.\w+$/, '') + '.jpg'; }
+  } catch(e){}
+  const b64 = await new Promise((ok, bad) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1] || ''); r.onerror = () => bad(new Error('Không đọc được ảnh, hãy chọn lại.')); r.readAsDataURL(blob); });
+  if (b64.length > 8000000) throw new Error('Ảnh quá lớn (tối đa khoảng 6 MB).');
+  return {name, mime, b64};
+}
 async function rpAddFiles(files){
   for (const f of files) {
     if ((RP.dr.im || []).length >= 3) { toast('Tối đa 3 ảnh mỗi báo cáo'); break; }
     RP.imBusy = 'Đang gửi ảnh…'; render();
-    try { const p = await wPrep(f), r = await call('reportImgAdd', TOKEN, p); RP.dr.im = r.im; } catch(e){ toast(e.message); }
+    try { const p = await rpImgPrep(f), r = await call('reportImgAdd', TOKEN, p); RP.dr.im = r.im; } catch(e){ toast(e.message); }
   }
   RP.imBusy = ''; render();
 }
@@ -5187,7 +5232,7 @@ async function rvBookLoad(){
 }
 async function rvAddImg(file){
   RV.imBusy = 'Đang gửi ảnh…'; render();
-  try { const p = await wPrep(file), r = await call('reportFbImgAdd', TOKEN, RV.d.code, RV.d.day, p); RV.form.img = r.id; } catch(e){ toast(e.message); }
+  try { const p = await rpImgPrep(file), r = await call('reportFbImgAdd', TOKEN, RV.d.code, RV.d.day, p); RV.form.img = r.id; } catch(e){ toast(e.message); }
   RV.imBusy = ''; render();
 }
 const RV_RATES = ['⭐ Hoàn thành xuất sắc', '👍 Duyệt', '🤔 Chưa ưng ý', '❌ Chưa đạt yêu cầu'];
@@ -6306,14 +6351,15 @@ function runLive(){ const d = document.querySelector('.run-card .run-dyn'); if (
 function runWarn(){
   const f = RUNF, o = f.ocr; if (!o || f.busy || runNoRead() || f.type === 'tread') return null;
   const w = {};
-  if (o.wc === 'wrong' && f.date === f.ocrDate) w.day = 1;
+  const wc = o.wcs && o.wcs[f.date] ? o.wcs[f.date] : f.date === f.ocrDate ? o.wc : '';   // 19/11 (A1): đổi ngày thì cảnh báo theo ngày mới
+  if (wc === 'wrong') w.day = 1;
   if (o.slow && f.type !== 'bike') w.slow = o.slow;
   if (o.noWhen) w.none = 1;
   return (w.day || w.slow || w.none) ? w : null;
 }
 function runWarnHtml(){
   const w = runWarn(), o = RUNF.ocr; if (!w) return '';
-  return (w.day ? `<div class="run-msg bad">⛔ Ngày trên ảnh${o.whenTxt ? ' (' + esc(o.whenTxt) + ')' : ''} không khớp ngày nộp ${dm(RUNF.date)} → nộp sẽ bị loại "Ảnh khác ngày".${o.alt ? ` <button class="btn" data-rundate="${o.alt}">Đổi sang ngày ${dm(o.alt)}</button>` : ''}</div>` : '')
+  return (w.day ? `<div class="run-msg bad">⛔ Ngày trên ảnh${o.whenTxt ? ' (' + esc(o.whenTxt) + ')' : ''} không khớp ngày nộp ${dm(RUNF.date)} → nộp sẽ bị loại "Ảnh khác ngày".${(() => { const a = o.wcs ? Object.keys(o.wcs).find(k => k !== RUNF.date && o.wcs[k] === 'ok') : (RUNF.date === RUNF.ocrDate ? o.alt : ''); return a ? ` <button class="btn" data-rundate="${a}">Đổi sang ngày ${dm(a)}</button>` : ''; })()}</div>` : '')
     + (w.slow ? `<div class="run-msg bad">⛔ ${esc(w.slow)}</div>` : '');
 }
 function runRefresh(){ const el = document.querySelector('.run-card'); if (el) el.outerHTML = runCard(); }
@@ -6403,7 +6449,9 @@ async function runPick(file, live){
     f.ocr = r || {}; f.ocrDate = f.date; f.warnOk = 0;
     if (r && r.act && RUN_TYPES[r.act] && r.act !== f.type && (f.type !== 'tread' || r.act === 'bike')){ f.type = r.act; toast(RUN_TYPES[r.act][0] + ' Ảnh là ' + RUN_TYPES[r.act][1].toLowerCase() + ', app đã chọn loại này'); }
     if (r && r.rel && r.rel.length === 1 && f.type !== 'tread'){ const td = (RUNS && RUNS.today) || D.today, want = r.rel[0] === 1 ? addDays(td, -1) : td;
-      if (want !== f.date && (r.rel[0] === 0 || runCanYest())){ f.date = want; toast(r.rel[0] === 1 ? '📅 Ảnh ghi "hôm qua", app đã chọn ngày hôm qua' : '📅 Ảnh ghi "hôm nay", app đã chọn ngày hôm nay'); } }
+      if (want !== f.date && (r.rel[0] === 0 ? new Date().getHours() >= 3 : runCanYest())){   /* 19/11 (A1): 0h–3h ảnh "hôm nay" có thể chụp trước 0h → không ép sang hôm nay */ f.date = want; toast(r.rel[0] === 1 ? '📅 Ảnh ghi "hôm qua", app đã chọn ngày hôm qua' : '📅 Ảnh ghi "hôm nay", app đã chọn ngày hôm nay'); } }
+    if (r && r.wcs && r.wcs[f.date] === 'wrong' && f.type !== 'tread'){ const alt = Object.keys(r.wcs).find(k => k !== f.date && r.wcs[k] === 'ok');   // 19/11 (A1): ảnh là buổi của ngày kia → tự chuyển ngày nộp
+      if (alt){ f.date = alt; toast('📅 Ngày trên ảnh' + (r.whenTxt ? ' (' + r.whenTxt + ')' : '') + ' là ngày ' + dm(alt) + ', app đã chuyển ngày nộp sang ' + dm(alt), 5000); } }
     f.pick = 0; f.km = r && r.best != null && !r.guess ? runKmTxt(r.best) : '';
     if (r && r.minutes != null) f.min = String(Math.round(r.minutes*10)/10).replace('.', ',');
     if (runNoRead()) toast('⏳ Chưa đọc nhanh được số km, cứ nộp bài, số km sẽ cập nhật sau');
@@ -6798,7 +6846,7 @@ document.addEventListener('click', async e => {
   if (ds.runtype){ const was = RUNF.type; RUNF.type = ds.runtype;
     if (was !== RUNF.type && (was === 'tread' || RUNF.type === 'tread')){ RUNF.seq++; RUNF.img = ''; RUNF.ocr = null; RUNF.km = ''; RUNF.min = ''; RUNF.err = ''; RUNF.busy = false; RUNF.exifNo = false; RUNF.shot = 0; }   // máy chạy đọc ảnh kiểu khác và phải chụp trực tiếp → chọn lại ảnh
     runRefresh(); return; }
-  if (ds.rundate){ RUNF.date = ds.rundate; runRefresh(); return; }
+  if (ds.rundate){ RUNF.date = ds.rundate; RUNF.warnOk = 0; RUNF.err = ''; runRefresh(); return; }
   if (ds.runsubmit){ runSend(); return; }
   if (ds.runbug){ runSend(true); return; }
   if (ds.runpick){ RUNF.pick = Number(ds.runpick); RUNF.km = runKmTxt(RUNF.pick); RUNF.err = ''; runRefresh(); return; }
