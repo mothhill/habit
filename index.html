@@ -1056,7 +1056,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v19.11.126';
+const APP_VER = 'v19.11.127';
 try { if (localStorage.getItem('rh_fx') === '0') document.documentElement.classList.add('no-fx'); } catch(e){}   // v18.11.115: Chế độ đơn giản   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
@@ -6330,7 +6330,8 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 .run-note,.run-hint,.run-pace{font-size:13px;color:var(--muted);margin-bottom:8px}
 .run-hint{color:var(--gold);text-wrap:balance}
 .run-msg{font-size:13px;margin:8px 0 8px;padding:8px 12px;border-radius:10px;background:var(--bg)}
-.run-msg.bad{color:var(--pink)}
+:root{--bad:#FF8A8A}html[data-theme=light]{--bad:#C62828}   /* v19.11.127: chữ cảnh báo đỏ – các bảng màu đặt --pink thành màu nền nên chữ cảnh báo gần như vô hình */
+.run-msg.bad{color:var(--bad)}
 .run-submit{width:100%;padding:12px}
 .run-submit[disabled]{opacity:.6}
 .run-list{margin-top:12px}
@@ -6341,9 +6342,10 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 .rq-it{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:10px;background:var(--bg);margin-bottom:8px;font-size:13px}
 .rq-it img,.rq-ph{width:52px;height:72px;object-fit:cover;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;background:var(--line)}
 .rq-it>div{flex:1;min-width:0}.rq-it small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
-.rq-it.unsure{box-shadow:inset 3px 0 0 var(--gold)}.rq-it.bad{box-shadow:inset 3px 0 0 var(--pink)}.rq-it.ok{opacity:.75}
+.rq-it.unsure{box-shadow:inset 3px 0 0 var(--gold)}.rq-it.bad{box-shadow:inset 3px 0 0 var(--bad)}.rq-it.ok{opacity:.75}
 .rq-d{display:flex;gap:6px;margin-top:6px}.rq-d .run-date{flex:1;padding:6px;border:1px solid var(--line)}
-.rq-btns{display:flex;gap:8px;align-items:center}.rq-btns .run-submit{flex:1}
+.rq-btns{display:flex;gap:8px;align-items:center}
+.rcf{padding:8px 10px;border-radius:10px;background:var(--bg);margin-bottom:6px;font-size:14px}.rcf b,.rcf span,.rcf small{display:block}.rcf small{color:var(--muted);font-size:13px;margin-top:2px}.rcf.bad{box-shadow:inset 3px 0 0 var(--bad)}.rcf.bad small{color:var(--bad)}.rq-btns .run-submit{flex:1}
 .run-month{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0}
 .run-podium{display:flex;gap:8px;margin-bottom:12px}
 .run-pod{flex:1;text-align:center;padding:12px 8px;border-radius:14px;background:var(--bg)}
@@ -6517,6 +6519,36 @@ function runLedLike(url){ return new Promise(ok => { const im = new Image(); im.
   const n = W * H; ok(red / n >= 0.01 && dark / n >= 0.5);
 } catch(e){ ok(false); } }; im.onerror = () => ok(false); im.src = url; }); }
 const RUN_NOTTREAD_MSG = '⛔ Ảnh này không phải màn hình máy chạy. Ảnh Strava/app hãy nộp ở ô 🏃 Chạy bộ.';
+/* ===== v19.11.127: hộp "Kiểm tra trước khi nộp" – tóm tắt ô, ngày, km, cảnh báo; thay cho bấm Nộp 2 lần ===== */
+function runWarnList(w, type){
+  const a = [];
+  if (w.cam) a.push('Ảnh chụp bằng camera, không phải ảnh chụp màn hình app → vào mục Spam, chưa được tính');
+  if (w.box) a.push(type === 'tread' ? 'Ảnh không phải màn hình máy chạy → vào mục Spam, chưa được tính' : 'Ảnh giống màn hình máy chạy (số đèn LED đỏ) → vào mục Spam, chưa được tính');
+  if (w.day) a.push('Ngày trên ảnh khác ngày nộp → không được tính');
+  if (w.none) a.push('Ảnh không có ngày giờ chạy → không được tính');
+  if (w.slow) a.push(String(w.slow));
+  return a.join('. ');
+}
+function runConfirm(list){ return new Promise(res => {
+  const td = (RUNS && RUNS.today) || D.today, day = d => (d === td ? 'Hôm nay ' : d === addDays(td, -1) ? 'Hôm qua ' : 'Ngày ') + dm(d), bad = list.some(x => x.warn);
+  const rows = list.map(x => { const T = RUN_TYPES[x.type] || RUN_TYPES.run;
+    const km = x.rep ? '⏳ Số km: quản lý sẽ đọc' : runKmTxt(x.km) + ' km' + (x.type === 'bike' ? ' đạp xe (tính ' + runKmTxt(Math.round(x.km / 4 * 100) / 100) + ' km)' : '');
+    return `<div class="rcf ${x.warn ? 'bad' : ''}"><b>${T[0]} Ô ${T[1]} · ${day(x.date)}</b><span>${km}${x.pace ? ' · pace ' + esc(x.pace) + '/km' : ''}</span><small>${x.warn ? '⛔ ' + esc(x.warn) : '✅ Ảnh ' + (x.type === 'tread' ? 'màn hình máy chạy' : 'chụp màn hình app')}</small></div>`; }).join('');
+  const el = document.createElement('div'); el.className = 'pvo';
+  el.innerHTML = `<div class="pvc" style="text-align:left;max-height:86vh;overflow:auto"><button class="pvx" aria-label="Đóng">✕</button><h3 style="margin:2px 0 10px;text-align:center">🔎 Kiểm tra trước khi nộp${list.length > 1 ? ' (' + list.length + ' bài)' : ''}</h3>${rows}
+    <div class="muted" style="font-size:13px;margin-top:8px">Xem lại đúng ô, đúng ngày, đúng số km. ${bad ? 'Bài có ⛔ vẫn được gửi nhưng <b>không được tính</b> hoặc vào <b>mục Spam</b> chờ quản lý xem.' : 'Nộp rồi muốn sửa thì phải Hủy bài và nộp lại.'}</div>
+    <div class="btns" style="flex-direction:column;align-items:stretch;margin-top:12px"><button class="btn" data-rcf="1">${bad ? 'Vẫn nộp' : 'Đúng, nộp'}</button><button class="btn ghost" data-rcf="0">Sửa lại</button></div></div>`;
+  const done = v => { el.remove(); res(v); };
+  el.addEventListener('click', e => { const b = e.target.closest('[data-rcf]'); if (b) return done(b.dataset.rcf === '1'); if (e.target === el || e.target.closest('.pvx')) done(false); });
+  document.body.appendChild(el);
+}); }
+async function runConfirmSend(rep){
+  const f = RUNF, o = f.ocr || {}, raw = runNum(f.km), min = runNum(f.min);
+  const p = f.type === 'bike' ? null : o.pace != null ? o.pace : (min > 0 && raw > 0 ? min / raw : null);
+  f.asking = true;
+  try { return await runConfirm([{type: f.type, date: f.date, km: raw, rep, pace: p != null ? runPaceTxt(p) : '', warn: runWarnList(runWarn() || {}, f.type)}]); }
+  finally { f.asking = false; }
+}
 /* ---- Camera trong app cho máy chạy: không mở thư viện ảnh ---- */
 let RUNCAMFAIL = false, RUNCAM = null;
 async function runCamOpen(){
@@ -6665,8 +6697,10 @@ async function runQSend(){
   const list = Q.items.filter(x => x.st === 'ready' && !x.late);
   if (!list.length){ Q.err = 'Không còn ảnh nào nộp được.'; runRefresh(); return; }
   if (list.some(x => !x.sure)){ Q.err = 'Hãy chọn ngày cho các ảnh tô vàng.'; runRefresh(); return; }
-  const wn = list.filter(x => runQWarn(x)).length;
-  if (wn && !Q.warnOk){ Q.warnOk = 1; Q.err = wn + ' ảnh có cảnh báo đỏ sẽ KHÔNG được tính (ảnh nộp sai ô vào mục Spam). Nên bỏ ảnh đó (bấm ✕). Vẫn muốn nộp thì bấm Nộp lần nữa.'; runRefresh(); return; }
+
+  if (Q.asking) return; Q.asking = true; let go = false;
+  try { go = await runConfirm(list.map(x => { const o = x.ocr || {}; return {type: x.type, date: x.date, km: Number(o.best), rep: runNoReadO(o), pace: o.pace != null && x.type !== 'bike' ? runPaceTxt(o.pace) : '', warn: runQWarn(x)}; })); } finally { Q.asking = false; }
+  if (!go || RUNQ !== Q) return;
   Q.err = ''; Q.sending = true;
   for (const it of list){
     it.st = 'send'; runRefresh();
@@ -6817,10 +6851,11 @@ async function runSubmitBox(payload){
   } finally { delete OBXBUSY[it.rid]; obxRefresh(); }
 }
 async function runSend(report){
-  const f = RUNF; if (f.sending) return; if (f.busy){ f.pend = 1; f.err = ''; f.msg = ''; runRefresh(); return; } f.pend = 0; f.err = ''; f.msg = '';
+  const f = RUNF; if (f.sending || f.asking) return; if (f.busy){ f.pend = 1; f.err = ''; f.msg = ''; runRefresh(); return; } f.pend = 0; f.err = ''; f.msg = '';
   if (!report && f.img && f.ocr && runNoRead()) report = true;
   if (report){
     if (!f.img){ f.err = 'Hãy chọn ảnh trước.'; runRefresh(); return; }
+    if (!await runConfirmSend(true)) return;
     const bm = f.bugmsg || ''; f.sending = true; runRefresh();
     try {
       const r = await runSubmitBox({date: f.date, type: f.type, report: 1, msg: bm, img: f.img.split(',')[1], shot: f.type === 'tread' ? f.shot || 0 : 0, live: 0, cam: f.type !== 'tread' ? f.cam || '' : '', led: f.type !== 'tread' ? f.led || 0 : 0});
@@ -6835,8 +6870,8 @@ async function runSend(report){
   else if (f.busy || !f.ocr) f.err = 'App đang đọc ảnh, chờ chút nhé.';
   else if (!(raw > 0)) f.err = (f.ocr.cands || []).length ? 'Hãy bấm chọn số km đúng trong các số app đọc được.' : 'App chưa đọc được số km trên ảnh. Hãy bấm "Gửi ảnh báo lỗi" để quản lý xử lý.';
   if (f.err){ runRefresh(); return; }
-  const wn = runWarn();
-  if (wn && f.warnOk !== f.seq){ f.warnOk = f.seq; f.err = (wn.cam || wn.box ? 'Ảnh nộp sai ô nên bài sẽ vào mục Spam, CHƯA được tính. ' : wn.none ? 'Ảnh không có ngày giờ chạy nên bài sẽ KHÔNG được tính. ' : wn.day ? 'Ngày trên ảnh khác ngày nộp nên bài sẽ KHÔNG được tính. ' : 'Pace chậm hơn mức tối thiểu nên bài sẽ KHÔNG được tính. ') + 'Nên chọn ảnh khác' + (wn.day ? ' hoặc đổi ngày' : '') + '. Vẫn muốn nộp thì bấm Nộp lần nữa.'; runRefresh(); return; }
+
+  if (!await runConfirmSend(false)) return;
   f.sending = true; runRefresh();
   try {
     const min = runNum(f.min);
@@ -7679,20 +7714,28 @@ setTimeout(() => obxFlush(), 4000);
 setTimeout(() => recRefresh(), 1500);
 /* ===== Nhận bản ghi chia sẻ thẳng từ app ghi âm (Android, app đã cài ra màn hình chính) ===== */
 let SHARED = null;
+/** v19.11.127: chia sẻ tới app mà không có ảnh/tệp ghi âm → báo đã nhận gì và cách làm khác */
+function sharedNone(last){
+  const got = last && last.info && last.info.length ? last.info.join(' · ') : last && last.err ? 'lỗi ' + last.err : 'không có gì';
+  const msg = '⚠️ App chưa nhận được ảnh. App kia đã gửi: ' + got + '. Cách khác: chụp màn hình kết quả trong Strava, mở Thư viện ảnh, chọn ảnh → Chia sẻ → Habits.';
+  const show = () => { if (window.toast) toast(msg, 15000); else setTimeout(show, 300); }; show();
+}
+/** v19.11.127: dữ liệu tải chậm thì chờ rồi mở màn nộp (tối đa 30 giây) */
+function sharedWait(){ let n = 0; const t = setInterval(() => { if (!RUNPEND || ++n > 60){ clearInterval(t); return; } runPendApply(); }, 500); }
 async function sharedPick(){
   try {
     if (!/[?&]shared=1/.test(location.search) || !window.caches) return;
     history.replaceState(null, '', location.pathname);
     const c = await caches.open('share-inbox');
+    let last = null; try { const q = await c.match('/share-last'); if (q){ last = await q.json(); await c.delete('/share-last'); } } catch(e){}   // v19.11.127
     const ks = (await c.keys()).filter(k => /\/share-img-\d+$/.test(k.url)).sort((a, b) => a.url < b.url ? -1 : 1);   // v19.11.126: ảnh chạy bộ chia sẻ thẳng
     if (ks.length){ const fs = [];
       for (const k of ks){ const q = await c.match(k), b = q && await q.blob(); await c.delete(k);
         if (b && b.size) fs.push(new File([b], decodeURIComponent(q.headers.get('X-Name') || 'anh.jpg'), {type: b.type || 'image/jpeg', lastModified: Number(q.headers.get('X-Mod')) || Date.now()})); }
-      if (fs.length){ RUNPEND = fs; runPendApply(); }
-      return;
+      if (fs.length){ RUNPEND = fs; runPendApply(); sharedWait(); return; }
     }
     const r = await c.match('/share-inbox-file');
-    if (!r) return;
+    if (!r){ sharedNone(last); return; }
     const blob = await r.blob(), name = decodeURIComponent(r.headers.get('X-Name') || 'ghi-am');
     await c.delete('/share-inbox-file');
     if (!blob.size) return;

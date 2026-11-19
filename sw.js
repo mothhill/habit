@@ -1,7 +1,7 @@
 /* Service worker 90 Days Rich Habits (v14.11.96).
    Nguyên tắc an toàn: trang chính LUÔN ưu tiên bản mới từ mạng (cập nhật có hiệu lực ngay lần mở sau),
    bản đệm chỉ dùng khi mất mạng. Không đụng yêu cầu tới máy chủ Apps Script (khác nguồn, POST). */
-const CACHE = 'habit-v19-11-126';
+const CACHE = 'habit-v19-11-127';
 const STATIC = ['icon-192.png', 'icon-512.png', 'icon-maskable-192.png', 'icon-maskable-512.png', 'apple-touch-icon.png', 'manifest.webmanifest'];
 
 self.addEventListener('install', e => {
@@ -17,6 +17,9 @@ self.addEventListener('fetch', e => {
     e.respondWith((async () => {
       try {
         const fd = await r.formData(), all = [...fd.values()].filter(x => x && typeof x === 'object' && x.size), c = await caches.open('share-inbox');
+        // v19.11.127: ghi lại app kia đã gửi gì (tên trường, kiểu, cỡ) để báo người dùng khi không có ảnh
+        const info = [...fd.entries()].map(([k, v]) => v && typeof v === 'object' ? k + ': ' + (v.type || '?') + ' ' + (v.name || '') + ' (' + v.size + ' B)' : k + ': chữ ' + String(v).slice(0, 80));
+        await c.put('/share-last', new Response(JSON.stringify({ t: Date.now(), info }), { headers: { 'Content-Type': 'application/json' } }));
         // v19.11.126: ảnh chạy bộ chia sẻ thẳng (tối đa 6) → 'share-img-N', index.html (sharedPick) mở màn nộp chạy bộ
         const ims = all.filter(x => /^image\//i.test(x.type || '') || /\.(jpe?g|png|webp|heic|heif)$/i.test(x.name || ''));
         if (ims.length) {
@@ -25,7 +28,7 @@ self.addEventListener('fetch', e => {
             await c.put('/share-img-' + i, new Response(f, { headers: { 'Content-Type': f.type || 'image/jpeg', 'X-Name': encodeURIComponent(f.name || 'anh.jpg'), 'X-Mod': String(f.lastModified || Date.now()) } })); }
         } else { const f = fd.getAll('audio').find(x => x && x.size) || all[0];
           if (f) await c.put('/share-inbox-file', new Response(f, { headers: { 'Content-Type': f.type || 'audio/mp4', 'X-Name': encodeURIComponent(f.name || 'ghi-am'), 'X-Mod': String(f.lastModified || Date.now()) } })); }
-      } catch (_) {}
+      } catch (err) { try { await (await caches.open('share-inbox')).put('/share-last', new Response(JSON.stringify({ t: Date.now(), info: [], err: String(err && err.message || err) }))); } catch (_) {} }
       return Response.redirect(new URL('./?shared=1', self.registration.scope).href, 303);
     })());
     return;
