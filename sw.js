@@ -1,7 +1,7 @@
 /* Service worker 90 Days Rich Habits (v14.11.96).
    Nguyên tắc an toàn: trang chính LUÔN ưu tiên bản mới từ mạng (cập nhật có hiệu lực ngay lần mở sau),
    bản đệm chỉ dùng khi mất mạng. Không đụng yêu cầu tới máy chủ Apps Script (khác nguồn, POST). */
-const CACHE = 'habit-v19-11-125';
+const CACHE = 'habit-v19-11-126';
 const STATIC = ['icon-192.png', 'icon-512.png', 'icon-maskable-192.png', 'icon-maskable-512.png', 'apple-touch-icon.png', 'manifest.webmanifest'];
 
 self.addEventListener('install', e => {
@@ -16,9 +16,15 @@ self.addEventListener('fetch', e => {
   if (r.method === 'POST' && u.origin === self.location.origin && /\/share-target\/?$/.test(u.pathname)) {
     e.respondWith((async () => {
       try {
-        const fd = await r.formData(), f = fd.getAll('audio').find(x => x && x.size) || [...fd.values()].find(x => x && x.size);
-        if (f) { const c = await caches.open('share-inbox');
-          await c.put('/share-inbox-file', new Response(f, { headers: { 'Content-Type': f.type || 'audio/mp4', 'X-Name': encodeURIComponent(f.name || 'ghi-am'), 'X-Mod': String(f.lastModified || Date.now()) } })); }
+        const fd = await r.formData(), all = [...fd.values()].filter(x => x && typeof x === 'object' && x.size), c = await caches.open('share-inbox');
+        // v19.11.126: ảnh chạy bộ chia sẻ thẳng (tối đa 6) → 'share-img-N', index.html (sharedPick) mở màn nộp chạy bộ
+        const ims = all.filter(x => /^image\//i.test(x.type || '') || /\.(jpe?g|png|webp|heic|heif)$/i.test(x.name || ''));
+        if (ims.length) {
+          await Promise.all((await c.keys()).filter(k => /\/share-img-\d+$/.test(k.url)).map(k => c.delete(k)));
+          for (let i = 0; i < Math.min(ims.length, 6); i++) { const f = ims[i];
+            await c.put('/share-img-' + i, new Response(f, { headers: { 'Content-Type': f.type || 'image/jpeg', 'X-Name': encodeURIComponent(f.name || 'anh.jpg'), 'X-Mod': String(f.lastModified || Date.now()) } })); }
+        } else { const f = fd.getAll('audio').find(x => x && x.size) || all[0];
+          if (f) await c.put('/share-inbox-file', new Response(f, { headers: { 'Content-Type': f.type || 'audio/mp4', 'X-Name': encodeURIComponent(f.name || 'ghi-am'), 'X-Mod': String(f.lastModified || Date.now()) } })); }
       } catch (_) {}
       return Response.redirect(new URL('./?shared=1', self.registration.scope).href, 303);
     })());

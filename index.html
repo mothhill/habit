@@ -1056,7 +1056,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v19.11.125';
+const APP_VER = 'v19.11.126';
 try { if (localStorage.getItem('rh_fx') === '0') document.documentElement.classList.add('no-fx'); } catch(e){}   // v18.11.115: Chế độ đơn giản   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
@@ -6338,6 +6338,12 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 .run-item>div{flex:1;min-width:0}.run-item small{display:block;color:var(--muted);font-size:13px}
 .run-item.flag{box-shadow:inset 3px 0 0 var(--gold)}
 .run-item.off{opacity:.55}
+.rq-it{display:flex;align-items:flex-start;gap:10px;padding:8px 10px;border-radius:10px;background:var(--bg);margin-bottom:8px;font-size:13px}
+.rq-it img,.rq-ph{width:52px;height:72px;object-fit:cover;border-radius:8px;flex:none;display:flex;align-items:center;justify-content:center;background:var(--line)}
+.rq-it>div{flex:1;min-width:0}.rq-it small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+.rq-it.unsure{box-shadow:inset 3px 0 0 var(--gold)}.rq-it.bad{box-shadow:inset 3px 0 0 var(--pink)}.rq-it.ok{opacity:.75}
+.rq-d{display:flex;gap:6px;margin-top:6px}.rq-d .run-date{flex:1;padding:6px;border:1px solid var(--line)}
+.rq-btns{display:flex;gap:8px;align-items:center}.rq-btns .run-submit{flex:1}
 .run-month{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0}
 .run-podium{display:flex;gap:8px;margin-bottom:12px}
 .run-pod{flex:1;text-align:center;padding:12px 8px;border-radius:14px;background:var(--bg)}
@@ -6372,11 +6378,12 @@ function runCard(){
       ${x.canAppeal && RUNAP !== x.rid ? `<button class="btn ghost run-cancel" data-runappeal="${esc(x.rid)}">Khiếu nại</button>` : ''}
       ${x.ap && x.st !== 'Chờ quản lý đọc ảnh' && !(x.st === 'Sai tên' && x.ap === 'wait') ? `<span class="run-ap ${x.ap}">${x.ap === 'wait' ? '⏳ Đang chờ duyệt' : x.ap === 'ok' ? '✅ Đã duyệt' : '❌ Không duyệt'}</span>` : ''}</div>
       ${RUNAP === x.rid ? `<div class="run-apf"><input type="text" maxlength="300" placeholder="Lý do, ví dụ: ảnh chụp trang tổng quan nên không có ngày; buổi chạy lúc 6h sáng nay" data-apreason><button class="btn" data-runapsend="${esc(x.rid)}">Gửi</button><button class="lnk" data-runapx>Thôi</button></div>` : ''}`; }).join('');
+  if (RUNQ) return `<div class="card run-card">${head}${obxCard('run')}<div class="run-form">${runQHtml()}${items.length ? `<div class="run-list">${list}</div>` : ''}</div></div>`;
   return `<div class="card run-card">${head}${obxCard('run')}<div class="run-form">
     <div class="run-dates"><button class="run-date ${f.date === td ? 'on' : ''}" data-rundate="${td}">Hôm nay ${dm(td)}</button>${canY ? `<button class="run-date ${f.date === yd ? 'on' : ''}" data-rundate="${yd}">Hôm qua ${dm(yd)}</button>` : ''}</div>
     <div class="run-types">${Object.keys(RUN_TYPES).map(k => `<button class="run-type ${f.type === k ? 'on' : ''}" data-runtype="${k}">${RUN_TYPES[k][0]} ${RUN_TYPES[k][1]}</button>`).join('')}</div>
-    ${f.type === 'tread' && !RUNCAMFAIL ? `<div class="run-photo" data-runcam="1" role="button">${f.img ? `<img class="run-prev" src="${f.img}" alt="Ảnh đã chụp"><small>Chạm để chụp lại</small>` : '📸 Chụp màn hình máy chạy (rõ DISTANCE và TIME)'}</div>`
-      : `<label class="run-photo"><input type="file" accept="${f.type === 'tread' ? 'image/jpeg,' + MIME_IMG : MIME_IMG}" ${f.type === 'tread' ? 'capture="environment"' : ''} data-runfile="1">${f.img ? `<img class="run-prev" src="${f.img}" alt="Ảnh đã chọn"><small>Chạm để chọn ảnh khác</small>` : (f.type === 'tread' ? '📸 Bấm để chụp màn hình máy chạy bằng camera (thấy rõ ô DISTANCE và TIME). Chụp ngay sau khi chạy xong.' : '📷 Chọn ảnh chụp màn hình kết quả (Strava, Garmin, Nike, đồng hồ…)')}</label>`}
+    ${f.type === 'tread' ? `<div class="run-photo" data-runask="1" role="button">${f.img ? `<img class="run-prev" src="${f.img}" alt="Ảnh đã chụp"><small>Chạm để chụp lại</small>` : '📸 Bấm để chụp màn hình máy chạy bằng camera trong app (thấy rõ ô DISTANCE và TIME). Chụp ngay sau khi chạy xong.'}</div>`
+      : `<div class="run-photo" data-runask="1" role="button">${f.img ? `<img class="run-prev" src="${f.img}" alt="Ảnh đã chọn"><small>Chạm để chọn ảnh khác</small>` : '📷 Chọn ảnh chụp màn hình từ Strava hoặc app tương tự (Garmin Connect, Nike Run Club, Samsung Health…)<br><small>Chọn được nhiều ảnh một lần (tối đa 6), app tự xếp vào từng ngày</small>'}</div>`}
     ${f.busy ? '<div class="run-busy">⏳ Đang đọc số km từ ảnh…</div>' : ''}
     ${f.ocr && f.ocr.raw !== undefined && !f.busy ? `<details class="run-raw"><summary>🔍 Xem chữ app đọc được (chỉ quản lý thấy)</summary><pre>${esc(f.ocr.raw || '(trống)')}</pre></details>` : ''}
     ${f.ocr && f.ocr.nameBad && f.type !== 'tread' && !f.busy && !runNoRead() ? `<div class="run-msg">ℹ️ Tên trên ảnh khác tên trong app, quản lý sẽ xác nhận.</div>` : ''}
@@ -6404,17 +6411,22 @@ function runLive(){ const d = document.querySelector('.run-card .run-dyn'); if (
   if (o) o.hidden = !(b != null && raw > 0 && Math.abs(raw - b) <= 0.05); }
 /** 18/11 (C3): ảnh khác ngày đang chọn / pace chậm → báo đỏ trước khi nộp */
 function runWarn(){
-  const f = RUNF, o = f.ocr; if (!o || f.busy || runNoRead() || f.type === 'tread') return null;
+  const f = RUNF, o = f.ocr; if (!o || f.busy) return null;
   const w = {};
+  if (f.type !== 'tread' && f.cam) w.cam = 1;   // v19.11.126: nộp sai ô
+  if ((f.type !== 'tread' && (o.tread === true || f.led)) || (f.type === 'tread' && o.tread === false)) w.box = 1;
+  if (runNoRead() || f.type === 'tread') return (w.cam || w.box) ? w : null;
   const wc = o.wcs && o.wcs[f.date] ? o.wcs[f.date] : f.date === f.ocrDate ? o.wc : '';   // 19/11 (A1): đổi ngày thì cảnh báo theo ngày mới
   if (wc === 'wrong') w.day = 1;
   if (o.slow && f.type !== 'bike') w.slow = o.slow;
   if (o.noWhen) w.none = 1;
-  return (w.day || w.slow || w.none) ? w : null;
+  return (w.day || w.slow || w.none || w.cam || w.box) ? w : null;
 }
 function runWarnHtml(){
   const w = runWarn(), o = RUNF.ocr; if (!w) return '';
-  return (w.day ? `<div class="run-msg bad">⛔ Ngày trên ảnh${o.whenTxt ? ' (' + esc(o.whenTxt) + ')' : ''} không khớp ngày nộp ${dm(RUNF.date)} → nộp sẽ bị loại "Ảnh khác ngày".${(() => { const a = o.wcs ? Object.keys(o.wcs).find(k => k !== RUNF.date && o.wcs[k] === 'ok') : (RUNF.date === RUNF.ocrDate ? o.alt : ''); return a ? ` <button class="btn" data-rundate="${a}">Đổi sang ngày ${dm(a)}</button>` : ''; })()}</div>` : '')
+  return (w.cam ? `<div class="run-msg bad">${RUN_CAM_MSG(RUNF.cam)} Nếu vẫn nộp, bài vào mục Spam để quản lý xem, chưa được tính.</div>` : '')
+    + (w.box ? `<div class="run-msg bad">${RUNF.type === 'tread' ? RUN_NOTTREAD_MSG : RUN_TREAD_MSG} Nếu vẫn nộp, bài vào mục Spam để quản lý xem, chưa được tính.</div>` : '')
+    + (w.day ? `<div class="run-msg bad">⛔ Ngày trên ảnh${o.whenTxt ? ' (' + esc(o.whenTxt) + ')' : ''} không khớp ngày nộp ${dm(RUNF.date)} → nộp sẽ bị loại "Ảnh khác ngày".${(() => { const a = o.wcs ? Object.keys(o.wcs).find(k => k !== RUNF.date && o.wcs[k] === 'ok') : (RUNF.date === RUNF.ocrDate ? o.alt : ''); return a ? ` <button class="btn" data-rundate="${a}">Đổi sang ngày ${dm(a)}</button>` : ''; })()}</div>` : '')
     + (w.slow ? `<div class="run-msg bad">⛔ ${esc(w.slow)}</div>` : '');
 }
 function runRefresh(){ const el = document.querySelector('.run-card'); if (el) el.outerHTML = runCard(); }
@@ -6454,6 +6466,57 @@ async function exifTime(file){
   } catch(e){}
   return null;
 }
+/* ===== v19.11.126: nộp đúng ô – nhắc trước khi chọn ảnh, chặn ảnh camera ở ô Chạy bộ/Đi bộ/Đạp xe ===== */
+function runAskShow(){
+  const tr = RUNF.type === 'tread', el = document.createElement('div'); el.className = 'pvo';
+  const inp = `<input type="file" hidden accept="${tr ? 'image/jpeg,' + MIME_IMG : MIME_IMG}" ${tr ? 'capture="environment"' : 'multiple'} data-runfile="1">`;
+  const body = tr
+    ? `<b>Ô Máy chạy</b> chỉ nhận ảnh <b>chụp trực tiếp màn hình máy chạy</b> (số đèn LED đỏ) bằng camera, ngay sau khi chạy xong, rõ ô <b>DISTANCE</b> và <b>TIME</b>.<br><br>⛔ Không dùng ảnh Strava, ảnh trong thư viện hay ảnh chụp màn hình điện thoại ở ô này.`
+    : `<b>Ô ${RUN_TYPES[RUNF.type][1]}</b> chỉ nhận <b>ảnh chụp màn hình</b> từ Strava hoặc app tương tự (Garmin Connect, Nike Run Club, Samsung Health…), có đủ <b>số km</b> và <b>ngày giờ</b>. Chọn ảnh từ <b>Thư viện</b>, <b>không chụp bằng camera</b>.<br><br>⛔ Chạy trên máy chạy (màn hình <b>số đèn LED đỏ</b>): chọn ô <b>🏋️ Máy chạy</b> rồi chụp bằng camera trong app.`;
+  const go = tr ? (RUNCAMFAIL ? `<label class="btn" style="text-align:center;cursor:pointer">📸 Mở camera${inp}</label>` : `<button class="btn" data-runcam="1">📸 Mở camera</button>`)
+    : `<label class="btn" style="text-align:center;cursor:pointer">📷 Chọn ảnh chụp màn hình${inp}</label>`;
+  const sw = tr ? `<button class="btn ghost" data-runsw="run">Tôi chạy ngoài trời → ô Chạy bộ</button>` : `<button class="btn ghost" data-runsw="tread">Tôi chạy máy → ô Máy chạy</button>`;
+  el.innerHTML = `<div class="pvc"><button class="pvx" aria-label="Đóng">✕</button><h3 style="margin:2px 0 6px">⚠️ Nộp đúng ô</h3><div style="font-size:15px;margin-bottom:12px;line-height:1.5">${body}</div><div class="btns" style="flex-direction:column;align-items:stretch">${go}${sw}</div></div>`;
+  el.addEventListener('click', e => {
+    if (e.target === el || e.target.closest('.pvx') || e.target.closest('[data-runcam]')) { el.remove(); return; }
+    const w = e.target.closest('[data-runsw]'); if (!w) return; el.remove();
+    const t = document.querySelector(`.run-card [data-runtype="${w.dataset.runsw}"]`); if (t) t.click();
+  });
+  el.addEventListener('change', () => setTimeout(() => el.remove(), 0));
+  document.body.appendChild(el);
+}
+document.addEventListener('click', e => { if (e.target.closest('[data-runask]')) runAskShow(); });
+/** Hãng máy ảnh ghi trong EXIF (ảnh chụp bằng camera). Ảnh chụp màn hình không có → ''. */
+async function exifMake(file){
+  try {
+    const b = new DataView(await file.slice(0, 128*1024).arrayBuffer()); if (b.getUint16(0) !== 0xFFD8) return '';
+    let o = 2;
+    while (o + 4 < b.byteLength){
+      const mk = b.getUint16(o), len = b.getUint16(o + 2);
+      if (mk === 0xFFE1 && b.getUint32(o + 4) === 0x45786966){
+        const t = o + 10, le = b.getUint16(t) === 0x4949, u16 = p => b.getUint16(t + p, le), u32 = p => b.getUint32(t + p, le), ifd = u32(4), n = u16(ifd);
+        for (let i = 0; i < n; i++){ const e = ifd + 2 + i*12; if (u16(e) !== 0x010F) continue;
+          const c = u32(e + 4), p = c <= 4 ? e + 8 : u32(e + 8); let x = ''; for (let k = 0; k < c - 1; k++) x += String.fromCharCode(b.getUint8(t + p + k)); return x.trim(); }
+        return '';
+      }
+      if ((mk & 0xFF00) !== 0xFF00) break; o += 2 + len;
+    }
+  } catch(e){}
+  return '';
+}
+const RUN_CAM_MSG = mk => '⛔ Đây là ảnh chụp bằng camera' + (mk ? ' (' + mk + ')' : '') + '. Ô này chỉ nhận ảnh chụp màn hình từ Strava/app. Chạy máy chạy thì chọn ô 🏋️ Máy chạy và chụp bằng camera trong app.';
+const RUN_TREAD_MSG = '⛔ Ảnh này là màn hình máy chạy. Hãy chọn ô 🏋️ Máy chạy và chụp bằng camera trong app.';
+/** Ảnh vừa chụp bằng camera (có hãng máy ảnh, tạo trong 3 phút gần đây) → ô thường không cho chụp trực tiếp */
+const runIsCapture = (file, mk) => !!mk && Date.now() - (Number(file.lastModified) || 0) < 3*60000;
+const RUN_CAPTURE_MSG = '⛔ Ô này không cho chụp trực tiếp bằng camera. Hãy chụp màn hình kết quả trong app Strava (hoặc app tương tự) rồi chọn ảnh đó từ Thư viện. Chạy máy chạy thì chọn ô 🏋️ Máy chạy.';
+/** Số đèn LED đỏ trên nền tối (màn hình máy chạy). Ngưỡng chặt để tránh nhầm màu cam Strava. */
+function runLedLike(url){ return new Promise(ok => { const im = new Image(); im.onload = () => { try {
+  const W = 64, H = 64, cv = document.createElement('canvas'); cv.width = W; cv.height = H; const x = cv.getContext('2d'); x.drawImage(im, 0, 0, W, H);
+  const d = x.getImageData(0, 0, W, H).data; let red = 0, dark = 0;
+  for (let i = 0; i < d.length; i += 4){ const r = d[i], g = d[i+1], b = d[i+2]; if (r > 180 && g < 45 && b < 60) red++; if (Math.max(r, g, b) < 50) dark++; }
+  const n = W * H; ok(red / n >= 0.01 && dark / n >= 0.5);
+} catch(e){ ok(false); } }; im.onerror = () => ok(false); im.src = url; }); }
+const RUN_NOTTREAD_MSG = '⛔ Ảnh này không phải màn hình máy chạy. Ảnh Strava/app hãy nộp ở ô 🏃 Chạy bộ.';
 /* ---- Camera trong app cho máy chạy: không mở thư viện ảnh ---- */
 let RUNCAMFAIL = false, RUNCAM = null;
 async function runCamOpen(){
@@ -6496,10 +6559,14 @@ async function runPick(file, live){
     else { RUNF.shot = shot;
     if (Date.now() - shot > 30*60000){ RUNF.err = 'Máy chạy: ảnh này chụp lúc ' + new Date(shot).toLocaleString('vi-VN', {hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit'}) + '. Hãy bấm vào khung ảnh để mở camera và chụp trực tiếp màn hình máy chạy ngay sau khi chạy xong.'; runRefresh(); return; } }
   }
+  RUNF.cam = RUNF.type !== 'tread' && !live ? await exifMake(file) : '';   // ảnh camera ở ô thường → cảnh báo, nộp thì vào mục Spam
+  RUNF.led = 0;
+  if (RUNF.cam && runIsCapture(file, RUNF.cam)){ RUNF.img = ''; RUNF.ocr = null; RUNF.km = ''; RUNF.msg = ''; RUNF.err = RUN_CAPTURE_MSG; runRefresh(); return; }   // không cho chụp trực tiếp
   const f = RUNF, seq = ++f.seq; f.err = ''; f.msg = ''; f.busy = true; f.ocr = null; runRefresh();
   try {
     const url = await runCompress(file); if (seq !== f.seq) return;
     f.img = url; runRefresh();
+    if (f.type !== 'tread') f.led = await runLedLike(url) ? 1 : 0;
     const r = await call('runOcr', TOKEN, url.split(',')[1], f.type, f.date); if (seq !== f.seq) return;
     f.ocr = r || {}; f.ocrDate = f.date; f.warnOk = 0;
     if (r && r.act && RUN_TYPES[r.act] && r.act !== f.type && (f.type !== 'tread' || r.act === 'bike')){ f.type = r.act; toast(RUN_TYPES[r.act][0] + ' Ảnh là ' + RUN_TYPES[r.act][1].toLowerCase() + ', app đã chọn loại này'); }
@@ -6512,6 +6579,126 @@ async function runPick(file, live){
     if (runNoRead()) toast('⏳ Chưa đọc nhanh được số km, cứ nộp bài, số km sẽ cập nhật sau');
   } catch(e){ if (seq === f.seq){ f.err = e.message; f.ocr = {best: null}; } }
   finally { if (seq === f.seq){ f.busy = false; runRefresh(); if (f.pend){ f.pend = 0; runSend(); } } }
+}
+/* ===== v19.11.126: nộp nhiều ảnh chạy bộ một lần – tự xếp ngày theo lúc chụp ảnh ===== */
+var RUNQ = null, RUNPEND = null;   // var: render() có thể chạy trước dòng này khi khởi động
+const RUNQ_MAX = 6;
+function runQDays(){ const td = (RUNS && RUNS.today) || D.today; return runCanYest() ? [td, addDays(td, -1)] : [td]; }
+const ymdL = ms => { const d = new Date(ms); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const runNoReadO = o => !!o && (o.skipped || !!o.err || o.best == null || !!o.guess);
+/** Lúc chụp ảnh: EXIF, hoặc giờ sửa tệp nếu đáng tin (không phải vừa tạo lúc chọn/chia sẻ). null nếu không rõ. */
+async function runShotAt(file){
+  const ex = await exifTime(file); if (ex && ex <= Date.now() + 10*60000) return ex;
+  const lm = Number(file.lastModified) || 0, age = Date.now() - lm;
+  return lm && age > 3*60000 && age < 5*864e5 ? lm : null;
+}
+/** Ảnh Strava chỉ ghi "Hôm nay/Hôm qua" → tính theo ngày chụp ảnh. Không rõ ngày chụp mà có 2 ngày nộp được → hỏi người dùng (tô vàng). */
+function runQGuess(it){
+  const days = runQDays(), td = days[0], o = it.ocr || {}, w = o.wcs || {}, rel = o.rel || [];
+  const ok = days.filter(d => w[d] === 'ok');
+  it.sure = true;
+  if (rel.length && it.shot) it.date = addDays(ymdL(it.shot), rel.indexOf(0) >= 0 ? 0 : -1);
+  else if (ok.length === 1) it.date = ok[0];
+  else if (rel.length){ it.date = rel.indexOf(0) < 0 ? addDays(td, -1) : (new Date().getHours() < 3 && days[1] ? days[1] : td); it.sure = days.length === 1 || rel.indexOf(0) < 0; }
+  else { it.date = td; if (runNoReadO(o)) it.sure = days.length === 1; }   // ảnh chưa đọc được → không biết ngày, hỏi người dùng
+  it.late = days.indexOf(it.date) < 0;
+}
+function runQWarn(it){
+  const o = it.ocr || {};
+  if (it.cam) return 'Ảnh chụp bằng camera, không phải ảnh chụp màn hình app: nộp sẽ vào mục Spam, chưa được tính';
+  if (o.tread === true || it.led) return 'Ảnh màn hình máy chạy (phải nộp ở ô Máy chạy): nộp sẽ vào mục Spam, chưa được tính';
+  if (runNoReadO(o)) return '';
+  if (it.late) return 'Ảnh là buổi ngày ' + dm(it.date) + ', đã quá hạn nộp (chỉ nộp hôm nay, hoặc hôm qua trước 12h)';
+  if (o.noWhen) return 'Ảnh không có ngày giờ chạy nên sẽ không được tính';
+  if (o.wcs && o.wcs[it.date] === 'wrong') return 'Ngày trên ảnh' + (o.whenTxt ? ' (' + o.whenTxt + ')' : '') + ' khác ngày ' + dm(it.date) + ' nên sẽ không được tính';
+  if (o.slow && it.type !== 'bike') return o.slow;
+  return '';
+}
+async function runQStart(files){
+  files = [...files].filter(f => f && f.size).slice(0, RUNQ_MAX);
+  if (!files.length) return;
+  if (files.length === 1){ RUNQ = null; runRefresh(); return runPick(files[0]); }
+  if (RUNF.type === 'tread') RUNF.type = 'run';
+  const Q = RUNQ = {items: files.map((file, i) => ({id: Date.now().toString(36) + i, file, img: '', ocr: null, date: '', sure: true, type: RUNF.type, st: 'read', msg: ''})), sending: false, warnOk: 0, err: ''};
+  RUNF.err = ''; RUNF.msg = ''; runRefresh();
+  for (const it of Q.items.slice()){
+    if (RUNQ !== Q) return;
+    if (Q.items.indexOf(it) < 0) continue;
+    try {
+      it.shot = await runShotAt(it.file); it.img = await runCompress(it.file); if (RUNQ !== Q) return; runRefresh();
+      it.cam = await exifMake(it.file);
+      if (runIsCapture(it.file, it.cam)){ it.st = 'err'; it.msg = RUN_CAPTURE_MSG; runRefresh(); continue; }
+      it.led = await runLedLike(it.img) ? 1 : 0;
+      if (Q.items.some(x => x !== it && x.img && x.img === it.img)){ it.st = 'err'; it.msg = 'Ảnh này trùng với một ảnh ở trên, hãy bỏ bớt.'; runRefresh(); continue; }
+      const r = await call('runOcr', TOKEN, it.img.split(',')[1], it.type, runQDays()[0]); if (RUNQ !== Q) return;
+      it.ocr = r || {}; if (r && r.act && RUN_TYPES[r.act] && r.act !== 'tread') it.type = r.act;
+      runQGuess(it); it.st = 'ready';
+    } catch(e){ it.st = 'err'; it.msg = e.message; }
+    runRefresh();
+  }
+}
+function runQHtml(){
+  const Q = RUNQ, days = runQDays(), reading = Q.items.some(x => x.st === 'read');
+  const dayName = d => (d === days[0] ? 'Hôm nay ' : d === addDays(days[0], -1) ? 'Hôm qua ' : 'Ngày ') + dm(d);
+  const rows = Q.items.map(it => {
+    const o = it.ocr || {}, ic = (RUN_TYPES[it.type] || RUN_TYPES.run)[0], rd = it.st === 'ready', wn = rd ? runQWarn(it) : '', nr = rd && runNoReadO(o);
+    const cls = it.st === 'done' ? 'ok' : (it.st === 'err' || it.st === 'bad' || it.st === 'kept' || wn) ? 'bad' : rd && !it.sure ? 'unsure' : '';
+    let sub;
+    if (it.st === 'read') sub = '⏳ Đang đọc ảnh…';
+    else if (it.st === 'send') sub = '⏳ Đang nộp…';
+    else if (!rd) sub = esc(it.msg || '');
+    else sub = [o.whenTxt ? 'Ảnh ghi: ' + esc(o.whenTxt) : '', wn ? '⛔ ' + esc(wn) : !it.sure ? '⚠️ Không rõ ảnh chụp hôm nào. Chọn đúng ngày bên dưới' : '', nr ? '⏳ Chưa đọc được số km, quản lý sẽ cập nhật sau' : ''].filter(Boolean).join('<br>');
+    const chips = rd && !it.late && days.length > 1 ? `<div class="rq-d">${days.map(d => `<button class="run-date ${it.sure && it.date === d ? 'on' : ''}" data-rqd="${it.id}|${d}">${dayName(d)}</button>`).join('')}</div>` : '';
+    const km = rd || it.st === 'send' || it.st === 'done' ? (nr ? '… km' : runKmTxt(o.best) + ' km' + (it.type === 'bike' ? ' đạp xe' : '')) : '';
+    const head = it.st === 'read' ? 'Ảnh ' + (Q.items.indexOf(it) + 1) : `${ic} ${km}${it.date && (it.sure || !rd) ? ' · ' + dayName(it.date) : ''}`;
+    return `<div class="rq-it ${cls}">${it.img ? `<img src="${it.img}" alt="Ảnh ${Q.items.indexOf(it) + 1}">` : '<span class="rq-ph">📷</span>'}<div><b>${head}</b><small>${sub}</small>${chips}</div>${Q.sending || Q.done ? '' : `<button class="lnk" data-rqx="${it.id}" aria-label="Bỏ ảnh này">✕</button>`}</div>`;
+  }).join('');
+  const n = Q.items.filter(x => x.st === 'ready' && !x.late).length;
+  const btns = Q.done ? `<div class="rq-btns"><button class="btn run-submit" data-rq="close">Xong</button></div>`
+    : `<div class="rq-btns"><button class="btn run-submit" data-rq="send" ${Q.sending || reading || !n ? 'disabled' : ''}>${Q.sending ? 'Đang nộp…' : reading ? 'Đang đọc ảnh…' : 'Nộp ' + n + ' bài'}</button>${Q.sending ? '' : '<button class="lnk" data-rq="close">Huỷ</button>'}</div>`;
+  return `<div class="run-msg">📚 <b>Nộp ${Q.items.length} ảnh một lần.</b> App tự xếp ảnh vào từng ngày. Ảnh tô vàng thì chọn ngày giúp app.</div>${rows}
+    ${Q.err ? `<div class="run-msg bad">${esc(Q.err)}</div>` : ''}${btns}
+    <div class="rule">Cả ngày từ 2 km mới được tính · Đạp xe km ÷ 4 · Mỗi ảnh là một buổi tập riêng</div>`;
+}
+async function runQSend(){
+  const Q = RUNQ; if (!Q || Q.sending || Q.items.some(x => x.st === 'read')) return;
+  const list = Q.items.filter(x => x.st === 'ready' && !x.late);
+  if (!list.length){ Q.err = 'Không còn ảnh nào nộp được.'; runRefresh(); return; }
+  if (list.some(x => !x.sure)){ Q.err = 'Hãy chọn ngày cho các ảnh tô vàng.'; runRefresh(); return; }
+  const wn = list.filter(x => runQWarn(x)).length;
+  if (wn && !Q.warnOk){ Q.warnOk = 1; Q.err = wn + ' ảnh có cảnh báo đỏ sẽ KHÔNG được tính (ảnh nộp sai ô vào mục Spam). Nên bỏ ảnh đó (bấm ✕). Vẫn muốn nộp thì bấm Nộp lần nữa.'; runRefresh(); return; }
+  Q.err = ''; Q.sending = true;
+  for (const it of list){
+    it.st = 'send'; runRefresh();
+    const o = it.ocr || {}, rep = runNoReadO(o), b64 = it.img.split(',')[1];
+    try {
+      const r = await runSubmitBox(rep ? {date: it.date, type: it.type, report: 1, msg: '', img: b64, shot: 0, live: 0, cam: it.cam || '', led: it.led || 0}
+        : {date: it.date, type: it.type, km: Number(o.best), min: o.minutes > 0 ? o.minutes : '', img: b64, shot: 0, live: 0, pick: 0, cam: it.cam || '', led: it.led || 0});
+      it.msg = r.msg || ''; it.st = r.rejected ? 'bad' : 'done';
+      if (RAWD && RAWD.runY && RAWD.runY.date === it.date && r.dayKm != null) RAWD.runY.km = r.dayKm;
+      if (!rep && !r.rejected && !r.pending && r.dayOk !== false) try { toolTick('04', it.date, RE_EXER); } catch(_){}
+    } catch(e){ it.st = e.kept ? 'kept' : 'err'; it.msg = e.message; }
+    runRefresh();
+  }
+  Q.sending = false; Q.done = true; RUNS = null; RUNB = {}; loadQuota(true);
+  const ok = list.filter(x => x.st === 'done').length;
+  toast(ok === list.length ? '✅ Đã nộp ' + ok + ' bài' : '⚠️ Nộp được ' + ok + '/' + list.length + ' bài, xem từng ảnh', 5000);
+  runRefresh();
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-rq],[data-rqd],[data-rqx]'); if (!t || !RUNQ) return;
+  const Q = RUNQ;
+  if (t.dataset.rqd){ const [id, d] = t.dataset.rqd.split('|'), it = Q.items.find(x => x.id === id); if (it && !Q.sending){ it.date = d; it.sure = true; it.late = false; Q.warnOk = 0; Q.err = ''; } runRefresh(); return; }
+  if (t.dataset.rqx){ if (!Q.sending){ Q.items = Q.items.filter(x => x.id !== t.dataset.rqx); Q.warnOk = 0; Q.err = ''; if (!Q.items.length) RUNQ = null; } runRefresh(); return; }
+  if (t.dataset.rq === 'send') runQSend();
+  else if (t.dataset.rq === 'close' && !Q.sending){ RUNQ = null; runRefresh(); }
+});
+/** Ảnh chia sẻ thẳng từ Strava/thư viện ảnh (Android) → mở màn nộp chạy bộ */
+function runPendApply(){
+  const fs = RUNPEND; if (!fs || !TOKEN || !D) return; RUNPEND = null;
+  RUNF.open = true; RUNS = null; HSUB = 'run'; tab = 'health'; if (RUNF.type === 'tread') RUNF.type = 'run';
+  render(); toast('📥 Đã nhận ' + fs.length + ' ảnh chia sẻ, app đang đọc', 4000);
+  fs.length > 1 ? runQStart(fs) : runPick(fs[0]);
 }
 /* ---- Thông báo kết quả đọc lại ảnh chạy bộ ---- */
 function aiLbl(A){
@@ -6584,6 +6771,7 @@ document.addEventListener('click', async e => {
 });
 /** Lối tắt trên biểu tượng app (giữ biểu tượng): ?go=run → nộp chạy bộ, ?go=mind → Tâm trí */
 function goApply(){
+  if (RUNPEND){ runPendApply(); if (!RUNPEND) return; }
   const m = /[?&]go=(run|mind)\b/.exec(location.search); if (/[?&](go|src)=/.test(location.search) && !/[?&]shared=1/.test(location.search)) history.replaceState(null, '', location.pathname);
   if (!m) return;
   if (m[1] === 'run'){ RUNF.open = true; RUNS = null; HSUB = 'run'; tab = 'health'; } else tab = 'mind';
@@ -6635,7 +6823,7 @@ async function runSend(report){
     if (!f.img){ f.err = 'Hãy chọn ảnh trước.'; runRefresh(); return; }
     const bm = f.bugmsg || ''; f.sending = true; runRefresh();
     try {
-      const r = await runSubmitBox({date: f.date, type: f.type, report: 1, msg: bm, img: f.img.split(',')[1], shot: f.type === 'tread' ? f.shot || 0 : 0, live: 0});
+      const r = await runSubmitBox({date: f.date, type: f.type, report: 1, msg: bm, img: f.img.split(',')[1], shot: f.type === 'tread' ? f.shot || 0 : 0, live: 0, cam: f.type !== 'tread' ? f.cam || '' : '', led: f.type !== 'tread' ? f.led || 0 : 0});
       f.msg = r.msg; toast('⏳ Đã nhận ảnh, số km đang được cập nhật');
       f.img = ''; f.ocr = null; f.km = ''; f.min = ''; f.bugmsg = ''; RUNS = null; RUNB = {};
     } catch(e){ if (e.kept){ f.msg = e.message; f.img = ''; f.ocr = null; f.km = ''; f.min = ''; f.bugmsg = ''; toast(e.message, 5000); } else { f.err = e.message; toast('⚠️ ' + e.message); } }
@@ -6648,12 +6836,12 @@ async function runSend(report){
   else if (!(raw > 0)) f.err = (f.ocr.cands || []).length ? 'Hãy bấm chọn số km đúng trong các số app đọc được.' : 'App chưa đọc được số km trên ảnh. Hãy bấm "Gửi ảnh báo lỗi" để quản lý xử lý.';
   if (f.err){ runRefresh(); return; }
   const wn = runWarn();
-  if (wn && f.warnOk !== f.seq){ f.warnOk = f.seq; f.err = (wn.none ? 'Ảnh không có ngày giờ chạy nên bài sẽ KHÔNG được tính. ' : wn.day ? 'Ngày trên ảnh khác ngày nộp nên bài sẽ KHÔNG được tính. ' : 'Pace chậm hơn mức tối thiểu nên bài sẽ KHÔNG được tính. ') + 'Nên chọn ảnh khác' + (wn.day ? ' hoặc đổi ngày' : '') + '. Vẫn muốn nộp thì bấm Nộp lần nữa.'; runRefresh(); return; }
+  if (wn && f.warnOk !== f.seq){ f.warnOk = f.seq; f.err = (wn.cam || wn.box ? 'Ảnh nộp sai ô nên bài sẽ vào mục Spam, CHƯA được tính. ' : wn.none ? 'Ảnh không có ngày giờ chạy nên bài sẽ KHÔNG được tính. ' : wn.day ? 'Ngày trên ảnh khác ngày nộp nên bài sẽ KHÔNG được tính. ' : 'Pace chậm hơn mức tối thiểu nên bài sẽ KHÔNG được tính. ') + 'Nên chọn ảnh khác' + (wn.day ? ' hoặc đổi ngày' : '') + '. Vẫn muốn nộp thì bấm Nộp lần nữa.'; runRefresh(); return; }
   f.sending = true; runRefresh();
   try {
     const min = runNum(f.min);
-    const r = await runSubmitBox({date: f.date, type: f.type, km: raw, min: min > 0 ? min : '', img: f.img.split(',')[1], shot: f.type === 'tread' ? f.shot || 0 : 0, live: f.type === 'tread' && f.live ? 1 : 0, pick: f.pick || 0});
-    if (r.rejected){ f.err = r.msg; toast('⛔ ' + r.msg); }
+    const r = await runSubmitBox({date: f.date, type: f.type, km: raw, min: min > 0 ? min : '', img: f.img.split(',')[1], shot: f.type === 'tread' ? f.shot || 0 : 0, live: f.type === 'tread' && f.live ? 1 : 0, pick: f.pick || 0, cam: f.type !== 'tread' ? f.cam || '' : '', led: f.type !== 'tread' ? f.led || 0 : 0});
+    if (r.rejected){ f.err = r.msg; toast((r.spam ? '' : '⛔ ') + r.msg, r.spam ? 6000 : undefined); }
     else if (r.pending){ f.msg = r.msg; toast('⏳ Ảnh này đang chờ đọc số km, không cần gửi lại', 5000); }
     else { if (RAWD && RAWD.runY && RAWD.runY.date === f.date && r.dayKm != null) RAWD.runY.km = r.dayKm;
       f.msg = r.msg; toast(r.flagged ? '⚠️ Đã nhận, quản lý sẽ xem lại' : '✅ Đã nộp ' + runKmTxt(r.item.km) + ' km');
@@ -6847,6 +7035,12 @@ async function runLoadAdmin(){
   try { RUNA = await call('runAdminData', TOKEN); } catch(e){ RUNA = {error: e.message}; }
   RUNABUSY = false; if (tab === 'admin') render();
 }
+/** v19.11.126: mục Spam – bài nộp sai ô (ảnh camera ở ô Chạy bộ, ảnh máy chạy sai ô). Duyệt = tính bài; Từ chối = bỏ. */
+function runSpamSection(A){
+  const L = (A.appeals || []).filter(x => x.spam); if (!L.length) return '';
+  return `<div class="sec"><h3>🗑️ Spam · nộp sai ô</h3><span>${L.length} bài · chưa được tính</span></div><div class="card run-list">${L.map(x => `<div class="run-item flag"><div><b>${esc(x.name)} · ${dm(x.date)} · ${(RUN_TYPES[x.type] || RUN_TYPES.run)[0]} ${x.raw > 0 ? runKmTxt(x.raw) + ' km' : '… km'}</b><small>${esc(String(x.txt || '').replace(/^🗑️ Spam – /, ''))}</small></div>
+    <div class="run-apb">${x.link ? `<a class="lnk" href="${esc(x.link)}" target="_blank" rel="noopener">Ảnh</a>` : ''}<input type="text" inputmode="decimal" class="run-apkm" placeholder="km (nếu sửa)" data-apkm="${esc(x.rid)}"><button class="btn" data-runrev="${esc(x.rid)}" data-ok="1">Duyệt</button><button class="btn ghost" data-runrev="${esc(x.rid)}" data-ok="0">Từ chối</button></div></div>`).join('')}</div>`;
+}
 function runAdminSection(){
   if (!RUNA && !RUNABUSY) runLoadAdmin();
   const h = `<div class="sec"><h3>🏃 Chạy bộ</h3><span>thư mục ảnh · ghép tên với Sheet</span></div>`;
@@ -6872,7 +7066,7 @@ function runAdminSection(){
   <div class="card tblwrap run-admin" style="margin-top:10px"><table class="tbl run-map" style="min-width:520px"><thead><tr><th>Thành viên app</th>${A.sb ? '' : '<th>Tên trong Sheet chạy bộ</th>'}<th>Giới tính</th></tr></thead><tbody>${rows}</tbody></table>
     <div class="btns"><button class="btn" data-runsavemap="1">💾 Lưu bảng ghép tên</button></div>
     <div class="rule">Pace tối thiểu 18:00/km cho cả nam và nữ. Giới tính chỉ dùng để lọc bảng xếp hạng.</div></div>
-  ${(A.appeals || []).length ? `<div class="sec"><h3>⚖️ Khiếu nại chờ duyệt</h3><span>${A.appeals.length} bài</span></div><div class="card run-list">${A.appeals.map(x => `<div class="run-item flag"><div><b>${esc(x.name)} · ${dm(x.date)} · ${x.st === 'Chờ quản lý đọc ảnh' ? '🐞 ' + (RUN_TYPES[x.type] || ['',''])[1] + ' – chưa có km' : runKmTxt(x.km) + ' km'}${x.st !== 'Chờ quản lý đọc ảnh' && x.type === 'bike' ? ' (đạp xe ' + runKmTxt(x.raw) + ' km)' : ''}${x.pace ? ' · pace ' + esc(x.pace) : ''}</b><small>${esc(x.st)}${x.why ? ' · ' + esc(x.why) : ''}</small><small>💬 ${esc(x.txt)}</small></div>
+  ${runSpamSection(A)}${(A.appeals || []).filter(x => !x.spam).length ? `<div class="sec"><h3>⚖️ Khiếu nại chờ duyệt</h3><span>${A.appeals.filter(x => !x.spam).length} bài</span></div><div class="card run-list">${A.appeals.filter(x => !x.spam).map(x => `<div class="run-item flag"><div><b>${esc(x.name)} · ${dm(x.date)} · ${x.st === 'Chờ quản lý đọc ảnh' ? '🐞 ' + (RUN_TYPES[x.type] || ['',''])[1] + ' – chưa có km' : runKmTxt(x.km) + ' km'}${x.st !== 'Chờ quản lý đọc ảnh' && x.type === 'bike' ? ' (đạp xe ' + runKmTxt(x.raw) + ' km)' : ''}${x.pace ? ' · pace ' + esc(x.pace) : ''}</b><small>${esc(x.st)}${x.why ? ' · ' + esc(x.why) : ''}</small><small>💬 ${esc(x.txt)}</small></div>
     <div class="run-apb">${x.link ? `<a class="lnk" href="${esc(x.link)}" target="_blank" rel="noopener">Ảnh</a>` : ''}${x.bug ? `<input type="text" inputmode="decimal" class="run-apkm" placeholder="km trên ảnh" data-apkm="${esc(x.rid)}">` : ''}<button class="btn" data-runrev="${esc(x.rid)}" data-ok="1">Duyệt</button><button class="btn ghost" data-runrev="${esc(x.rid)}" data-ok="0">Từ chối</button></div></div>`).join('')}</div>` : ''}
   ${fl ? `<div class="sec"><h3>🚩 Bài bị gắn cờ gần đây</h3><span>xem ảnh để kiểm tra</span></div><div class="card run-list">${fl}</div>` : ''}`;
 }
@@ -6913,7 +7107,7 @@ document.addEventListener('click', async e => {
     try { const r = await call('saveRunMap', TOKEN, list); toast('💾 Đã lưu ghép tên (' + r.n + ' người)'); RUNA = null; RUNB = {}; render(); } catch(err){ toast('⚠️ ' + err.message); } return; }
   if (ds.runresync){ try { const r = await call('runResync', TOKEN); toast(r.msg); RUNA = null; RUNB = {}; render(); } catch(err){ toast('⚠️ ' + err.message); } return; }
 });
-document.addEventListener('change', e => { const t = e.target; if (t && t.matches && t.matches('[data-runfile]')) runPick(t.files && t.files[0]); });
+document.addEventListener('change', e => { const t = e.target; if (t && t.matches && t.matches('[data-runfile]')){ const fs = t.files ? [...t.files] : []; t.value = ''; fs.length > 1 ? runQStart(fs) : runPick(fs[0]); } });
 /* Máy chạy: Apps Script chặn camera trong trang (NotAllowedError) nên dùng ô chụp ảnh của máy + kiểm tra giờ chụp trong ảnh (EXIF ≤ 30 phút). */
 document.addEventListener('input', e => { const t = e.target; if (!t || !t.dataset) return;
   if (t.dataset.runbugmsg){ RUNF.bugmsg = t.value; }
@@ -7489,7 +7683,15 @@ async function sharedPick(){
   try {
     if (!/[?&]shared=1/.test(location.search) || !window.caches) return;
     history.replaceState(null, '', location.pathname);
-    const c = await caches.open('share-inbox'), r = await c.match('/share-inbox-file');
+    const c = await caches.open('share-inbox');
+    const ks = (await c.keys()).filter(k => /\/share-img-\d+$/.test(k.url)).sort((a, b) => a.url < b.url ? -1 : 1);   // v19.11.126: ảnh chạy bộ chia sẻ thẳng
+    if (ks.length){ const fs = [];
+      for (const k of ks){ const q = await c.match(k), b = q && await q.blob(); await c.delete(k);
+        if (b && b.size) fs.push(new File([b], decodeURIComponent(q.headers.get('X-Name') || 'anh.jpg'), {type: b.type || 'image/jpeg', lastModified: Number(q.headers.get('X-Mod')) || Date.now()})); }
+      if (fs.length){ RUNPEND = fs; runPendApply(); }
+      return;
+    }
+    const r = await c.match('/share-inbox-file');
     if (!r) return;
     const blob = await r.blob(), name = decodeURIComponent(r.headers.get('X-Name') || 'ghi-am');
     await c.delete('/share-inbox-file');
