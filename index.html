@@ -1057,7 +1057,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v19.11.130';
+const APP_VER = 'v19.11.131';
 try { if (localStorage.getItem('rh_fx') === '0') document.documentElement.classList.add('no-fx'); } catch(e){}   // v18.11.115: Chế độ đơn giản   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
@@ -6104,6 +6104,9 @@ function taSync(){
   const key = 'rh_ttu_' + ME.id, tm = taMeta();
   try { const bk = JSON.parse(LS.get(key) || 'null');
     if (bk && bk.ts && (!D.meta.ttu || (D.meta.ttu.ts || 0) < bk.ts) && !(TA_SRV && D.meta.ttu)){ D.meta.ttu = bk; TA_GEN++; markDirty('META'); if (TA_SRV) TA_PUSH = true; } } catch(e){}
+  /* 24/11: tự chữa lần tẩu hỏa do thiếu 2/3 thói quen đã lỡ chốt nhầm (từ dữ liệu cũ): dữ liệu mới của máy chủ cho thấy ngày đó đã đủ thì gỡ lần phạt, giữ nguyên Tà tu */
+  if (!DATA_CACHED && !tm.a && tm.h.length){ const x = tm.h[tm.h.length - 1], ie = x.r === 'habit' && x.E ? D.days.indexOf(x.E) : -1;
+    if (ie >= 0 && ie < T){ const st = dayStat(ie); if (st.total > 0 && st.done / st.total >= THRESHOLD - 1e-9){ tm.h.pop(); tm.a = {br: x.br, S: x.S, ts: Date.now()}; tm.ts = Date.now(); TA_GEN++; markDirty('META'); TA_PUSH = true; } } }
   const c = taCalc(), fp = c.per.find(o => !o.hist && o.E);
   if (fp && tm.a && BSAT && !DATA_CACHED){ const iE = D.days.indexOf(fp.E);
     if (iE >= 0 && iE <= T - 2){ tm.h.push({br: fp.br, S: fp.S, E: fp.E, r: fp.r}); tm.a = null; tm.ts = Date.now(); TA_GEN++; markDirty('META'); TA_PUSH = true; } }
