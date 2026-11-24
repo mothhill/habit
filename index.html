@@ -1057,7 +1057,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v19.11.129';
+const APP_VER = 'v19.11.130';
 try { if (localStorage.getItem('rh_fx') === '0') document.documentElement.classList.add('no-fx'); } catch(e){}   // v18.11.115: Chế độ đơn giản   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 const THRESHOLD = 2/3, LAZY_TH = 1/3;   // ngày lười: làm bản tối thiểu, đạt 1/3 việc là giữ chuỗi, không tính điểm
@@ -2224,6 +2224,7 @@ const errBox = msg => `<div class="err card"><div style="font-size:40px">😕</d
 
 /* ================== Tải dữ liệu ================== */
 let RAWD = null, dcT = 0, PROFC = {}, boardBusy = false;
+let DATA_CACHED = false;   // 24/11: true khi đang dùng dữ liệu lưu sẵn trên máy, chưa đối chiếu với máy chủ; chưa được chốt tẩu hỏa lúc này
 const dcRead = () => { try { const c = JSON.parse(LS.get('rh_dc') || 'null'); return c && c.u && c.u === LS.get('rh_last') && c.d ? c.d : null; } catch(e){ return null; } };
 function dcSave(){ clearTimeout(dcT); dcT = setTimeout(() => { if (RAWD && ME) LS.set('rh_dc', JSON.stringify({u: ME.id, d: RAWD})); }, 300); }
 async function loadData(pre){
@@ -2235,7 +2236,7 @@ async function loadData(pre){
     catch(e){ if (isAuthErr(e)) { dropToken(); return showLogin('Phiên đăng nhập đã hết, hãy đăng nhập lại.'); } $('#root').innerHTML = errBox(e.message); return; }
   }
   const wal = walApply(d);
-  RAWD = d; buildData(d, cached); goApply();
+  RAWD = d; DATA_CACHED = cached; buildData(d, cached); goApply();
   resyncCheck();
   const fl = wal.map(k => { dirty[k] = 1; return flush(k); });
   if (!BOARD){ try { const b = JSON.parse(LS.get('rh_bc') || 'null'); if (b && b.me === ME.id) BOARD = b; } catch(e){} }
@@ -2297,7 +2298,8 @@ async function refreshData(){
   RAWD = d; dcSave();
   if (newsCh && same && !typing && tab === 'today') render();
   if (typing) return;
-  if (same){ AUTOFZ = 0; autoFreeze(); if (AUTOFZ){ render(); toast(`🧊 Bạn lỡ nhịp nên app đã tự dùng ${AUTOFZ} thẻ giữ lửa để giữ chuỗi.`); } }
+  DATA_CACHED = false;
+  if (same){ try { taSync(); } catch(e){} setTimeout(() => { try { taNotices(); } catch(e){} }, 900); AUTOFZ = 0; autoFreeze(); if (AUTOFZ){ render(); toast(`🧊 Bạn lỡ nhịp nên app đã tự dùng ${AUTOFZ} thẻ giữ lửa để giữ chuỗi.`); } }
   else buildData(d, false, vi);
 }
 let AUTOFZ = 0;
@@ -6103,7 +6105,7 @@ function taSync(){
   try { const bk = JSON.parse(LS.get(key) || 'null');
     if (bk && bk.ts && (!D.meta.ttu || (D.meta.ttu.ts || 0) < bk.ts) && !(TA_SRV && D.meta.ttu)){ D.meta.ttu = bk; TA_GEN++; markDirty('META'); if (TA_SRV) TA_PUSH = true; } } catch(e){}
   const c = taCalc(), fp = c.per.find(o => !o.hist && o.E);
-  if (fp && tm.a && BSAT){ const iE = D.days.indexOf(fp.E);
+  if (fp && tm.a && BSAT && !DATA_CACHED){ const iE = D.days.indexOf(fp.E);
     if (iE >= 0 && iE <= T - 2){ tm.h.push({br: fp.br, S: fp.S, E: fp.E, r: fp.r}); tm.a = null; tm.ts = Date.now(); TA_GEN++; markDirty('META'); TA_PUSH = true; } }
   if (TA_PUSH) taPush();
   try { if (D.meta.ttu && D.meta.ttu.ts) LS.set(key, JSON.stringify(D.meta.ttu)); } catch(e){}
@@ -6228,7 +6230,7 @@ function taShow(o){
   document.body.appendChild(el);
 }
 function taNotices(){
-  if (!D || !ME || PRACTICE || !BSAT || document.querySelector('.ta-note,.luo')) return;
+  if (!D || !ME || PRACTICE || !BSAT || DATA_CACHED || document.querySelector('.ta-note,.luo')) return;
   const k = 'rh_tan_' + ME.id; let seen = {}; try { seen = JSON.parse(LS.get(k) || '{}'); } catch(e){}
   const c = taCalc(), mark = id => { seen[id] = 1; try { LS.set(k, JSON.stringify(seen)); } catch(e){} };
   for (const o of c.per){
