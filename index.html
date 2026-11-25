@@ -897,7 +897,7 @@ html[class*=mau-] .rcal{--rc:var(--primary)}html[class*=mau-][data-theme=light] 
 @media(min-width:920px){#lsnhost{bottom:14px}}
 .lsnin{width:100%;padding:12px 12px;border-radius:10px;border:1px solid var(--line);background:transparent;color:inherit;font-size:15px;margin:8px 0}
 .mgo{width:100%;margin:8px 0}.mrec{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 12px;border-radius:14px;background:var(--primary-soft);margin:8px 0}
-.mvu{height:10px;border-radius:99px;background:var(--line);overflow:hidden;margin:2px 0 4px}.mvu i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#4FC98A,#9CCB63);transition:width .08s linear}.mvu.lo i{background:var(--pink)}.mvl{font-size:13px;color:var(--muted);margin-bottom:8px}
+.mvu{height:10px;border-radius:99px;background:var(--line);overflow:hidden;margin:2px 0 4px}.mvu i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#4FC98A,#9CCB63);transition:width .08s linear}.mvu.lo i{background:var(--pink)}.mvl{font-size:13px;color:var(--muted);margin-bottom:8px}.mtx{font-size:14px;line-height:1.45;background:var(--card,#fff);border:1px dashed var(--line);border-radius:10px;padding:8px 10px;margin-bottom:8px;max-height:7.5em;overflow:auto;color:var(--text,#222)}.mtx i{color:var(--muted)}
 .mrec b{font-size:24px;font-variant-numeric:tabular-nums}.mrec .btn{margin-left:auto}.mrec.busy{font-weight:600}
 .mdot{width:12px;height:12px;border-radius:50%;background:#E5484D;animation:mblink 1s infinite}@keyframes mblink{50%{opacity:.25}}
 .mpoll{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}.mpoll small{color:var(--muted)}.mspin{display:inline-block;animation:mspin 1.2s linear infinite}@keyframes mspin{to{transform:rotate(360deg)}}.mres{padding:8px 12px;border-radius:10px;margin:8px 0;font-size:15px;border:1px solid var(--line)}.mres.ok{border-color:var(--primary)}.mres.no{border-color:#E5484D}
@@ -1057,7 +1057,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v19.11.132';
+const APP_VER = 'v19.11.133';
 try { if (localStorage.getItem('rh_fx') === '0') document.documentElement.classList.add('no-fx'); } catch(e){}   // v18.11.115: Chế độ đơn giản   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 /* v19.11.132 (25/11): tự kiểm bản mới qua version.json. Máy chạy bản cũ (STALE) KHÔNG gửi lệnh ghi (saveRow: META/XP/phạt/Tà tu) cho tới khi tải lại; ghi tạm ở WAL, tải lại xong gửi bằng mã mới. */
@@ -6416,7 +6416,8 @@ function runCard(){
   if (!RUNS && !RUNSBUSY) runLoadMine();
   const f = RUNF, td = (RUNS && RUNS.today) || D.today, yd = addDays(td, -1), canY = runCanYest() && f.type !== 'tread';
   if (f.type === 'tread' && f.date !== td) f.date = td;
-  if (f.date !== td && !(f.date === yd && canY)) f.date = td;
+  const lo7 = addDays(td, -7), lateOn = f.type !== 'tread' && f.date < yd && f.date >= lo7;   // 25/11: nộp bù tối đa 7 ngày (ảnh phải có ngày khớp)
+  if (f.date !== td && !(f.date === yd && canY) && !lateOn) f.date = td;
   const items = (RUNS && RUNS.items) || [], tot = items.filter(x => x.date === td && x.st === 'Hợp lệ').reduce((a,x) => a + x.km, 0);
   const head = `<div class="run-head" data-runtoggle="1"><b>🏃 Chạy bộ hôm nay</b><span>${tot ? runKmTxt(tot) + ' km · ' : ''}${f.open ? 'Thu gọn ▴' : 'Mở ▾'}</span></div>`;
   if (!f.open) return `<div class="card run-card">${head}${obxCard('run')}</div>`;
@@ -6430,7 +6431,7 @@ function runCard(){
       ${RUNAP === x.rid ? `<div class="run-apf"><input type="text" maxlength="300" placeholder="Lý do, ví dụ: ảnh chụp trang tổng quan nên không có ngày; buổi chạy lúc 6h sáng nay" data-apreason><button class="btn" data-runapsend="${esc(x.rid)}">Gửi</button><button class="lnk" data-runapx>Thôi</button></div>` : ''}`; }).join('');
   if (RUNQ) return `<div class="card run-card">${head}${obxCard('run')}<div class="run-form">${runQHtml()}${items.length ? `<div class="run-list">${list}</div>` : ''}</div></div>`;
   return `<div class="card run-card">${head}${obxCard('run')}<div class="run-form">
-    <div class="run-dates"><button class="run-date ${f.date === td ? 'on' : ''}" data-rundate="${td}">Hôm nay ${dm(td)}</button>${canY ? `<button class="run-date ${f.date === yd ? 'on' : ''}" data-rundate="${yd}">Hôm qua ${dm(yd)}</button>` : ''}</div>
+    <div class="run-dates"><button class="run-date ${f.date === td ? 'on' : ''}" data-rundate="${td}">Hôm nay ${dm(td)}</button>${canY ? `<button class="run-date ${f.date === yd ? 'on' : ''}" data-rundate="${yd}">Hôm qua ${dm(yd)}</button>` : ''}${f.type !== 'tread' ? `<label class="run-date ${lateOn || (f.date === yd && !canY) ? 'on' : ''}">Bù ngày cũ <input type="date" data-runlate="1" min="${lo7}" max="${yd}" value="${f.date !== td ? f.date : ''}" style="width:8.5em"></label>` : ''}</div>
     <div class="run-types">${Object.keys(RUN_TYPES).map(k => `<button class="run-type ${f.type === k ? 'on' : ''}" data-runtype="${k}">${RUN_TYPES[k][0]} ${RUN_TYPES[k][1]}</button>`).join('')}</div>
     ${f.type === 'tread' ? `<div class="run-photo" data-runask="1" role="button">${f.img ? `<img class="run-prev" src="${f.img}" alt="Ảnh đã chụp"><small>Chạm để chụp lại</small>` : '📸 Bấm để chụp màn hình máy chạy bằng camera trong app (thấy rõ ô DISTANCE và TIME). Chụp ngay sau khi chạy xong.'}</div>`
       : `<div class="run-photo" data-runask="1" role="button">${f.img ? `<img class="run-prev" src="${f.img}" alt="Ảnh đã chọn"><small>Chạm để chọn ảnh khác</small>` : '📷 Chọn ảnh chụp màn hình từ Strava hoặc app tương tự (Garmin Connect, Nike Run Club, Samsung Health…)<br><small>Chọn được nhiều ảnh một lần (tối đa 6), app tự xếp vào từng ngày</small>'}</div>`}
@@ -7461,6 +7462,7 @@ function mindRecUI(kind){
   if (r) return codeBox + `<div class="mrec on"><span class="mdot"></span><b data-mclock>${mmss(r.secs)}</b>${kind === 'docsach' ? ` / 10:00` : ''}
       <button class="btn" data-mstop="1" ${r.secs < need ? 'disabled' : ''} data-mneed="${need}">${kind === 'docsach' ? '⏹ Dừng và nộp' : '⏹ Đọc xong, nộp bài'}</button><button class="lnk" data-mcancel="1">Huỷ</button></div>
       <div class="mvu" data-mvu><i></i></div><div class="mvl" data-mvl>🎙️ Đang thu · nói thử để xem thanh âm lượng nhảy</div>
+      ${r.sr ? `<div class="mtx" data-mtx>${esc(sttTail(r)) || '<i>Chữ máy nghe được sẽ hiện ở đây…</i>'}</div>` : ''}
       ${r.quiet ? `<div class="mres no">🔇 Máy chưa nghe thấy giọng. Kiểm tra micro, đọc to hơn hoặc để máy gần loa hơn.</div>` : ''}`;
   return codeBox + `<button class="btn mgo" data-mrec="${kind}" ${MREC ? 'disabled' : ''}>🎙️ ${kind === 'camket' ? 'Bắt đầu đọc và ghi âm' : 'Bắt đầu ghi âm 10 phút'} · nộp cho ${forDay}</button>
     <div class="mhow">💡 Trước khi ghi: tắt tự khoá màn hình (hoặc đặt thời gian khoá ≥ 15 phút) và đừng mở app khác. Màn hình tắt hoặc rời app thì bản ghi tạm dừng.</div>
@@ -7492,7 +7494,7 @@ async function mindStart(kind, from){
       await Promise.race([gc.resume(), new Promise(res => setTimeout(res, 1500))]);
       if (gc.state !== 'running') throw new Error('ac'); recStream = ds.stream; } catch(e){ recStream = stream; try { gc && gc.close(); } catch(e2){} gc = null; } }
   const mr = new MediaRecorder(recStream, Object.assign({audioBitsPerSecond: 16000}, mime ? {mimeType: mime} : {}));
-  const r = MREC || (MREC = {kind, sid: from ? from.sid : obxRid(), uid: ME && ME.id, mode: from ? from.mode : MMODE, date: from ? from.date : (MYEST && yestOk(kind) ? MIND.yest : (MIND && MIND.today) || ''), parts: from ? from.parts.slice() : [], secs: 0});
+  const r = MREC || (MREC = {kind, sid: from ? from.sid : obxRid(), uid: ME && ME.id, mode: from ? from.mode : MMODE, date: from ? from.date : (MYEST && yestOk(kind) ? MIND.yest : (MIND && MIND.today) || ''), parts: from ? from.parts.slice() : [], secs: 0, text: from ? from.text || '' : ''});
   Object.assign(r, {mr, stream, chunks: [], t0: Date.now(), curSecs: 0, mime: mr.mimeType || mime || 'audio/webm', wake: null, paused: 0, why: '', quiet: 0, win: 0});
   r.secs = recSecs(r);
   mr.ondataavailable = e => { if (e.data && e.data.size && MREC === r && r.mr === mr) r.chunks.push(e.data); };
@@ -7501,6 +7503,7 @@ async function mindStart(kind, from){
   try { const AC = window.AudioContext || window.webkitAudioContext; r.ac = gc || new AC(); const src = r.ac.createMediaStreamSource(stream); r.an = r.ac.createAnalyser(); r.an.fftSize = 1024; src.connect(r.an); } catch(e){ r.an = null; }
   try { if (r.ac && r.ac.state === 'suspended') r.ac.resume(); } catch(e){}
   mr.start(1000);
+  sttStart(r);
   r.vu = setInterval(() => { if (MREC !== r || !r.an) return; const bar = document.querySelector('[data-mvu]'); if (!bar) return;
     try { const bf = new Float32Array(1024); r.an.getFloatTimeDomainData(bf); let q = 0; for (let k = 0; k < bf.length; k++) q += bf[k] * bf[k]; const rms = Math.sqrt(q / bf.length), db = 20 * Math.log10(rms + 1e-6), pc = Math.max(0, Math.min(1, (db + 60) / 45));
       r.lv = Math.max(pc, (r.lv || 0) * 0.85); r.pk = rms > 0.002 ? Date.now() : (r.pk || 0);
@@ -7526,7 +7529,7 @@ const RECDB = {
 };
 let RECLIST = [], RECDEL = '';
 const recSecs = r => r.parts.reduce((a, p) => a + p.secs, 0) + (r.mr ? r.curSecs || 0 : 0);
-function recSnap(r){ const parts = r.parts.slice(); if (r.mr && r.chunks.length) parts.push({blob: new Blob(r.chunks, {type: r.mime}), secs: r.curSecs, mime: r.mime}); return {sid: r.sid, uid: r.uid, kind: r.kind, mode: r.mode, date: r.date, parts, t: Date.now()}; }
+function recSnap(r){ const parts = r.parts.slice(); if (r.mr && r.chunks.length) parts.push({blob: new Blob(r.chunks, {type: r.mime}), secs: r.curSecs, mime: r.mime}); return {sid: r.sid, uid: r.uid, kind: r.kind, mode: r.mode, date: r.date, parts, text: r.text || '', t: Date.now()}; }
 function recSave(r){ if (r.parts.length || r.chunks.length) RECDB.put(recSnap(r)).catch(() => {}); }
 async function recRefresh(){ try { RECLIST = ((await RECDB.all()) || []).filter(x => !ME || x.uid === ME.id).sort((a, b) => a.t - b.t); } catch(e){ RECLIST = []; } if (tab === 'mind' && !MREC) render(); }
 /** Tạm dừng đoạn đang ghi (mic bị ngắt): giữ phần đã ghi, cho phép Ghi tiếp hoặc Nộp phần đã ghi */
@@ -7565,9 +7568,9 @@ async function recItem(r, created){
   const parts = r.parts.filter(p => p.blob && p.blob.size > 0 && p.secs > 0); if (!parts.length) throw new Error('Không có bản ghi.');
   const main = parts.reduce((a, p) => p.blob.size > a.blob.size ? p : a, parts[0]), more = parts.filter(p => p !== main).map(p => ({blob: p.blob, mime: p.mime, secs: p.secs}));
   let sm = null; try { sm = r.kind === 'docsach' ? await mindSample(parts.map(p => p.blob)) : null; } catch(e){}
-  return {rid: obxRid(), sid: r.sid, uid: ME && ME.id, kind: r.kind, blob: main.blob, mime: main.mime, more, secs: parts.reduce((a, p) => a + p.secs, 0), mode: r.mode || 'doc', yest: MIND && MIND.yest && r.date === MIND.yest ? 1 : 0, upload: 0, fmod: 0, sample: sm ? sm.b64 : '', voiced: sm ? sm.voiced : 0, created: created || Date.now(), tried: 0};
+  return {rid: obxRid(), sid: r.sid, uid: ME && ME.id, kind: r.kind, blob: main.blob, mime: main.mime, more, secs: parts.reduce((a, p) => a + p.secs, 0), mode: r.mode || 'doc', yest: MIND && MIND.yest && r.date === MIND.yest ? 1 : 0, upload: 0, fmod: 0, text: String(r.text || '').trim(), sample: sm ? sm.b64 : '', voiced: sm ? sm.voiced : 0, created: created || Date.now(), tried: 0};
 }
-function mindEnd(){ if (!MREC) return; clearInterval(MREC.timer); clearInterval(MREC.vu); try { MREC.stream.getTracks().forEach(t => t.stop()); } catch(e){} try { MREC.wake && MREC.wake.release(); } catch(e){} try { MREC.ac && MREC.ac.close(); } catch(e){} MREC.ac = null; MREC.an = null; }
+function mindEnd(){ if (!MREC) return; sttEnd(MREC); clearInterval(MREC.timer); clearInterval(MREC.vu); try { MREC.stream.getTracks().forEach(t => t.stop()); } catch(e){} try { MREC.wake && MREC.wake.release(); } catch(e){} try { MREC.ac && MREC.ac.close(); } catch(e){} MREC.ac = null; MREC.an = null; }
 function mindCancel(){ if (!MREC) return; const sid = MREC.sid; try { if (MREC.mr){ MREC.mr.onstop = null; MREC.mr.stop(); } } catch(e){} mindEnd(); MREC = null; RECDB.del(sid).catch(() => {}).then(recRefresh); render(); }
 /* Đoạn mẫu bài đọc sách: điện thoại giải mã bản ghi, đo số phút có giọng, cắt 90 giây (30 giây đầu + 2 đoạn ngẫu nhiên) gửi AI thay vì cả 10 phút. Lỗi/máy yếu → trả null, gửi cả tệp như cũ. */
 async function mindSample(blobs){
@@ -7600,11 +7603,31 @@ async function mindSample(blobs){
   } catch(e){ return null; }
   finally { try { ac && ac.close(); } catch(e){} }
 }
+/* ===== 26/11: chuyển giọng nói thành chữ ngay lúc ghi (Web Speech API, vi-VN). Chữ gửi kèm bài để máy chủ cho Claude chấm; máy không hỗ trợ / chữ rỗng → máy chủ chấm bằng tệp ghi âm (Gemini) như cũ ===== */
+const sttTail = r => { const t = ((r.text || '') + ' ' + (r.live || '')).trim(); return t.length > 400 ? '…' + t.slice(-400) : t; };
+function sttShow(r){ const el = document.querySelector('[data-mtx]'); if (el && MREC === r){ const t = sttTail(r); if (t) el.textContent = t; } }
+function sttStart(r){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SR || r.sttBad) return;
+  let rec; try { rec = new SR(); } catch(e){ return; }
+  rec.lang = 'vi-VN'; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
+  r.sr = rec; r.live = ''; r.sttStop = 0;
+  rec.onresult = e => { let live = ''; for (let i = e.resultIndex; i < e.results.length; i++){ const t = String(e.results[i][0].transcript || '').trim(); if (!t) continue;
+      if (e.results[i].isFinal){ if (!(r.text || '').endsWith(t)) r.text = ((r.text || '') + ' ' + t).trim(); } else live += (live ? ' ' : '') + t; }
+    r.live = live; sttShow(r); };
+  rec.onerror = e => { if (/not-allowed|service-not-allowed|audio-capture|language-not-supported/.test(e.error || '')) r.sttStop = 1; };
+  rec.onend = () => { r.live = ''; if (MREC === r && r.sr === rec && r.mr && !r.sttStop) setTimeout(() => { if (MREC === r && r.sr === rec && r.mr) try { rec.start(); } catch(e){} }, 250); };
+  try { rec.start(); } catch(e){ r.sr = null; }
+}
+function sttEnd(r){
+  const rec = r.sr; if (!rec) return; r.sr = null; r.sttStop = 1;
+  r.sttWait = new Promise(res => { const tm = setTimeout(res, 1500); rec.onend = () => { clearTimeout(tm); res(); }; try { rec.stop(); } catch(e){ clearTimeout(tm); res(); } });
+  r.sttWait.then(() => { if (r.live){ r.text = ((r.text || '') + ' ' + r.live).trim(); r.live = ''; } });
+}
 function mindStop(){
   const r = MREC; if (!r || r.sending) return;
   r.sending = true; render();
   const go = async () => {
-    mindEnd();
+    mindEnd(); try { await r.sttWait; } catch(e){}
     try { await mindSend(await recItem(r, Date.now())); }
     catch(e){ toast('⚠️ ' + (e && e.message || 'Không gửi được') + ' Bản ghi vẫn còn trên máy.', 5000); recSave(r); }
     MREC = null; render(); recRefresh();
@@ -7613,6 +7636,7 @@ function mindStop(){
     try { if (mr.state !== 'inactive') mr.stop(); else mr.onstop(); } catch(e){ mr.onstop(); } }
   else go();
 }
+document.addEventListener('change', e => { const li = e.target.closest('[data-runlate]'); if (!li || !li.value) return; RUNF.date = li.value; RUNF.warnOk = 0; RUNF.err = ''; runRefresh(); });
 document.addEventListener('change', e => {
   const inp = e.target.closest('[data-mfile]'); if (!inp || !inp.files || !inp.files[0]) return;
   mindSendFile(inp.dataset.mfile, inp.files[0], inp);
@@ -7663,7 +7687,7 @@ async function mindDeliver(it){
   }
   const b64 = await blobB64(it.blob); if (!b64) throw new Error('Không đọc được bản ghi trên máy.');
   const more = []; for (const p of (it.more || [])){ const mb = await blobB64(p.blob); if (mb) more.push({b64: mb, mime: p.mime, secs: p.secs}); }
-  const x = await Promise.race([call('mindSubmit', TOKEN, {rid: it.rid, kind: it.kind, b64, mime: it.mime, secs: it.secs, mode: it.mode, yest: it.yest || 0, upload: it.upload || 0, fmod: it.fmod || 0, sample: it.sample || '', voiced: it.voiced || 0, more, created: it.created || 0, tried: it.tried || 0}),
+  const x = await Promise.race([call('mindSubmit', TOKEN, {rid: it.rid, kind: it.kind, b64, mime: it.mime, secs: it.secs, mode: it.mode, yest: it.yest || 0, upload: it.upload || 0, fmod: it.fmod || 0, text: it.text || '', sample: it.sample || '', voiced: it.voiced || 0, more, created: it.created || 0, tried: it.tried || 0}),
     new Promise((_, no) => setTimeout(() => no(new Error('TIMEOUT')), 180000))]);
   try { await OBX.del(it.rid); } catch(e){}
   return x;
