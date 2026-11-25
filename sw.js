@@ -1,7 +1,7 @@
 /* Service worker 90 Days Rich Habits (v14.11.96).
    Nguyên tắc an toàn: trang chính LUÔN ưu tiên bản mới từ mạng (cập nhật có hiệu lực ngay lần mở sau),
    bản đệm chỉ dùng khi mất mạng. Không đụng yêu cầu tới máy chủ Apps Script (khác nguồn, POST). */
-const CACHE = 'habit-v19-11-129';
+const CACHE = 'habit-v19-11-132';
 const STATIC = ['icon-192.png', 'icon-512.png', 'icon-maskable-192.png', 'icon-maskable-512.png', 'apple-touch-icon.png', 'manifest.webmanifest'];
 
 self.addEventListener('install', e => {
@@ -34,6 +34,7 @@ self.addEventListener('fetch', e => {
     return;
   }
   if (r.method !== 'GET' || u.origin !== self.location.origin) return;
+  if (/\/version\.json$/.test(u.pathname)) return;   // v19.11.132: không bao giờ đệm version.json (app tự kiểm bản mới)
   const isPage = r.mode === 'navigate' || /\/(index\.html)?$/.test(u.pathname);
   if (isPage) {   // mạng trước, đệm sau
     e.respondWith(fetch(r, {cache: 'no-cache'}).then(res => {   // no-cache: luôn hỏi lại máy chủ (304 nếu chưa đổi), bỏ qua đệm HTTP 10 phút của GitHub Pages
