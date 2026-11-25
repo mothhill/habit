@@ -898,7 +898,8 @@ html[class*=mau-] .rcal{--rc:var(--primary)}html[class*=mau-][data-theme=light] 
 .lsnin{width:100%;padding:12px 12px;border-radius:10px;border:1px solid var(--line);background:transparent;color:inherit;font-size:15px;margin:8px 0}
 .mgo{width:100%;margin:8px 0}.mrec{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 12px;border-radius:14px;background:var(--primary-soft);margin:8px 0}
 .mvu{height:10px;border-radius:99px;background:var(--line);overflow:hidden;margin:2px 0 4px}.mvu i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#4FC98A,#9CCB63);transition:width .08s linear}.mvu.lo i{background:var(--pink)}.mvl{font-size:13px;color:var(--muted);margin-bottom:8px}.mtx{font-size:14px;line-height:1.45;background:var(--card,#fff);border:1px dashed var(--line);border-radius:10px;padding:8px 10px;margin-bottom:8px;max-height:7.5em;overflow:auto;color:var(--ink,#222)}
-[data-runlate]{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:4px 8px;font:inherit;color-scheme:dark}
+[data-runlate]{background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:4px 6px;font-family:inherit;font-size:13px;font-weight:500;line-height:1.2;min-width:0;color-scheme:dark}
+.run-date:has([data-runlate]){white-space:nowrap}
 :root[data-theme=light] [data-runlate]{color-scheme:light}.mtx i{color:var(--muted)}
 .mrec b{font-size:24px;font-variant-numeric:tabular-nums}.mrec .btn{margin-left:auto}.mrec.busy{font-weight:600}
 .mdot{width:12px;height:12px;border-radius:50%;background:#E5484D;animation:mblink 1s infinite}@keyframes mblink{50%{opacity:.25}}
@@ -1059,7 +1060,7 @@ button:focus-visible,a:focus-visible,[role=button]:focus-visible,select:focus-vi
 <script>
 /* ================== 90 DAYS RICH HABIT – giao diện ================== */
 const APP = '90 Days Rich Habits';
-const APP_VER = 'v19.11.134';
+const APP_VER = 'v19.11.135';
 try { if (localStorage.getItem('rh_fx') === '0') document.documentElement.classList.add('no-fx'); } catch(e){}   // v18.11.115: Chế độ đơn giản   // vNGÀY.THÁNG.SỐ: hai số đầu = ngày phát hành, số cuối tăng dần mãi (không về 1 khi sang ngày)
 document.getElementById('appver').textContent = APP_VER;
 /* v19.11.132 (25/11): tự kiểm bản mới qua version.json. Máy chạy bản cũ (STALE) KHÔNG gửi lệnh ghi (saveRow: META/XP/phạt/Tà tu) cho tới khi tải lại; ghi tạm ở WAL, tải lại xong gửi bằng mã mới. */
@@ -6433,7 +6434,7 @@ function runCard(){
       ${RUNAP === x.rid ? `<div class="run-apf"><input type="text" maxlength="300" placeholder="Lý do, ví dụ: ảnh chụp trang tổng quan nên không có ngày; buổi chạy lúc 6h sáng nay" data-apreason><button class="btn" data-runapsend="${esc(x.rid)}">Gửi</button><button class="lnk" data-runapx>Thôi</button></div>` : ''}`; }).join('');
   if (RUNQ) return `<div class="card run-card">${head}${obxCard('run')}<div class="run-form">${runQHtml()}${items.length ? `<div class="run-list">${list}</div>` : ''}</div></div>`;
   return `<div class="card run-card">${head}${obxCard('run')}<div class="run-form">
-    <div class="run-dates"><button class="run-date ${f.date === td ? 'on' : ''}" data-rundate="${td}">Hôm nay ${dm(td)}</button>${canY ? `<button class="run-date ${f.date === yd ? 'on' : ''}" data-rundate="${yd}">Hôm qua ${dm(yd)}</button>` : ''}${f.type !== 'tread' ? `<label class="run-date ${lateOn || (f.date === yd && !canY) ? 'on' : ''}">Bù ngày cũ <input type="date" data-runlate="1" min="${lo7}" max="${yd}" value="${f.date !== td ? f.date : ''}" style="width:8.5em"></label>` : ''}</div>
+    <div class="run-dates"><button class="run-date ${f.date === td ? 'on' : ''}" data-rundate="${td}">Hôm nay ${dm(td)}</button>${canY ? `<button class="run-date ${f.date === yd ? 'on' : ''}" data-rundate="${yd}">Hôm qua ${dm(yd)}</button>` : ''}${f.type !== 'tread' ? `<label class="run-date ${lateOn || (f.date === yd && !canY) ? 'on' : ''}">Bù ngày cũ <input type="date" data-runlate="1" min="${lo7}" max="${yd}" value="${f.date !== td ? f.date : ''}" style="width:9.5em"></label>` : ''}</div>
     <div class="run-types">${Object.keys(RUN_TYPES).map(k => `<button class="run-type ${f.type === k ? 'on' : ''}" data-runtype="${k}">${RUN_TYPES[k][0]} ${RUN_TYPES[k][1]}</button>`).join('')}</div>
     ${f.type === 'tread' ? `<div class="run-photo" data-runask="1" role="button">${f.img ? `<img class="run-prev" src="${f.img}" alt="Ảnh đã chụp"><small>Chạm để chụp lại</small>` : '📸 Bấm để chụp màn hình máy chạy bằng camera trong app (thấy rõ ô DISTANCE và TIME). Chụp ngay sau khi chạy xong.'}</div>`
       : `<div class="run-photo" data-runask="1" role="button">${f.img ? `<img class="run-prev" src="${f.img}" alt="Ảnh đã chọn"><small>Chạm để chọn ảnh khác</small>` : '📷 Chọn ảnh chụp màn hình từ Strava hoặc app tương tự (Garmin Connect, Nike Run Club, Samsung Health…)<br><small>Chọn được nhiều ảnh một lần (tối đa 6), app tự xếp vào từng ngày</small>'}</div>`}
